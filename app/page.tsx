@@ -1,14 +1,11 @@
-import InputSearch from "@/components/InputSearch";
-import Logo from "@/components/ui/Logo";
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/Navbar";
 
 export default function Home() {
   return (
     <div className="font-inter ">
-      <h1>build navigation menu</h1>
-      <Logo />
-      <Navbar />
-      <InputSearch />
+      <section className="max-w-7xl mx-auto mt-10">
+        <Navbar />
+      </section>
     </div>
   );
 }

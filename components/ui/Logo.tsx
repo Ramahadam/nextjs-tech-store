@@ -2,9 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 export default function Logo() {
   return (
-    <div className="h-10 w-40 relative">
+    <div className=" relative">
       <Link href="/">
-        <Image fill src="/logo.png" alt="logo icon for the company" />
+        <Image
+          width={180}
+          height={100}
+          src="/logo.png"
+          alt="logo icon for the company"
+        />
       </Link>
     </div>
   );

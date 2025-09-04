@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import { Alert, AlertDescription, AlertTitle } from "./alert";
-import { Button } from "./button";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { Button } from "./ui/button";
 
 function Announcement() {
   return (
