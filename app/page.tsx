@@ -1,11 +1,9 @@
-import HeroSection from "@/components/HeroSection";
+import Filter from "@/components/Filter";
 
 export default function Home() {
   return (
-    <div className="font-inter ">
-      <section className="max-w-7xl mx-auto mt-10">
-        <HeroSection />
-      </section>
+    <div className="font-inter flex items-center justify-center h-dvh">
+      <div className="flex  items-start gap-8"></div>
     </div>
   );
 }
