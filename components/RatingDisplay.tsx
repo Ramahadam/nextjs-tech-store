@@ -1,3 +1,4 @@
+import { MAX_RATINGS } from "@/lib/utils";
 import { StarHalf, StarIcon } from "lucide-react";
 
 function RatingDisplay() {
@@ -10,11 +11,9 @@ function RatingDisplay() {
 
   const stars = Math.round(avg * 2) / 2; // 4.5 ⭐
 
-  const maxRatings = 5;
-
   return (
     <div className="flex">
-      {Array.from({ length: maxRatings }).map((_, idx) => {
+      {Array.from({ length: MAX_RATINGS }).map((_, idx) => {
         if (stars >= idx + 1)
           return (
             <StarIcon
