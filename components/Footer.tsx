@@ -34,7 +34,7 @@ function Footer() {
         <menu>
           <TypographyH4>Connect</TypographyH4>
           <li className="mt-2">
-            <Link href="#" className="text-xs">
+            <Link href="#" className="text-md">
               facebook
             </Link>
           </li>

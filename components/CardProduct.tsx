@@ -2,10 +2,8 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import RatingDisplay from "./RatingDisplay";
