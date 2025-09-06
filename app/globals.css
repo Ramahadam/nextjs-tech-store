@@ -43,6 +43,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --breakpoint-md: 56.25rem;
+  --breakpoint-lg: 70rem;
   --text-sm: 0.75rem;
   --text-p18: 1.125rem;
   --text-p16: 1rem;

@@ -15,7 +15,7 @@ import { FormatNumbers } from "@/lib/utils";
 
 function CardProduct() {
   return (
-    <Card className="w-[18.5rem]  shadow-none border-none">
+    <Card className="w-[18.5rem]   shadow-none border-none">
       <CardHeader className="bg-accent py-4 rounded-md relative h-[12rem] items-center">
         <figure className="justify-self-center">
           <Image

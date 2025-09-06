@@ -18,11 +18,13 @@ function RatingDisplay() {
           return (
             <StarIcon
               key={idx}
-              className="fill-primary-custom text-primary-custom size-4"
+              className="fill-secondary-custom text-secondary-custom size-4"
             />
           );
         else
-          return <StarIcon key={idx} className=" text-primary-custom size-4" />;
+          return (
+            <StarIcon key={idx} className=" text-secondary-custom size-4" />
+          );
       })}
       <span className="text-p16 ml-2">({numberOfRatings})</span>
     </div>
