@@ -12,7 +12,7 @@ function RatingDisplay() {
   const stars = Math.round(avg * 2) / 2; // 4.5 ⭐
 
   return (
-    <div className="flex">
+    <div className="flex ">
       {Array.from({ length: MAX_RATINGS }).map((_, idx) => {
         if (stars >= idx + 1)
           return (
@@ -23,6 +23,7 @@ function RatingDisplay() {
           );
         else return <StarIcon key={idx} className=" text-primary-custom" />;
       })}
+      <span className="text-xl">({numberOfRatings})</span>
     </div>
   );
 }
