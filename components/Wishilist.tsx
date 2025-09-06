@@ -9,14 +9,13 @@ function Wishlist() {
 
   return (
     <Button
-      asChild
       variant="ghost"
       size="icon"
-      className="hover:bg-transparent "
+      className="hover:bg-transparent hover:cursor-pointer"
       onClick={() => setIsAdded((prev) => !prev)}
     >
       <Heart
-        className={`${
+        className={`size-6 ${
           isAdded &&
           "fill-primary-custom text-primary-custom hover:text-primary-custom"
         } `}

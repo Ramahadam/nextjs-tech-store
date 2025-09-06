@@ -1,12 +1,7 @@
-import RatingDisplay from "@/components/RatingDisplay";
-import RatingInput from "@/components/RatingInput";
-
 export default function Home() {
   return (
     <div className="font-inter">
-      <div className="">
-        <RatingDisplay />
-      </div>
+      <div className=" flex items-center justify-center gap-4"></div>
     </div>
   );
 }
