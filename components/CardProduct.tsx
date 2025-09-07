@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import RatingDisplay from "./RatingDisplay";
-import Wishlist from "./Wishilist";
+import WishlistButton from "./WishilistButton";
 import Image from "next/image";
 import { FormatNumbers } from "@/lib/utils";
 
@@ -26,7 +26,7 @@ function CardProduct() {
           />
         </figure>
         <CardAction className="absolute top-0 right-3 bg-white p-[0.25rem] rounded-full flex">
-          <Wishlist />
+          <WishlistButton />
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col px-4">

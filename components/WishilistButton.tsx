@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 
-function Wishlist() {
+function WishlistButton() {
   const [isAdded, setIsAdded] = useState(false);
 
   return (
@@ -24,4 +24,4 @@ function Wishlist() {
   );
 }
 
-export default Wishlist;
+export default WishlistButton;

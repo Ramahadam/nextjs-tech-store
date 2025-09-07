@@ -3,7 +3,7 @@ import { TypographyH2 } from "./ui/TypographyH2";
 import QuantityButton from "./QuantityButton";
 import RatingDisplay from "./RatingDisplay";
 import Gallary from "./Gallary";
-import Wishlist from "./Wishilist";
+import WishlistButton from "./WishilistButton";
 import { Button } from "./ui/button";
 import { ShoppingCart } from "lucide-react";
 
@@ -43,7 +43,7 @@ export default function ProductDetails() {
             </Button>
 
             <span className="bg-white rounded-md ">
-              <Wishlist />
+              <WishlistButton />
             </span>
           </article>
         </footer>
