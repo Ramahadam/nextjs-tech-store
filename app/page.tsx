@@ -1,11 +1,17 @@
-import WishList from "@/components/Wishlist";
+import CallToAction from "@/components/CallToAction";
+import FilterSortOperations from "@/components/FilterSortOperations";
+import HeroSection from "@/components/HeroSection";
+import PopularItemsSection from "@/components/PopularItemsSection";
+import ProductList from "@/components/product/ProductList";
 
 export default function Home() {
   return (
-    <div className="font-inter">
-      <div className="max-w-7xl p-8 flex items-center justify-center mx-auto">
-        <WishList />
-      </div>
-    </div>
+    <>
+      <HeroSection />
+      <FilterSortOperations />
+      <ProductList />
+      <PopularItemsSection />
+      <CallToAction />
+    </>
   );
 }

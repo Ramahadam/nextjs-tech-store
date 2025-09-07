@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function HeroSection() {
   return (
     <section className="bg-[#FFFBF7]">
-      <div className="flex flex-col  sm:flex-row justify-between items-center gap-16 sm:gap-0 sm:p-8">
+      <div className="flex flex-col  sm:flex-row justify-between items-center gap-16 sm:gap-0 sm:p-8 max-w-7xl mx-auto sm:h-[70vh]">
         <article className="flex flex-col gap-8 w-full text-center sm:text-left">
           <TypographyH1>
             <span className="block"> Premium </span>Tech,
@@ -15,11 +15,11 @@ export default function HeroSection() {
             </span>
             <span className="block"> Quality & Prices</span>
           </TypographyH1>
-          <Button className="bg-secondary-custom  text-black rounded-2xl uppercase hover:opacity-80 transition duration-300 hover:bg-secondary-custom hover:cursor-pointer self-center sm:self-start">
+          <Button className="bg-secondary-custom  sm:text-lg sm:px-6 sm:py-8   text-black rounded-full uppercase hover:opacity-80 transition duration-300 hover:bg-secondary-custom hover:cursor-pointer self-center sm:self-start">
             <Link href="/products"> shop products</Link>
           </Button>
         </article>
-        <figure className="md:self-end">
+        <figure className="">
           <Image
             width={0}
             height={0}

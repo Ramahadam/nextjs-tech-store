@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
+import ClientWrapper from "./ClientWrapper";
+
 const interFontFamily = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -21,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={` ${interFontFamily.variable} antialiased`}>
-        {children}
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

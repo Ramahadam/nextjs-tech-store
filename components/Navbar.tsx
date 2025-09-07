@@ -21,7 +21,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between relative">
+    <nav className="flex items-center justify-between relative max-w-7xl mx-auto md:gap-4  my-2">
       <Logo />
 
       <Button

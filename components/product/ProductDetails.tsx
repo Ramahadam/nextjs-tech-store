@@ -1,10 +1,10 @@
-import { Badge } from "./ui/badge";
-import { TypographyH2 } from "./ui/TypographyH2";
-import QuantityButton from "./QuantityButton";
-import RatingDisplay from "./RatingDisplay";
-import Gallary from "./Gallary";
-import WishlistButton from "./WishilistButton";
-import { Button } from "./ui/button";
+import { Badge } from "../ui/badge";
+import { TypographyH2 } from "../ui/TypographyH2";
+import QuantityButton from "../QuantityButton";
+import RatingDisplay from "../RatingDisplay";
+import Gallary from "../Gallary";
+import WishlistButton from "../WishilistButton";
+import { Button } from "../ui/button";
 import { ShoppingCart } from "lucide-react";
 
 export default function ProductDetails() {

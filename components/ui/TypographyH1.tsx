@@ -4,7 +4,7 @@ export interface TypographyHeadingType {
 
 export function TypographyH1({ children }: TypographyHeadingType) {
   return (
-    <h1 className="scroll-m-20  text-4xl font-medium tracking-tight text-balance">
+    <h1 className="scroll-m-20  text-4xl md:text-6xl font-medium tracking-tight text-balance">
       {children}
     </h1>
   );
