@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import Image from "next/image";
+import QuantityButton from "./QuantityButton";
 
 export default function CartItems() {
   return (
@@ -28,15 +29,7 @@ export default function CartItems() {
             <figcaption className="text-xs">
               <p className="font-medium mb-2">Laptop Lenovo </p>
               <p className=" mb-3 opacity-50">Lorem ipsum dolor sit.</p>
-              <div className="flex items-center border rounded-md justify-between w-fit h-8">
-                <Button size="icon" variant="ghost">
-                  <Minus className="size-3" />
-                </Button>
-                {3}
-                <Button size="icon" variant="ghost">
-                  <Plus className="size-3" />
-                </Button>
-              </div>
+              <QuantityButton />
             </figcaption>
           </div>
 
