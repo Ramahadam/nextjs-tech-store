@@ -50,21 +50,13 @@ export default function Navbar() {
                 DESKTOPS
               </Link>
             </NavigationMenuItem>
+
             <NavigationMenuItem>
-              <Link href="/printers" className="text-sm">
-                PRINTERS
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/about" className="text-sm">
+              <Link href="/cctv" className="text-sm">
                 CCTV
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/about" className="text-sm">
-                ACCESSORIES
-              </Link>
-            </NavigationMenuItem>
+
             <NavigationMenuItem>
               <article className="flex md:items-center flex-col space-y-4 md:space-y-0 md:space-x-8  items-center md:flex-row">
                 <InputSearch />
