@@ -1,3 +1,4 @@
+import ProductDetails from "@/components/product/ProductDetails";
 import { ResolvingMetadata } from "next";
 
 interface MetaPropsType {
@@ -23,6 +24,12 @@ export async function generateMetadata(
   };
 }
 
-export default function Page() {
-  return <div>single product</div>;
+export default function Page({ params }: { params: { id: string } }) {
+  return (
+    <div>
+      <span>single product {params.id}</span>
+
+      <ProductDetails />
+    </div>
+  );
 }

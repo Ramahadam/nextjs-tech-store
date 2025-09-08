@@ -10,28 +10,33 @@ import RatingDisplay from "../RatingDisplay";
 import WishlistButton from "../WishilistButton";
 import Image from "next/image";
 import { FormatNumbers } from "@/lib/utils";
+import Link from "next/link";
 
 function ProductCard() {
   return (
     <Card className="w-[18.5rem]   shadow-none border-none">
       <CardHeader className="bg-accent py-4 rounded-md relative h-[12rem] items-center">
-        <figure className="justify-self-center">
-          <Image
-            width={0}
-            height={0}
-            src="/hp-laptop.png"
-            sizes="vw"
-            alt={"laptop photo"}
-            className="w-[10rem]"
-          />
-        </figure>
+        <Link href="/products/1">
+          <figure className="justify-self-center">
+            <Image
+              width={0}
+              height={0}
+              src="/hp-laptop.png"
+              sizes="vw"
+              alt={"laptop photo"}
+              className="w-[10rem]"
+            />
+          </figure>
+        </Link>
         <CardAction className="absolute top-0 right-3 bg-white p-[0.25rem] rounded-full flex">
           <WishlistButton />
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col px-4">
         <div className="flex items-center justify-between font-bold mb-2">
-          <p className="">Lapotp Lenovo</p>
+          <Link href="/products/1" className="">
+            Lapotp Lenovo
+          </Link>
           <p className="">{FormatNumbers(12000)} AED</p>
         </div>
         <p className="font-normal text-p16 leading-6 mb-4">
