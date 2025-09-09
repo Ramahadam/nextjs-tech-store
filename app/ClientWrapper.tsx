@@ -3,6 +3,8 @@
 import Announcement from "@/components/announcement";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 interface LayoutProp {
   children: React.ReactNode;
@@ -11,10 +13,12 @@ interface LayoutProp {
 export default function ClientWrapper({ children }: LayoutProp) {
   return (
     <div>
-      <Announcement />
-      <Navbar />
-      <main className="p-4">{children}</main>
-      <Footer />
+      <Provider store={store}>
+        <Announcement />
+        <Navbar />
+        <main className="p-4">{children}</main>
+        <Footer />
+      </Provider>
     </div>
   );
 }

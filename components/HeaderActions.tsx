@@ -1,4 +1,5 @@
 import { Heart, ShoppingCart, User } from "lucide-react";
+import Link from "next/link";
 
 export default function HeaderActions() {
   return (
@@ -9,9 +10,9 @@ export default function HeaderActions() {
       <span>
         <User />
       </span>
-      <span>
+      <Link href="/cart">
         <ShoppingCart />
-      </span>
+      </Link>
     </figure>
   );
 }
