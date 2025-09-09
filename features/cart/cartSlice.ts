@@ -1,50 +1,44 @@
-import { CartIemType } from "@/types/cart";
+import { CartIem, CartState } from "@/types/cart";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { stat } from "fs";
 
-const initialState: Array<CartIemType> = [
-  {
-    id: 0,
-    title: "",
-    image: "",
-    category: "",
-    description: "",
-    unitePrice: 0,
-    quantity: 0,
-    subTotal: 0,
-  },
-];
+const initialState: CartState = {
+  items: [],
+};
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<CartIemType>) => {
-      const existingItem = state.find((item) => item.id === action.payload.id);
+    addToCart: (state, action: PayloadAction<CartIem>) => {
+      const existingItem = state.items.find(
+        (item) => item.id === action.payload.id
+      );
 
       if (existingItem) {
         existingItem.quantity += 1;
         existingItem.subTotal =
           action.payload.unitePrice * existingItem.quantity;
       } else {
-        state.push({
+        state.items.push({
           ...action.payload,
           subTotal: action.payload.unitePrice * action.payload.quantity,
         });
       }
     },
 
-    removeFromCart: (state, action: PayloadAction<CartIemType>) => {
-      const index = state.findIndex((item) => item.id === action.payload.id);
+    removeFromCart: (state, action: PayloadAction<CartIem>) => {
+      const index = state.items.findIndex(
+        (item) => item.id === action.payload.id
+      );
 
       if (index !== -1) {
-        if (state[index] && state[index]?.quantity > 1) {
-          state[index].quantity -= 1;
-          state[index].subTotal =
-            state[index].unitePrice * state[index].quantity;
+        if (state.items[index] && state.items[index]?.quantity > 1) {
+          state.items[index].quantity -= 1;
+          state.items[index].subTotal =
+            state.items[index].unitePrice * state.items[index].quantity;
         }
       } else {
-        state.splice(index, 1);
+        state.items.splice(index, 1);
       }
     },
   },

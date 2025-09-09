@@ -4,7 +4,7 @@ import Announcement from "@/components/announcement";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Provider } from "react-redux";
-import { store } from "./store";
+import { store } from "../lib/store";
 
 interface LayoutProp {
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-export interface CartIemType {
+export interface CartIem {
   id: number;
   title: string;
   description: string;
@@ -7,4 +7,8 @@ export interface CartIemType {
   unitePrice: number;
   quantity: number;
   subTotal: number;
+}
+
+export interface CartState {
+  items: Array<CartIem>;
 }
