@@ -1,4 +1,4 @@
-import { AppDispatch, RootState } from "@/lib/store";
+import type { AppDispatch, RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 
 //Exporting Typed Hooks
