@@ -2,7 +2,7 @@ export interface CartIem {
   id: number;
   title: string;
   description: string;
-  category: "";
+  category: string;
   image: string;
   unitePrice: number;
   quantity: number;
