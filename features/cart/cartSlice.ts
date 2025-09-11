@@ -36,9 +36,9 @@ const cartSlice = createSlice({
           state.items[index].quantity -= 1;
           state.items[index].subTotal =
             state.items[index].unitePrice * state.items[index].quantity;
+        } else {
+          state.items.splice(index, 1);
         }
-      } else {
-        state.items.splice(index, 1);
       }
     },
   },

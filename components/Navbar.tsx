@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import Logo from "./ui/Logo";
