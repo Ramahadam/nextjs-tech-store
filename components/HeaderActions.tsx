@@ -1,7 +1,12 @@
-import { Heart, ShoppingCart, User } from "lucide-react";
+"use client";
+import { useAppSelector } from "@/app/hooks";
+import CartIcon from "@/features/cart/CartIcon";
+import { Heart, User } from "lucide-react";
 import Link from "next/link";
 
 export default function HeaderActions() {
+  const items = useAppSelector((state) => state.cart.items);
+
   return (
     <figure className="flex text-accent-foreground md:gap-4">
       <span>
@@ -11,7 +16,7 @@ export default function HeaderActions() {
         <User />
       </span>
       <Link href="/cart">
-        <ShoppingCart />
+        <CartIcon count={items.length} />
       </Link>
     </figure>
   );
