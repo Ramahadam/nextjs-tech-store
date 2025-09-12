@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import RatingDisplay from "../RatingDisplay";
-import WishlistButton from "../WishilistButton";
+import WishlistButton from "../../features/cart/WishilistButton";
 import Image from "next/image";
 import { FormatNumbers } from "@/lib/utils";
 import Link from "next/link";

@@ -9,9 +9,9 @@ export default function HeaderActions() {
 
   return (
     <figure className="flex text-accent-foreground md:gap-4">
-      <span>
+      <Link href="/wishlist">
         <Heart />
-      </span>
+      </Link>
       <span>
         <User />
       </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 import { useState } from "react";
 
 function WishlistButton() {

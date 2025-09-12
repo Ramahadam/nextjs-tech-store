@@ -1,7 +1,6 @@
-import ProductCard from "./product/ProductCard";
-import ProductList from "./product/ProductList";
-import { Button } from "./ui/button";
-import { TypographyH2 } from "./ui/TypographyH2";
+import ProductList from "../../components/product/ProductList";
+import { Button } from "../../components/ui/button";
+import { TypographyH2 } from "../../components/ui/TypographyH2";
 
 export default function WishList() {
   return (
