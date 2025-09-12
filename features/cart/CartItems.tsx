@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import Image from "next/image";
 import QuantityButton from "../../components/QuantityButton";
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Link from "next/link";
+import { removeFromCart } from "./cartSlice";
 
 export default function CartItems() {
   const items = useAppSelector((state) => state.cart.items);
   const totalAmount = items.reduce((acum, curr) => acum + curr.subTotal, 0);
+  const dispatch = useAppDispatch();
 
   const renderedItems =
     items.length > 0 ? (
@@ -37,7 +39,11 @@ export default function CartItems() {
             </div>
 
             <div className="flex flex-col items-center  text-[0.7rem]">
-              <Button variant="ghost" className="opacity-45 gap-0">
+              <Button
+                variant="ghost"
+                className="opacity-45 gap-0"
+                onClick={() => dispatch(removeFromCart(item.id))}
+              >
                 <Trash className="size-3 opacity" />
                 <span>Remove</span>
               </Button>

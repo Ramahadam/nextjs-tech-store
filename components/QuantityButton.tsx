@@ -1,7 +1,11 @@
 "use client";
 import { useAppDispatch } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
-import { addToCart, removeFromCart } from "@/features/cart/cartSlice";
+import {
+  addToCart,
+  decreaseItemQuantity,
+  increaseItemQuantity,
+} from "@/features/cart/cartSlice";
 import { CartIem } from "@/types/cart";
 import { Minus, Plus } from "lucide-react";
 
@@ -13,7 +17,7 @@ export default function QuantityButton({ ...item }: CartIem) {
       <Button
         size="icon"
         variant="ghost"
-        onClick={() => dispatch(removeFromCart(item))}
+        onClick={() => dispatch(decreaseItemQuantity(item.id))}
       >
         <Minus className="size-3" />
       </Button>
@@ -21,7 +25,7 @@ export default function QuantityButton({ ...item }: CartIem) {
       <Button
         size="icon"
         variant="ghost"
-        onClick={() => dispatch(addToCart(item))}
+        onClick={() => dispatch(increaseItemQuantity(item.id))}
       >
         <Plus className="size-3" />
       </Button>
