@@ -1,19 +1,24 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Button } from "../../components/ui/button";
 import { addToWishlist, removeFromWishlist } from "./wishlistSlice";
+import { CartIem } from "@/types/cart";
 
-function WishlistButton({ id }) {
+function WishlistButton({ ...selectedItem }: CartIem) {
+  const dispatch = useAppDispatch();
   const wishlist = useAppSelector((state) => state.wishlist);
-  const isInWhishlist = wishlist.items.some((item) => item.id === id);
+  const isInWhishlist = wishlist.items.some(
+    (wishlistItem) => wishlistItem.id === selectedItem.id
+  );
 
   const toggleWishlist = () => {
+    console.log("clicked");
     if (isInWhishlist) {
-      removeFromWishlist(id);
+      dispatch(removeFromWishlist(selectedItem.id));
     } else {
-      addToWishlist(id);
+      dispatch(addToWishlist(selectedItem));
     }
   };
 

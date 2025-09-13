@@ -17,7 +17,7 @@ import { useAppDispatch } from "@/app/hooks";
 import { addToCart } from "@/features/cart/cartSlice";
 
 function ProductCard(props: CartIem) {
-  const { image, title, description, subTotal } = props;
+  const { id, image, title, description, subTotal } = props;
   const dispatch = useAppDispatch();
 
   return (
@@ -36,7 +36,7 @@ function ProductCard(props: CartIem) {
           </figure>
         </Link>
         <CardAction className="absolute top-0 right-3 bg-white p-[0.25rem] rounded-full flex">
-          <WishlistButton />
+          <WishlistButton {...props} />
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col px-4">
