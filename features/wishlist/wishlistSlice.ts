@@ -20,10 +20,7 @@ const wishlishSlice = createSlice({
     },
 
     removeFromWishlist: (state, action: PayloadAction<number>) => {
-      const index = state.items.findIndex((item) => item.id === action.payload);
-      if (index) {
-        state.items.splice(index, 1);
-      }
+      state.items = state.items.filter((item) => item.id !== action.payload);
     },
 
     clearWishlist: (state) => {
