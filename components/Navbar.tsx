@@ -71,6 +71,11 @@ export default function Navbar() {
                   CCTV
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="https://react-hot-toast.com/" className="text-sm">
+                  https://react-hot-toast.com/
+                </Link>
+              </NavigationMenuItem>
 
               <NavigationMenuItem>
                 <article className="flex md:items-center flex-col space-y-4 md:space-y-0 md:space-x-8  items-center md:flex-row">
