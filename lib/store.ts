@@ -1,12 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "@/features/cart/cartSlice";
 import wishlistReducer from "@/features/wishlist/wishlistSlice";
+import { apiSlice } from "@/features/api/apiSlice";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
     wishlist: wishlistReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
 // Infer the type of `store`
@@ -19,3 +24,5 @@ export type AppDispatch = typeof store.dispatch;
 
 // Infer the root store
 export type RootState = ReturnType<typeof store.getState>;
+
+setupListeners(store.dispatch);

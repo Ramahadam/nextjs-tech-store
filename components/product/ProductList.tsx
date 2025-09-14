@@ -1,7 +1,6 @@
 "use client";
 import { CartIem, CartState } from "@/types/cart";
 import ProductCard from "./ProductCard";
-import { usePathname } from "next/navigation";
 import { products } from "@/lib/api";
 
 export default function ProductList({ items }: CartState) {

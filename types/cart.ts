@@ -1,4 +1,4 @@
-export interface CartIem {
+export interface Product {
   id: number;
   title: string;
   description: string;
@@ -9,6 +9,9 @@ export interface CartIem {
   subTotal: number;
 }
 
-export interface CartState {
-  items: Array<CartIem>;
+export interface Products {
+  items: Array<Product>;
 }
+export type CartIem = Product;
+
+export type CartState = Products;
