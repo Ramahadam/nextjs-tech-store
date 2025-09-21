@@ -26,14 +26,16 @@ function ProductCard(props: CartIem) {
       <CardHeader className="bg-accent py-4 rounded-md relative h-[12rem] items-center">
         <Link href="/products/1">
           <figure className="justify-self-center">
-            <Image
-              width={0}
-              height={0}
-              src={image}
-              sizes="vw"
-              alt={title}
-              className="w-[10rem]"
-            />
+            {image && (
+              <Image
+                width={0}
+                height={0}
+                src={image}
+                sizes="vw"
+                alt={title}
+                className="w-[10rem]"
+              />
+            )}
           </figure>
         </Link>
         <CardAction className="absolute top-0 right-3 bg-white p-[0.25rem] rounded-full flex">
