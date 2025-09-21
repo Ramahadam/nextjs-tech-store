@@ -17,7 +17,8 @@ import { useAppDispatch } from "@/app/hooks";
 import { addToCart } from "@/features/cart/cartSlice";
 
 function ProductCard(props: CartIem) {
-  const { id, image, title, description, subTotal } = props;
+  const { _id, images, title, description, subTotal } = props;
+  const image = images?.length ? images?.at(0) : "";
   const dispatch = useAppDispatch();
 
   return (

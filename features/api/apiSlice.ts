@@ -1,12 +1,12 @@
-import { Product } from "@/types/cart";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
+import { Products } from "@/types/cart";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const apiSlice = createApi({
-  reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:3000/api/v1" }),
+  reducerPath: "techstoreApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:3003/api/v1" }),
   endpoints: (builder) => ({
-    getAllProducts: builder.query<Product[], void>({
-      query: () => "/products",
+    getAllProducts: builder.query<Products, void>({
+      query: () => "products",
     }),
   }),
 });

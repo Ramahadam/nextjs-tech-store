@@ -1,9 +1,9 @@
 export interface Product {
-  id: number;
+  _id: number;
   title: string;
   description: string;
   category: string;
-  image: string;
+  images: Array<string> | undefined;
   unitePrice: number;
   quantity: number;
   subTotal: number;
