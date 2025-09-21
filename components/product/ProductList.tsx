@@ -7,7 +7,6 @@ import { useGetAllProductsQuery } from "@/features/api/apiSlice";
 export default function ProductList({ items }: CartState) {
   const { isLoading, error, data: allProducts } = useGetAllProductsQuery();
 
-  console.log(allProducts);
   if (isLoading) return <p>Loadding....</p>;
 
   const allItems = items ? items : allProducts?.data?.products;

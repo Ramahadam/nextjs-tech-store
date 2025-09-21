@@ -6,28 +6,35 @@ interface MetaPropsType {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-function getProductById(id: number) {
-  return null;
-}
-
 export async function generateMetadata(
   { params, searchParams }: MetaPropsType,
   parent: ResolvingMetadata
 ) {
-  const id = (await params).id;
+  const { id } = await params;
 
-  const product = await getProductById(2);
+  const result = await fetch(`${process.env.DEV_URL}/products/${id}`).then(
+    (res) => res.json()
+  );
+
+  if (result.status !== "success") {
+    return {
+      title: "Product",
+    };
+  }
+
+  const { title, description } = result.data.product;
 
   return {
-    title: "%PRODUCT_TITLE%",
-    description: "%PRODUCT_DESCRIPTION%",
+    title,
+    description,
   };
 }
 
 export default function Page({ params }: { params: { id: string } }) {
+  console.log(process.env.DEV_URL);
   return (
     <div>
-      <span>single product {params.id}</span>
+      <span>single product </span>
 
       <ProductDetails />
     </div>

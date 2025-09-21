@@ -1,4 +1,4 @@
-import { Products } from "@/types/cart";
+import { Product, Products } from "@/types/cart";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const apiSlice = createApi({
@@ -8,7 +8,10 @@ export const apiSlice = createApi({
     getAllProducts: builder.query<Products, void>({
       query: () => "products",
     }),
+    getProductById: builder.query<Product, string>({
+      query: (id) => `products/${id}`,
+    }),
   }),
 });
 
-export const { useGetAllProductsQuery } = apiSlice;
+export const { useGetAllProductsQuery, useGetProductByIdQuery } = apiSlice;
