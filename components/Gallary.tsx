@@ -10,7 +10,8 @@ export default function Gallary({ images }: ImagesType) {
     <div className="gallary flex flex-col gap-18 items-center ">
       <figure className="bg-white p-8">
         <Image
-          src={"/hp-laptop-0.png"}
+          priority
+          src={images?.at(0)}
           width={0}
           height={0}
           alt="image for laptop & desktop"
@@ -28,7 +29,8 @@ export default function Gallary({ images }: ImagesType) {
             } `}
           >
             <Image
-              src={`/${el}`}
+              priority
+              src={`${el}`}
               width={0}
               height={0}
               alt="image for laptop & desktop"

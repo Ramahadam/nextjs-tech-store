@@ -5,6 +5,7 @@ export default function Logo({ white = false }) {
     <div className=" relative">
       <Link href="/">
         <Image
+          priority
           width={180}
           height={100}
           src={white ? "/logo-white.png" : "/logo.png"}
