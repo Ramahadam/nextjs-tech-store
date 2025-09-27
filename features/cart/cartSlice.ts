@@ -21,6 +21,7 @@ const cartSlice = createSlice({
       } else {
         state.items.push({
           ...action.payload,
+          quantity: 1,
           subTotal: action.payload.unitePrice * action.payload.quantity,
         });
       }

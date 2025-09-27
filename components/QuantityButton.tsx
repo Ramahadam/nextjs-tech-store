@@ -11,7 +11,7 @@ import { Minus, Plus } from "lucide-react";
 
 export default function QuantityButton({ ...item }: CartIem) {
   const dispatch = useAppDispatch();
-
+  console.log(item);
   return (
     <div className="flex items-center border rounded-md justify-between w-fit h-8">
       <Button

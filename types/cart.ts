@@ -3,7 +3,7 @@ export interface Product {
   title: string;
   description: string;
   category: string;
-  images: Array<string> | undefined;
+  images: Array<string>;
   unitePrice: number;
   quantity: number;
   subTotal: number;

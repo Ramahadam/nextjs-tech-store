@@ -21,7 +21,7 @@ export default function CartItems() {
             <div className="flex gap-6 items-center">
               <figure className="bg-accent w-20 h-auto py-4 rounded-sm">
                 <Image
-                  src={item.image}
+                  src={item.images[0]}
                   alt={item.title}
                   width={0}
                   height={0}

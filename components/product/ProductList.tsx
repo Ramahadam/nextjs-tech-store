@@ -1,5 +1,5 @@
 "use client";
-import { CartIem, CartState, Product, Products } from "@/types/cart";
+import { CartIem, Product, Products } from "@/types/cart";
 import ProductCard from "./ProductCard";
 // import { products } from "@/lib/api";
 import { useGetAllProductsQuery } from "@/features/api/apiSlice";
