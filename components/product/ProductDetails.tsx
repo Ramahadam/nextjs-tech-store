@@ -12,7 +12,6 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function ProductDetails({ id }: { id: string }) {
   const { isLoading, data, error } = useGetProductByIdQuery(id);
-  const images = ["hp-laptop-0.png", "hp-laptop-1.png", "hp-laptop-2.png"];
 
   if (isLoading)
     return (
