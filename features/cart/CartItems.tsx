@@ -6,7 +6,7 @@ import Image from "next/image";
 import QuantityButton from "../../components/QuantityButton";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Link from "next/link";
-import { removeFromCart } from "./cartSlice";
+import { clearCart, removeFromCart } from "./cartSlice";
 
 export default function CartItems() {
   const items = useAppSelector((state) => state.cart.items);
@@ -82,7 +82,12 @@ export default function CartItems() {
 
             <p className="font-medium text-xs"> {totalAmount} AED</p>
           </div>
-          <Button className="self-end">Checkout</Button>
+          <div className="flex justify-end gap-4">
+            <Button variant="outline" onClick={() => dispatch(clearCart())}>
+              Clear cart
+            </Button>
+            <Button className="self-end">Checkout</Button>
+          </div>
         </footer>
       )}
     </article>
