@@ -30,9 +30,8 @@ export interface Product {
   specs?: LpatopSpecs | DesktopSpecs | CCTVSpecs;
 }
 
-export interface Products {
-  items: Array<Product>;
-}
+export type Products = Array<Product>;
+
 export type CartIem = Product;
 
 export type CartState = Products;

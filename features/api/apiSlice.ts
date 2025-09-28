@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface FetchedProducts {
   data: {
-    data: Products;
+    products: Products;
   };
 }
 
