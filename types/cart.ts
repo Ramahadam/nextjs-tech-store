@@ -4,7 +4,7 @@ export interface Product {
   description: string;
   category: string;
   images: Array<string>;
-  unitePrice: number;
+  unitPrice: number;
   quantity: number;
   subTotal: number;
 }

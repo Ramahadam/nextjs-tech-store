@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Format numbers  e.g 100000 => 100,000.00
-export function FormatNumbers(num: number) {
+export function formatNumbers(num: number) {
   const val = num?.toLocaleString(
     undefined // leave undefined to use the visitor's browser
     // locale or a string like 'en-US' to override it.

@@ -13,6 +13,8 @@ export default function CartItems() {
   const totalAmount = items.reduce((acum, curr) => acum + curr.subTotal, 0);
   const dispatch = useAppDispatch();
 
+  console.log(items);
+
   const renderedItems =
     items.length > 0 ? (
       items?.map((item) => (

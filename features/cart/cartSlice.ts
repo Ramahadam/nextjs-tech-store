@@ -17,12 +17,12 @@ const cartSlice = createSlice({
       if (existingItem) {
         existingItem.quantity += 1;
         existingItem.subTotal =
-          action.payload.unitePrice * existingItem.quantity;
+          action.payload.unitPrice * existingItem.quantity;
       } else {
         state.items.push({
           ...action.payload,
           quantity: 1,
-          subTotal: action.payload.unitePrice * action.payload.quantity,
+          subTotal: action.payload.unitPrice,
         });
       }
     },
@@ -34,7 +34,7 @@ const cartSlice = createSlice({
 
       if (existingItem) {
         existingItem.quantity += 1;
-        existingItem.subTotal = existingItem.unitePrice * existingItem.quantity;
+        existingItem.subTotal = existingItem.unitPrice * existingItem.quantity;
       }
     },
 
@@ -45,7 +45,7 @@ const cartSlice = createSlice({
         if (state.items[index] && state.items[index]?.quantity > 1) {
           state.items[index].quantity -= 1;
           state.items[index].subTotal =
-            state.items[index].unitePrice * state.items[index].quantity;
+            state.items[index].unitPrice * state.items[index].quantity;
         } else {
           state.items.splice(index, 1);
         }

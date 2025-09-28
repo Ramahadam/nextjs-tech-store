@@ -10,14 +10,14 @@ import { Button } from "../ui/button";
 import RatingDisplay from "../RatingDisplay";
 import WishlistButton from "../../features/wishlist/WishilistButton";
 import Image from "next/image";
-import { FormatNumbers } from "@/lib/utils";
+import { formatNumbers } from "@/lib/utils";
 import Link from "next/link";
 import { CartIem } from "@/types/cart";
 import { useAppDispatch } from "@/app/hooks";
 import { addToCart } from "@/features/cart/cartSlice";
 
 function ProductCard(props: CartIem) {
-  const { id, images, title, description, subTotal } = props;
+  const { id, images, title, description, unitPrice } = props;
   const image = images?.length ? images?.at(0) : "";
   const dispatch = useAppDispatch();
 
@@ -28,12 +28,11 @@ function ProductCard(props: CartIem) {
           <figure className="justify-self-center">
             {image && (
               <Image
-                width={0}
-                height={0}
+                fill
                 src={image}
                 sizes="vw"
                 alt={title}
-                className="w-[10rem]"
+                className="object-contain w-[10rem]"
               />
             )}
           </figure>
@@ -45,16 +44,20 @@ function ProductCard(props: CartIem) {
       <CardContent className="flex flex-col px-4">
         <div className="flex items-center justify-between font-bold mb-2">
           <Link href={`/products/${id}`}>{title}</Link>
-          <p className="">{FormatNumbers(subTotal)} AED</p>
+          <p className="">{formatNumbers(unitPrice)} AED</p>
         </div>
-        <p className="font-normal text-p16 leading-6 mb-4">{description}</p>
+        <p className="font-normal text-p16 leading-6 mb-4">
+          {description ?? ""}
+        </p>
         <RatingDisplay />
       </CardContent>
       <CardFooter className="px-2">
         <Button
           variant="outline"
           className="border-primary rounded-full uppercase "
-          onClick={() => dispatch(addToCart(props))}
+          onClick={() =>
+            dispatch(addToCart({ ...props, unitPrice: Number(unitPrice) }))
+          }
         >
           Add to cart
         </Button>
