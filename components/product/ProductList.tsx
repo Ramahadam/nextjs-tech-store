@@ -6,7 +6,7 @@ import { SkeletonCustom } from "../SkeletonCustom";
 
 export default function ProductList() {
   const { isLoading, error, data } = useGetAllProductsQuery();
-
+  console.log(data);
   const products = data?.data.products;
 
   if (isLoading) {
