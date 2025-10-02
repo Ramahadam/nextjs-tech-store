@@ -30,6 +30,13 @@ export async function generateMetadata(
 
   const { title, description } = result.data.product;
 
+  if (!title && !description) {
+    return {
+      title: "product",
+      description: "product",
+    };
+  }
+
   return {
     title,
     description,

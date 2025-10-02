@@ -6,26 +6,49 @@ import RatingDisplay from "../RatingDisplay";
 import Gallary from "../Gallary";
 import WishlistButton from "../../features/wishlist/WishilistButton";
 import { Button } from "../ui/button";
-import { ShoppingCart } from "lucide-react";
+import { AlertCircleIcon, ShoppingCart } from "lucide-react";
 import { useGetProductByIdQuery } from "@/features/api/apiSlice";
 import { Skeleton } from "../ui/skeleton";
+import { Message } from "../Message";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 export default function ProductDetails({ id }: { id: string }) {
   const { isLoading, data, error } = useGetProductByIdQuery(id);
+  if (error) {
+    if ("status" in error) {
+      const fetchedError = error as FetchBaseQueryError;
+      let errMsg: string = "unknow error";
+
+      if (fetchedError.data && typeof fetchedError.data === "object") {
+        const serverError = fetchedError.data as { data: { error: string } };
+        errMsg = serverError.data.error ?? JSON.stringify(fetchedError.data);
+      }
+      return (
+        <Message
+          title={`${errMsg}`}
+          variant="destructive"
+          icon={AlertCircleIcon}
+        >
+          <p>{errMsg}</p>
+        </Message>
+      );
+    }
+
+    return <div>{error.message}</div>;
+  }
 
   if (isLoading)
     return (
       <div className="w-full">
-        <Skeleton />;
+        <Skeleton />
       </div>
     );
 
   const { product } = data?.data || {};
-  console.log(product);
 
   return (
     <article className="grid sm:grid-cols-2 bg-accent w-full py-10">
-      <Gallary images={product.images} />
+      <Gallary images={product?.images} />
 
       <div className="">
         <TypographyH2>{product.title}</TypographyH2>
