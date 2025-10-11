@@ -27,7 +27,7 @@ const cartSlice = createSlice({
       }
     },
 
-    increaseItemQuantity: (state, action: PayloadAction<number>) => {
+    increaseItemQuantity: (state, action: PayloadAction<string>) => {
       const existingItem = state.items.find(
         (item) => item.id === action.payload
       );
@@ -38,7 +38,7 @@ const cartSlice = createSlice({
       }
     },
 
-    decreaseItemQuantity: (state, action: PayloadAction<number>) => {
+    decreaseItemQuantity: (state, action: PayloadAction<string>) => {
       const index = state.items.findIndex((item) => item.id === action.payload);
 
       if (index !== -1) {
@@ -52,7 +52,7 @@ const cartSlice = createSlice({
       }
     },
 
-    removeFromCart: (state, action: PayloadAction<number>) => {
+    removeFromCart: (state, action: PayloadAction<string>) => {
       const index = state.items.findIndex((item) => item.id === action.payload);
 
       if (index !== -1) {

@@ -2,7 +2,6 @@
 import { useAppDispatch } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
 import {
-  addToCart,
   decreaseItemQuantity,
   increaseItemQuantity,
 } from "@/features/cart/cartSlice";
