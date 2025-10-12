@@ -4,8 +4,11 @@ import wishlistReducer from "@/features/wishlist/wishlistSlice";
 import { apiSlice } from "@/features/api/apiSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
+import userReuceer from "@/features/user/userSlice";
+
 export const store = configureStore({
   reducer: {
+    user: userReuceer,
     cart: cartReducer,
     wishlist: wishlistReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
