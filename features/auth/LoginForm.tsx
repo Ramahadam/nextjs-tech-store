@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/lib/firebase/auth";
 import { useAppDispatch } from "@/app/hooks";
+import { useRouter } from "next/navigation";
 
 interface FormLoginType {
   email: string;
@@ -30,15 +31,18 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   async function handelLoginUser(formdata: FormData) {
     const email = formdata.get("email") as string;
     const password = formdata.get("password") as string;
 
     const user = await loginUser(email, password);
-    const token = user.accessToken;
+    const token = await user.getIdToken();
 
     dispatch(setCredntials(token));
+
+    router.push("/");
   }
 
   return (
