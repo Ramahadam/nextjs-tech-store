@@ -1,14 +1,11 @@
-import firebaseApp from "@/lib/firebase/config";
 import {
-  getAuth,
+  auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-} from "firebase/auth";
+} from "./config";
 
-const auth = getAuth();
-
-export const registerUser = async (email, password) => {
+export const registerUser = async (email: string, password: string) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -25,7 +22,7 @@ export const registerUser = async (email, password) => {
   }
 };
 
-export const loginUser = async (email, password) => {
+export const loginUser = async (email: string, password: string) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -34,8 +31,8 @@ export const loginUser = async (email, password) => {
     );
     return userCredential.user;
   } catch (error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
+    const errorCode = error?.code;
+    const errorMessage = error?.message;
 
     throw { errorCode, errorMessage };
   }

@@ -1,6 +1,8 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { User } from "firebase/auth";
+import { setCredntials } from "@/features/auth/authSlice";
 import {
   Card,
   CardContent,
@@ -16,17 +18,27 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/lib/firebase/auth";
+import { useAppDispatch } from "@/app/hooks";
+
+interface FormLoginType {
+  email: string;
+  password: string;
+}
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const dispatch = useAppDispatch();
+
   async function handelLoginUser(formdata: FormData) {
-    const email = formdata.get("email");
-    const password = formdata.get("password");
+    const email = formdata.get("email") as string;
+    const password = formdata.get("password") as string;
 
     const user = await loginUser(email, password);
-    console.log(user);
+    const token = user.accessToken;
+
+    dispatch(setCredntials(token));
   }
 
   return (
