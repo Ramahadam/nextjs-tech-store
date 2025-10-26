@@ -32,7 +32,6 @@ export function SignupForm({
 
     try {
       const user = await registerUser(email, password);
-      console.log(user);
     } catch (error) {
       //Error message=> Firebase: Password should be at least 6 characters (auth/weak-password).
       setErrMsg(() => firebaseErrorMessages(error.code));

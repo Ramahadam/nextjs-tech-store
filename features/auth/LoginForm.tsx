@@ -1,8 +1,7 @@
 "use client";
 import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { User } from "firebase/auth";
-import { setCredntials } from "@/features/auth/authSlice";
+
 import {
   Card,
   CardContent,
@@ -18,7 +17,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/lib/firebase/auth";
-import { useAppDispatch } from "@/app/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -31,7 +29,6 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const [errMsg, setErrorMsg] = useState("");
 
@@ -44,8 +41,6 @@ export function LoginForm({
       const token = await user?.getIdToken();
 
       if (token) {
-        dispatch(setCredntials(token));
-
         router.push("/");
       }
     } catch (error) {

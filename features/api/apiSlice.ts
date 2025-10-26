@@ -11,10 +11,9 @@ interface FetchedProducts {
 export const apiSlice = createApi({
   reducerPath: "techstoreApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://127.0.0.1:3003/api/v1",
+    baseUrl: process.env.NEXT_PUBLIC_DEV_URL,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
-      console.log(token);
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }

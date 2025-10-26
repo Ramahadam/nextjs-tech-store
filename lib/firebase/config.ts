@@ -1,11 +1,15 @@
 // Import the functions you need from the SDKs you need
+import { useAppDispatch } from "@/app/hooks";
+import { setCredntials } from "@/features/auth/authSlice";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
+import { store } from "../store";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
