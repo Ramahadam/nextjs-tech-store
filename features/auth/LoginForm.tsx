@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { loginUser } from "@/lib/firebase/auth";
 import { useAppDispatch } from "@/app/hooks";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface FormLoginType {
   email: string;
@@ -32,17 +33,30 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [errMsg, setErrorMsg] = useState("");
 
   async function handelLoginUser(formdata: FormData) {
     const email = formdata.get("email") as string;
     const password = formdata.get("password") as string;
 
-    const user = await loginUser(email, password);
-    const token = await user.getIdToken();
+    try {
+      const user = await loginUser(email, password);
+      const token = await user?.getIdToken();
 
-    dispatch(setCredntials(token));
+      if (token) {
+        dispatch(setCredntials(token));
 
-    router.push("/");
+        router.push("/");
+      }
+    } catch (error) {
+      //Error code => auth/invalid-credential
+
+      const msg = error.code.split("/");
+      console.log(msg);
+      if (msg.includes("invalid-credential")) {
+        setErrorMsg(() => "Invalide username or password");
+      }
+    }
   }
 
   return (
@@ -90,6 +104,7 @@ export function LoginForm({
               </Field>
             </FieldGroup>
           </form>
+          <p>{errMsg ? <span>{errMsg}</span> : ""}</p>
         </CardContent>
       </Card>
     </div>
