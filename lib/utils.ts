@@ -19,6 +19,7 @@ export function formatNumbers(num: number) {
 
 export const firebaseErrorMessages = (code: string) => {
   const errorMsg: { [key: string]: string } = {
+    "auth/invalid-credential": "Invalid username or password",
     "auth/weak-password": "Password should be at least 6 characters.",
     "auth/email-already-in-use": "Email is already registered.",
     "auth/invalid-email": "Email is not valid.",

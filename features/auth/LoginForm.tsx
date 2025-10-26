@@ -98,9 +98,11 @@ export function LoginForm({
                   Don&apos;t have an account? <a href="#">Sign up</a>
                 </FieldDescription>
               </Field>
+              <FieldDescription className="text-red-400">
+                {errMsg ? <span>{errMsg}</span> : ""}
+              </FieldDescription>
             </FieldGroup>
           </form>
-          <p>{errMsg ? <span>{errMsg}</span> : ""}</p>
         </CardContent>
       </Card>
     </div>
