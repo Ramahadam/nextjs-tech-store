@@ -16,3 +16,15 @@ export function formatNumbers(num: number) {
 
   return val;
 }
+
+export const firebaseErrorMessages = (code: string) => {
+  const errorMsg: { [key: string]: string } = {
+    "auth/weak-password": "Password should be at least 6 characters.",
+    "auth/email-already-in-use": "Email is already registered.",
+    "auth/invalid-email": "Email is not valid.",
+    "auth/user-not-found": "No user found with this email.",
+    "auth/wrong-password": "Incorrect password.",
+  };
+
+  return errorMsg[code];
+};

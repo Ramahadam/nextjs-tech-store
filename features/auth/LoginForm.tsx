@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { User } from "firebase/auth";
 import { setCredntials } from "@/features/auth/authSlice";
@@ -51,11 +51,7 @@ export function LoginForm({
     } catch (error) {
       //Error code => auth/invalid-credential
 
-      const msg = error.code.split("/");
-      console.log(msg);
-      if (msg.includes("invalid-credential")) {
-        setErrorMsg(() => "Invalide username or password");
-      }
+      setErrorMsg(() => firebaseErrorMessages(error.code));
     }
   }
 

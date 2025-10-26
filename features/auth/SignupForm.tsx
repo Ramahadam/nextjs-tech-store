@@ -1,6 +1,6 @@
 "use client";
 import { registerUser } from "@/lib/firebase/auth";
-import { cn } from "@/lib/utils";
+import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,15 +22,22 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  async function handleSignup(formData: FormData) {
-    const username = formData.get("username");
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const confirmPassword = formData.get("confirm-password");
-    console.log(email, password);
+  const [errMsg, setErrMsg] = useState("");
 
-    const user = await registerUser(email, password);
-    console.log(user);
+  async function handleSignup(formData: FormData) {
+    const username = formData.get("username") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirm-password");
+
+    try {
+      const user = await registerUser(email, password);
+      console.log(user);
+    } catch (error) {
+      //Error message=> Firebase: Password should be at least 6 characters (auth/weak-password).
+
+      setErrMsg(() => firebaseErrorMessages(error.code));
+    }
   }
 
   return (
@@ -88,8 +95,8 @@ export function SignupForm({
                     />
                   </Field>
                 </Field>
-                <FieldDescription>
-                  Must be at least 8 characters long.
+                <FieldDescription className="text-red-400">
+                  {errMsg ? errMsg : ""}
                 </FieldDescription>
               </Field>
               <Field>
