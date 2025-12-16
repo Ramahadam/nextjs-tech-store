@@ -14,9 +14,6 @@ function WishlistButton({ ...selectedItem }: CartIem) {
   );
 
   const toggleWishlist = () => {
-    console.log(isInWhishlist);
-    console.log(selectedItem.id);
-
     if (isInWhishlist) {
       dispatch(removeFromWishlist(selectedItem.id));
     } else {

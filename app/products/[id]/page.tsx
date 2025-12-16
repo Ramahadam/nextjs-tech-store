@@ -1,10 +1,9 @@
 import ProductDetails from "@/components/product/ProductDetails";
-import { ResolvingMetadata } from "next";
-import { cache, use } from "react";
+import { cache } from "react";
 
 interface MetaPropsType {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export const getProduct = cache(async (id: string) => {
@@ -15,11 +14,8 @@ export const getProduct = cache(async (id: string) => {
   return res;
 });
 
-export async function generateMetadata(
-  { params, searchParams }: MetaPropsType,
-  parent: ResolvingMetadata
-) {
-  const { id } = await params;
+export async function generateMetadata({ params }: MetaPropsType) {
+  const { id } = params;
 
   const result = await getProduct(id);
 
@@ -45,12 +41,10 @@ export async function generateMetadata(
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const id = (await params).id;
+  const id = params.id;
 
   return (
     <div>
-      <span>single product </span>
-
       <ProductDetails id={id} />
     </div>
   );
