@@ -1,23 +1,22 @@
 import ProductDetails from "@/components/product/ProductDetails";
-import { cache } from "react";
 
 interface MetaPropsType {
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export const getProduct = cache(async (id: string) => {
+export const getProduct = async (id: string) => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_DEV_URL}/products/${id}`
   ).then((res) => res.json());
 
+  if (!res.ok) throw new Error("Failed to fetch the product");
+
   return res;
-});
+};
 
 export async function generateMetadata({ params }: MetaPropsType) {
-  const { id } = params;
-
-  const result = await getProduct(id);
+  const result = await getProduct(params.id);
 
   if (result.status !== "success") {
     return {
@@ -27,25 +26,16 @@ export async function generateMetadata({ params }: MetaPropsType) {
 
   const { title, description } = result.data.product;
 
-  if (!title && !description) {
-    return {
-      title: "product",
-      description: "product",
-    };
-  }
-
   return {
-    title,
-    description,
+    title: title || "Product",
+    description: description || "Description",
   };
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const id = params.id;
-
   return (
     <div>
-      <ProductDetails id={id} />
+      <ProductDetails id={params.id} />
     </div>
   );
 }
