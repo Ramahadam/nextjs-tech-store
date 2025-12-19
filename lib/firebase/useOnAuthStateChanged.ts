@@ -11,10 +11,9 @@ export function useOnAuthStateChanged() {
       if (user) {
         user.getIdToken().then((token) => {
           store.dispatch(setCredntials(token));
-          console.log(token);
         });
       } else {
-        console.log("User does not exists ");
+        console.log("There is no logged in user ");
       }
     });
 

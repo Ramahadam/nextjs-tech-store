@@ -19,7 +19,7 @@ export default function ClientWrapper({ children }: LayoutProp) {
   return (
     <div>
       <Provider store={store}>
-        <Announcement />
+        {/* <Announcement /> */}
         <Navbar />
         <main className="p-4">{children}</main>
         <Footer />

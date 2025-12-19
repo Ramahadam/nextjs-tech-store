@@ -39,8 +39,8 @@ export function LoginForm({
     try {
       const user = await loginUser(email, password);
       const token = await user?.getIdToken();
-
       if (token) {
+        console.log(token);
         router.push("/");
       }
     } catch (error) {

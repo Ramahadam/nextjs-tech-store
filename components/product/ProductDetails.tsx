@@ -21,7 +21,7 @@ export default function ProductDetails({ id }: { id: string }) {
 
       if (fetchedError.data && typeof fetchedError.data === "object") {
         const serverError = fetchedError.data as { data: { error: string } };
-        errMsg = serverError.data.error ?? JSON.stringify(fetchedError.data);
+        errMsg = serverError?.data?.error ?? JSON.stringify(fetchedError.data);
       }
       return (
         <Message
