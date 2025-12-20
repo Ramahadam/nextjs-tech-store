@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { loginUser } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
+import { useSyncUserMutation } from "../api/apiSlice";
 
 interface FormLoginType {
   email: string;
@@ -31,6 +33,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter();
   const [errMsg, setErrorMsg] = useState("");
+  const [syncUser] = useSyncUserMutation();
 
   async function handelLoginUser(formdata: FormData) {
     const email = formdata.get("email") as string;
@@ -40,13 +43,17 @@ export function LoginForm({
       const user = await loginUser(email, password);
       const token = await user?.getIdToken();
       if (token) {
-        console.log(token);
-        router.push("/");
+        const user = await syncUser(token);
+
+        console.log(user);
+
+        // router.push("/");
       }
     } catch (error) {
       //Error code => auth/invalid-credential
 
       setErrorMsg(() => firebaseErrorMessages(error.code));
+      console.log(errMsg);
     }
   }
 
@@ -68,6 +75,7 @@ export function LoginForm({
                   id="email"
                   name="email"
                   type="email"
+                  value="test@gmail.com"
                   placeholder="m@example.com"
                   required
                 />
@@ -82,7 +90,13 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required name="password" />
+                <Input
+                  id="password"
+                  type="password"
+                  value="test1234"
+                  required
+                  name="password"
+                />
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
@@ -90,7 +104,8 @@ export function LoginForm({
                   Login with Google
                 </Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
+                  Don&apos;t have an account?{" "}
+                  <Link href="/singup">Sign up</Link>
                 </FieldDescription>
               </Field>
               <FieldDescription className="text-red-400">
