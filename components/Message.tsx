@@ -8,10 +8,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ReactNode } from "react";
 
 interface MessageType {
-  title: string;
+  title?: string;
   variant: "destructive" | "default";
   icon?: LucideIcon;
-  children: ReactNode;
+  className?: string;
+  children?: ReactNode;
 }
 
 export function Message({
@@ -19,9 +20,10 @@ export function Message({
   icon: IconCompoenent,
   variant = "default",
   children,
+  className,
 }: MessageType) {
   const renderedMessage = (
-    <Alert variant={variant}>
+    <Alert variant={variant} className={className}>
       {IconCompoenent && <IconCompoenent />}
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{children}</AlertDescription>

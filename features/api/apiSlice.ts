@@ -8,6 +8,12 @@ interface FetchedProducts {
   };
 }
 
+interface UserProfile {
+  data: {
+    userId: string;
+  };
+}
+
 export const apiSlice = createApi({
   reducerPath: "techstoreApi",
   baseQuery: fetchBaseQuery({
@@ -22,6 +28,15 @@ export const apiSlice = createApi({
     },
   }),
   endpoints: (builder) => ({
+    syncUser: builder.mutation({
+      query: (token: string) => ({
+        url: "/auth/sync",
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
     getAllProducts: builder.query<FetchedProducts, void>({
       query: () => "products",
     }),
@@ -31,4 +46,8 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useGetAllProductsQuery, useGetProductByIdQuery } = apiSlice;
+export const {
+  useGetAllProductsQuery,
+  useGetProductByIdQuery,
+  useSyncUserMutation,
+} = apiSlice;

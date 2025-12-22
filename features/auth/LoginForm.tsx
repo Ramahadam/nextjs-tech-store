@@ -15,14 +15,18 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
+  FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { loginUser } from "@/lib/firebase/auth";
+import { loginUser, singupWithGoogle } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Message } from "@/components/Message";
 import { LockKeyholeIcon } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { useSyncUserMutation } from "../api/apiSlice";
 
 type LoginInputs = {
   email: string;
@@ -34,7 +38,8 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const [errMsgFirebase, setErrMsgFirebase] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [syncUser] = useSyncUserMutation();
 
   const {
     register,
@@ -54,84 +59,138 @@ export function LoginForm({
       }
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setErrMsgFirebase(() => firebaseErrorMessages(err.code));
+        setAuthError(() => firebaseErrorMessages(err.code));
       } else {
-        setErrMsgFirebase("Unexpected error occurred.");
+        setAuthError("Unexpected error occurred.");
       }
     }
   };
 
+  async function handleSignupWithGoogle() {
+    const res = await singupWithGoogle();
+
+    // If the user is created in firebase
+    if (res?.token) {
+      const user = await syncUser(res?.token);
+
+      console.log(user);
+    }
+  }
+
+  console.log(errors);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(handelLoginUser)}>
-            <div>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  {...register("email", { required: true })}
-                />
-                {errors.email && (
-                  <Alert>
-                    <AlertDescription>errors.email</AlertDescription>
-                  </Alert>
-                )}
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  {...register("password", { required: true, minLength: 6 })}
-                />
-                {errors.password && (
-                  <Alert>
-                    <AlertDescription>errors.email</AlertDescription>
-                  </Alert>
-                )}
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
-                <Button variant="outline" type="button">
-                  Login with Google
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
-                </FieldDescription>
-              </Field>
-              <div>
-                {errMsgFirebase && (
-                  <Message
-                    title={`Oops could not login!`}
-                    variant="destructive"
-                    icon={LockKeyholeIcon}
-                  >
-                    <p>{errMsgFirebase}</p>
-                  </Message>
-                )}
+      <Card className="overflow-hidden p-0">
+        <CardContent className="grid p-0 md:grid-cols-2 md:min-h-[40rem]">
+          <div className="flex items-center justify-center ">
+            <form onSubmit={handleSubmit(handelLoginUser)}>
+              <div className="flex flex-col items-center gap-1 text-center">
+                <h1 className="text-2xl font-bold">Login to your account</h1>
+                <p className="text-muted-foreground text-sm text-balance">
+                  Enter your email below to login to your account
+                </p>
               </div>
-            </div>
-          </form>
+              <div className="p-6 md:p-8 md:max-w-[100%] ">
+                <Field>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                    onFocus={() => setAuthError("")}
+                    {...register("email", { required: "Email is required" })}
+                  />
+                  {errors.email?.message && (
+                    <span className="text-red-400 text-sm">
+                      {errors.email.message}
+                    </span>
+                  )}
+                </Field>
+                <Field>
+                  <div className="flex items-center mt-4">
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    onFocus={() => setAuthError("")}
+                    required
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must be at least 6 characters",
+                      },
+                    })}
+                  />
+                </Field>
+                <Field className="mt-4">
+                  <Button type="submit">Login</Button>
+                  <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                    Or continue with
+                  </FieldSeparator>
+                  <Field className="grid grid-cols-1 gap-4">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      onClick={() => handleSignupWithGoogle()}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      <span className="text-sm">Continue with Google</span>
+                    </Button>
+                  </Field>
+                  <FieldDescription className="text-center flex justify-between">
+                    <span>
+                      {" "}
+                      Don&apos;t have an account?{" "}
+                      <Link href="/singup">Sign up</Link>
+                    </span>
+                    <span>
+                      <a
+                        href="#"
+                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                      >
+                        Forgot your password?
+                      </a>
+                    </span>
+                  </FieldDescription>
+                </Field>
+                <div className="relative h-16 overflow-hidden mt-4">
+                  {authError && (
+                    <Message
+                      className="bg-red-200 text-black absolute inset-0 transition:[height] duration-700"
+                      title={`Oops could not login!`}
+                      variant="default"
+                      icon={LockKeyholeIcon}
+                    >
+                      <p className=" text-black ">
+                        {authError && <span> {authError}</span>}
+                      </p>
+                    </Message>
+                  )}
+                </div>
+              </div>
+            </form>
+          </div>
+          <div className="relative hidden md:block ">
+            <Image
+              src="/person-using-laptop.jpg"
+              alt="A person using laptop"
+              className=" h-full w-full object-cover  grayscale-75"
+              width={500}
+              height={500}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>
