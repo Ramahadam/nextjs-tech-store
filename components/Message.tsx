@@ -29,7 +29,7 @@ export function Message({
   );
 
   return (
-    <div className="grid w-full max-w-xl items-start gap-4">
+    <div className="grid w-full max-w-xl items-start gap-4 mt-4">
       {renderedMessage}
     </div>
   );

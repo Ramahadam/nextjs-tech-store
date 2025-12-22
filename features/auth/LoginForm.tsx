@@ -1,7 +1,8 @@
 "use client";
 import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
+import { useForm, SubmitHandler } from "react-hook-form";
+import { FirebaseError } from "firebase/app";
 import {
   Card,
   CardContent,
@@ -19,36 +20,46 @@ import { Input } from "@/components/ui/input";
 import { loginUser } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Message } from "@/components/Message";
+import { LockKeyholeIcon } from "lucide-react";
 
-interface FormLoginType {
+type LoginInputs = {
   email: string;
   password: string;
-}
+};
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const [errMsg, setErrorMsg] = useState("");
+  const [errMsgFirebase, setErrMsgFirebase] = useState("");
 
-  async function handelLoginUser(formdata: FormData) {
-    const email = formdata.get("email") as string;
-    const password = formdata.get("password") as string;
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<LoginInputs>();
 
+  const handelLoginUser: SubmitHandler<LoginInputs> = async (data) => {
     try {
+      const { email, password } = data;
+
       const user = await loginUser(email, password);
       const token = await user?.getIdToken();
       if (token) {
-        console.log(token);
         router.push("/");
       }
-    } catch (error) {
-      //Error code => auth/invalid-credential
-
-      setErrorMsg(() => firebaseErrorMessages(error.code));
+    } catch (err) {
+      if (err instanceof FirebaseError) {
+        setErrMsgFirebase(() => firebaseErrorMessages(err.code));
+      } else {
+        setErrMsgFirebase("Unexpected error occurred.");
+      }
     }
-  }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -60,17 +71,22 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handelLoginUser}>
-            <FieldGroup>
+          <form onSubmit={handleSubmit(handelLoginUser)}>
+            <div>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
+                  {...register("email", { required: true })}
                 />
+                {errors.email && (
+                  <Alert>
+                    <AlertDescription>errors.email</AlertDescription>
+                  </Alert>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -82,7 +98,17 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required name="password" />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  {...register("password", { required: true, minLength: 6 })}
+                />
+                {errors.password && (
+                  <Alert>
+                    <AlertDescription>errors.email</AlertDescription>
+                  </Alert>
+                )}
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
@@ -93,10 +119,18 @@ export function LoginForm({
                   Don&apos;t have an account? <a href="#">Sign up</a>
                 </FieldDescription>
               </Field>
-              <FieldDescription className="text-red-400">
-                {errMsg ? <span>{errMsg}</span> : ""}
-              </FieldDescription>
-            </FieldGroup>
+              <div>
+                {errMsgFirebase && (
+                  <Message
+                    title={`Oops could not login!`}
+                    variant="destructive"
+                    icon={LockKeyholeIcon}
+                  >
+                    <p>{errMsgFirebase}</p>
+                  </Message>
+                )}
+              </div>
+            </div>
           </form>
         </CardContent>
       </Card>

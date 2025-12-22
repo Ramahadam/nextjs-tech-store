@@ -27,5 +27,5 @@ export const firebaseErrorMessages = (code: string) => {
     "auth/wrong-password": "Incorrect password.",
   };
 
-  return errorMsg[code];
+  return errorMsg[code] ?? "Authenitcation failed. Please try again.";
 };

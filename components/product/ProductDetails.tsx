@@ -25,7 +25,7 @@ export default function ProductDetails({ id }: { id: string }) {
       }
       return (
         <Message
-          title={`${errMsg}`}
+          title={`Oops an error occur`}
           variant="destructive"
           icon={AlertCircleIcon}
         >
