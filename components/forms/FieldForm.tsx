@@ -38,7 +38,8 @@ export function FieldForm<TFormValues extends FieldValues>({
         aria-describedby={error ? `${String(name)}-error` : undefined}
         className={cn(
           error?.message &&
-            "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50 focus-visible:ring-[3px]"
+            "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50 focus-visible:ring-[3px]",
+          "placeholder:text-sm md:placeholder:text-md text-sm md:text-md"
         )}
         onFocus={onFocus}
         {...register(name as never, { required: `${label} is required!` })}

@@ -81,8 +81,8 @@ export function LoginForm({
   console.log(errors);
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0">
+    <div className={cn("flex flex-col", className)} {...props}>
+      <Card className="overflow-hidden md:p-0 pt-6">
         <CardContent className="grid p-0 md:grid-cols-2 md:min-h-[45rem]">
           <div className="flex items-center justify-center ">
             <form
@@ -90,12 +90,14 @@ export function LoginForm({
               className="md:w-[80%]"
             >
               <div className="flex flex-col items-center gap-1 text-center">
-                <h1 className="text-2xl font-bold">Login to your account</h1>
+                <h1 className="md:text-2xl   font-bold">
+                  Login to your account
+                </h1>
                 <p className="text-muted-foreground text-sm text-balance mt-2">
                   Enter your email below to login to your account
                 </p>
               </div>
-              <div className="p-6 md:p-8 md:max-w-[100%] flex flex-col">
+              <div className="p-8 md:max-w-[100%] flex flex-col">
                 <FieldForm<LoginInputs>
                   name="email"
                   label="Email"
@@ -147,22 +149,27 @@ export function LoginForm({
                     <span>
                       <a
                         href="#"
-                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                        className="ml-auto inline-block text-sm   underline-offset-4 hover:underline"
                       >
                         Forgot your password?
                       </a>
                     </span>
                   </FieldDescription>
                 </Field>
-                <div className="relative h-16 overflow-hidden mt-4">
+                <div className="relative h-16 overflow-hidden mt-4 -top-16 md:top-0">
                   {authError && (
                     <Message
                       className="bg-red-200 text-black absolute inset-0 transition-all duration-300"
                       title={`Oops could not login!`}
                       variant="default"
-                      icon={XCircle}
                     >
                       <p className=" text-black ">
+                        <button
+                          className="absolute right-4 top-4 cursor-pointer"
+                          onClick={() => setAuthError("")}
+                        >
+                          <XCircle />
+                        </button>
                         {authError && <span> {authError}</span>}
                       </p>
                     </Message>
