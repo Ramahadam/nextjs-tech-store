@@ -23,15 +23,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Message } from "@/components/Message";
-import { LockKeyholeIcon } from "lucide-react";
+import { Info, LockKeyholeIcon, Mail, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSyncUserMutation } from "../api/apiSlice";
+import { FieldForm } from "@/components/forms/FieldForm";
 
-type LoginInputs = {
+export interface LoginInputs {
   email: string;
   password: string;
-};
+}
 
 export function LoginForm({
   className,
@@ -82,53 +83,41 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2 md:min-h-[40rem]">
+        <CardContent className="grid p-0 md:grid-cols-2 md:min-h-[45rem]">
           <div className="flex items-center justify-center ">
-            <form onSubmit={handleSubmit(handelLoginUser)}>
+            <form
+              onSubmit={handleSubmit(handelLoginUser)}
+              className="md:w-[80%]"
+            >
               <div className="flex flex-col items-center gap-1 text-center">
                 <h1 className="text-2xl font-bold">Login to your account</h1>
-                <p className="text-muted-foreground text-sm text-balance">
+                <p className="text-muted-foreground text-sm text-balance mt-2">
                   Enter your email below to login to your account
                 </p>
               </div>
-              <div className="p-6 md:p-8 md:max-w-[100%] ">
-                <Field>
-                  <FieldLabel>Email</FieldLabel>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                    onFocus={() => setAuthError("")}
-                    {...register("email", { required: "Email is required" })}
-                  />
-                  {errors.email?.message && (
-                    <span className="text-red-400 text-sm">
-                      {errors.email.message}
-                    </span>
-                  )}
-                </Field>
-                <Field>
-                  <div className="flex items-center mt-4">
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    onFocus={() => setAuthError("")}
-                    required
-                    {...register("password", {
-                      required: "Password is required",
-                      minLength: {
-                        value: 6,
-                        message: "Password must be at least 6 characters",
-                      },
-                    })}
-                  />
-                </Field>
+              <div className="p-6 md:p-8 md:max-w-[100%] flex flex-col">
+                <FieldForm<LoginInputs>
+                  name="email"
+                  label="Email"
+                  register={register}
+                  error={errors.email}
+                  placeholder="m@example.com"
+                  onFocus={() => setAuthError("")}
+                />
+                <FieldForm<LoginInputs>
+                  name="password"
+                  label="Password"
+                  type="password"
+                  register={register}
+                  error={errors.password}
+                  placeholder="Password must be at least 6 characters"
+                  onFocus={() => setAuthError("")}
+                  className="even:mt-1"
+                />
+
                 <Field className="mt-4">
                   <Button type="submit">Login</Button>
-                  <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                  <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card my-2">
                     Or continue with
                   </FieldSeparator>
                   <Field className="grid grid-cols-1 gap-4">
@@ -168,10 +157,10 @@ export function LoginForm({
                 <div className="relative h-16 overflow-hidden mt-4">
                   {authError && (
                     <Message
-                      className="bg-red-200 text-black absolute inset-0 transition:[height] duration-700"
+                      className="bg-red-200 text-black absolute inset-0 transition-all duration-300"
                       title={`Oops could not login!`}
                       variant="default"
-                      icon={LockKeyholeIcon}
+                      icon={XCircle}
                     >
                       <p className=" text-black ">
                         {authError && <span> {authError}</span>}
