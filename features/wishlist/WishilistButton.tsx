@@ -9,7 +9,6 @@ import { CartIem } from "@/types/cart";
 function WishlistButton(props?: CartIem) {
   const { ...selectedItem } = props;
 
-  console.log(selectedItem);
   const dispatch = useAppDispatch();
   const wishlist = useAppSelector((state) => state.wishlist);
   const isInWhishlist = wishlist.items.some(

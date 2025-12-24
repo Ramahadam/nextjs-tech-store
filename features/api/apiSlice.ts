@@ -1,12 +1,20 @@
 import { RootState } from "@/lib/store";
-import { Product, Products } from "@/types/cart";
+import { Product, Products } from "@/types/product";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface FetchedProducts {
+interface GetProductsResponse {
+  status: string;
   data: {
     products: Products;
   };
 }
+
+type GetProductByIdResponse = {
+  status: string;
+  data: {
+    product: Product;
+  };
+};
 
 interface UserProfile {
   data: {
@@ -37,10 +45,10 @@ export const apiSlice = createApi({
         },
       }),
     }),
-    getAllProducts: builder.query<FetchedProducts, void>({
+    getAllProducts: builder.query<GetProductsResponse, void>({
       query: () => "products",
     }),
-    getProductById: builder.query<Product, string>({
+    getProductById: builder.query<GetProductByIdResponse, string>({
       query: (id) => `products/${id}`,
     }),
   }),

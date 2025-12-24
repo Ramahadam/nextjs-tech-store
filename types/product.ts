@@ -23,6 +23,8 @@ export interface Product {
   title: string;
   description: string;
   category: string;
+  reviews?: Array<{ key: string }> | undefined;
+  stock: number;
   images: Array<string>;
   unitPrice: number;
   quantity: number;

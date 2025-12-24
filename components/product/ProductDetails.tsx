@@ -14,6 +14,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 export default function ProductDetails({ id }: { id: string }) {
   const { isLoading, data, error } = useGetProductByIdQuery(id);
+  console.log(data, "Data from Product Details id");
   if (error) {
     if ("status" in error) {
       const fetchedError = error as FetchBaseQueryError;
@@ -45,6 +46,10 @@ export default function ProductDetails({ id }: { id: string }) {
     );
 
   const { product } = data?.data || {};
+
+  if (!product) {
+    return <Message title="No product found" variant="destructive" />;
+  }
 
   return (
     <article className="grid sm:grid-cols-2 bg-accent w-full py-10">

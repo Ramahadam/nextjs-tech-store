@@ -9,6 +9,8 @@ export default function ProductList() {
   const { isLoading, error, data } = useGetAllProductsQuery();
   const products = data?.data.products;
 
+  console.log(data);
+
   if (isLoading) {
     return (
       <ResponsiveContainer>
