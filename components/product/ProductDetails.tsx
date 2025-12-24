@@ -72,7 +72,7 @@ export default function ProductDetails({ id }: { id: string }) {
 
         <div className="flex gap-2 flex-col mt-4">
           <span className="inline-block text-md">Quantity</span>
-          <QuantityButton />
+          <QuantityButton id={product.id} quantity={product.quantity} />
         </div>
 
         <footer className="mt-8">
@@ -83,7 +83,7 @@ export default function ProductDetails({ id }: { id: string }) {
             </Button>
 
             <span className="bg-white rounded-md ">
-              <WishlistButton />
+              <WishlistButton {...product} />
             </span>
           </article>
         </footer>

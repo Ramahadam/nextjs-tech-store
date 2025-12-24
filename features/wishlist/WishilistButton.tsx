@@ -6,7 +6,10 @@ import { Button } from "../../components/ui/button";
 import { addToWishlist, removeFromWishlist } from "./wishlistSlice";
 import { CartIem } from "@/types/cart";
 
-function WishlistButton({ ...selectedItem }: CartIem) {
+function WishlistButton(props?: CartIem) {
+  const { ...selectedItem } = props;
+
+  console.log(selectedItem);
   const dispatch = useAppDispatch();
   const wishlist = useAppSelector((state) => state.wishlist);
   const isInWhishlist = wishlist.items.some(
@@ -15,7 +18,7 @@ function WishlistButton({ ...selectedItem }: CartIem) {
 
   const toggleWishlist = () => {
     if (isInWhishlist) {
-      dispatch(removeFromWishlist(selectedItem.id));
+      dispatch(removeFromWishlist(selectedItem));
     } else {
       dispatch(addToWishlist(selectedItem));
     }
