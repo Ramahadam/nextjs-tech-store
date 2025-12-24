@@ -1,3 +1,5 @@
+import { Review } from "./review";
+
 interface LpatopSpecs {
   cpu: string;
   ram: string;
@@ -14,7 +16,7 @@ interface DesktopSpecs {
 }
 interface CCTVSpecs {
   connectivity: string;
-  nightVision: string;
+  nightVision: boolean;
   resolution: string;
 }
 
@@ -23,12 +25,13 @@ export interface Product {
   title: string;
   description: string;
   category: string;
-  reviews?: Array<{ key: string }> | undefined;
+  reviews?: Array<Review>;
   stock: number;
   images: Array<string>;
   unitPrice: number;
   quantity: number;
   subTotal?: number;
+  brand?: string;
   specs?: LpatopSpecs | DesktopSpecs | CCTVSpecs;
 }
 

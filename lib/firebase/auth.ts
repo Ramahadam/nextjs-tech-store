@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app";
 import {
   auth,
   createUserWithEmailAndPassword,
@@ -18,16 +19,19 @@ export const singupWithGoogle = async () => {
     const user = result.user;
 
     return { token, user };
-  } catch (err) {
-    // Handle Errors here.
-    const errorCode = err.code;
-    const errorMessage = err.message;
-    // The email of the user's account used.
-    const email = err.customData.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(err);
+  } catch (err: unknown) {
+    if (err instanceof FirebaseError) {
+      return {
+        errorCode: err.code,
+        errorMessage: err.message,
+        email: err.customData?.email,
+        credential: GoogleAuthProvider.credentialFromError(err),
+      };
+    } else {
+      console.log("Unexpected auth error:", err);
 
-    return { errorCode, errorMessage, email, credential };
+      return { errorCode: "unknown", errorMessage: "Something went worng" };
+    }
   }
 };
 
@@ -62,7 +66,7 @@ export const loginUser = async (email: string, password: string) => {
 
 export const logOutUser = async () => {
   try {
-    await signOut.auth();
+    await signOut(auth);
   } catch (error) {
     throw error;
   }

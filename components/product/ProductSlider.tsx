@@ -9,7 +9,7 @@ import ProductCard from "./ProductCard";
 import { products } from "@/lib/api";
 
 export default function ProductSlider() {
-  const renderedPopularProducts = products?.items?.map((item) => (
+  const renderedPopularProducts = products?.map((item) => (
     <CarouselItem
       className="xs:basis-1 md:basis-1/2 lg:basis-1/3"
       key={item.id}

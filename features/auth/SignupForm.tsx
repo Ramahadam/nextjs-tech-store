@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useSyncUserMutation } from "../api/apiSlice";
+import { FirebaseError } from "firebase/app";
 
 export function SignupForm({
   className,
@@ -33,13 +34,19 @@ export function SignupForm({
 
       // If the user is created in firebase
       if (cred?.getIdToken) {
-        const user = await syncUser(cred?.getIdToken());
+        const user = await syncUser(await cred?.getIdToken());
 
         console.log(user);
       }
-    } catch (error) {
-      //Error message=> Firebase: Password should be at least 6 characters (auth/weak-password).
-      setErrMsg(() => firebaseErrorMessages(error.code));
+    } catch (err) {
+      if (err instanceof FirebaseError) {
+        //Error message=> Firebase: Password should be at least 6 characters (auth/weak-password).
+        setErrMsg(() => firebaseErrorMessages(err.code));
+      } else {
+        setErrMsg(() =>
+          firebaseErrorMessages("Unexpected error occur please try again")
+        );
+      }
       console.log(errMsg);
     }
   }
