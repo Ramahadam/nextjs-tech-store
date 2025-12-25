@@ -13,7 +13,6 @@ interface LayoutProp {
 
 export default function ClientWrapper({ children }: LayoutProp) {
   // Initialize Firebase auth listener on app start
-
   useOnAuthStateChanged();
 
   return (

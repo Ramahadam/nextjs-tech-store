@@ -56,6 +56,13 @@ export function LoginForm({
       const user = await loginUser(email, password);
       const token = await user?.getIdToken();
       if (token) {
+        await fetch("/api/session", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         router.push("/");
       }
     } catch (err) {
