@@ -2,9 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 
 interface UserProfile {
-  uid?: string;
-  profile?: string;
-  userName?: string;
+  firebaseUid?: string;
+  role?: string;
+  username?: string;
+  email?: string;
 }
 
 interface UserState {
