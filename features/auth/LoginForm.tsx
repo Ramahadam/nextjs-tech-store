@@ -55,7 +55,22 @@ export function LoginForm({
 
       const user = await loginUser(email, password);
       const token = await user?.getIdToken();
+
+      const {
+        email: userEmail,
+        firebaseUid,
+        role,
+        updatedAt,
+      } = (await syncUser(token)).data.user[0];
+
       if (token) {
+        await fetch("/api/session", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         router.push("/");
       }
     } catch (err) {
@@ -77,8 +92,6 @@ export function LoginForm({
       console.log(user);
     }
   }
-
-  console.log(errors);
 
   return (
     <div className={cn("flex flex-col", className)} {...props}>
