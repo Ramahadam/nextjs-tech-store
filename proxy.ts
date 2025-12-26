@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
-  matcher: ["/cart/:path*", "/me/:path*", "/wishlist"],
+  matcher: ["/cart/:path*", "/me/:path*"],
 };
 
 export function proxy(request: NextRequest) {
