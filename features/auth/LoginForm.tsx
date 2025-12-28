@@ -150,7 +150,7 @@ export function LoginForm({
                     <span>
                       {" "}
                       Don&apos;t have an account?{" "}
-                      <Link href="/singup">Sign up</Link>
+                      <Link href="/signup">Sign up</Link>
                     </span>
                     <span>
                       <a
