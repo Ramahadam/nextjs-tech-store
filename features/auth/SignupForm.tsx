@@ -11,7 +11,6 @@ import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import * as z from "zod";
 import { SignupInputs, signupSchema } from "./signup.schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
