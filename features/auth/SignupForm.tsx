@@ -15,39 +15,62 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useSyncUserMutation } from "../api/apiSlice";
+import { useSyncSignupMutation } from "../api/apiSlice";
 import { FirebaseError } from "firebase/app";
+import { useForm } from "react-hook-form";
+import { FieldForm } from "@/components/forms/FieldForm";
+import { Info } from "lucide-react";
+import { Message } from "@/components/Message";
+import { store } from "@/lib/store";
+import { setProfile } from "../user/userSlice";
+import { UserProfile } from "@/types/user";
+
+export interface SignupInputs {
+  email: string;
+  fullname: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [errMsg, setErrMsg] = useState("");
-  const [syncUser] = useSyncUserMutation();
+  const [syncSignup] = useSyncSignupMutation();
+  const [authError, setAuthError] = useState("");
 
-  async function handleSignup(formData: FormData) {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<SignupInputs>();
+
+  async function handleSignup(data: SignupInputs) {
+    const { email, password, fullname } = data;
 
     try {
       const cred = await registerUser(email, password);
+      const token = await cred?.getIdToken();
 
-      // If the user is created in firebase
-      if (cred?.getIdToken) {
-        const user = await syncUser(await cred?.getIdToken());
+      if (!token) throw Error("Token is not avaible");
+      //Create new profile in mongodb
+      const profile = await syncSignup({
+        token,
+        profile: { fullname },
+      }).unwrap();
 
-        console.log(user);
-      }
+      if (profile?.user) store.dispatch(setProfile(profile.user));
     } catch (err) {
       if (err instanceof FirebaseError) {
-        //Error message=> Firebase: Password should be at least 6 characters (auth/weak-password).
-        setErrMsg(() => firebaseErrorMessages(err.code));
+        setAuthError(() => firebaseErrorMessages(err.code));
       } else {
-        setErrMsg(() =>
+        setAuthError(() =>
           firebaseErrorMessages("Unexpected error occur please try again")
         );
       }
-      console.log(errMsg);
+      console.log("Complete error ", err);
+      console.log("Error message only", authError);
     }
   }
 
@@ -68,66 +91,71 @@ export function SignupForm({
         <CardContent className="grid p-0 md:grid-cols-2">
           <div>
             <form
-              className="p-6 md:p-8 md:max-w-[80%] md:mx-auto"
-              action={handleSignup}
+              className="p-6 md:p-8 md:max-w-[90%] md:mx-auto"
+              onSubmit={handleSubmit(handleSignup)}
             >
-              <FieldGroup>
-                <div className="flex flex-col items-center gap-2 text-center">
+              <FieldGroup className="gap-0">
+                <div className="flex flex-col items-center gap-2 text-center md:mb-6">
                   <h1 className="text-2xl font-bold">Create your account</h1>
                   <p className="text-muted-foreground text-sm text-balance">
                     Enter your email below to create your account
                   </p>
                 </div>
-                <Field>
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
-                  <Input
-                    name="email"
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                  />
-                  <FieldDescription>
-                    We&apos;ll use this to contact you. We will not share your
-                    email with anyone else.
-                  </FieldDescription>
+                <FieldForm<SignupInputs>
+                  name="fullname"
+                  label="Full name"
+                  register={register}
+                  error={errors.fullname}
+                  placeholder="e.g John Doe"
+                  errorClassName="h-4"
+                />
+                <FieldForm<SignupInputs>
+                  name="email"
+                  label="Email"
+                  register={register}
+                  error={errors.email}
+                  placeholder="m@example.com"
+                  onFocus={() => setAuthError("")}
+                  errorClassName="h-4"
+                />{" "}
+                <Field className="relative">
+                  {authError.startsWith("Email") && (
+                    <p className="text-sm text-red-400 flex items-center absolute -top-6">
+                      <Info className="h-4" />
+                      {authError}
+                    </p>
+                  )}
                 </Field>
-                <Field>
-                  <Field className="grid grid-cols-2 gap-4">
-                    <Field>
-                      <FieldLabel htmlFor="password">Password</FieldLabel>
-                      <Input
-                        id="password"
-                        type="password"
-                        value="test1234"
-                        required
-                        name="password"
-                      />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="confirm-password">
-                        Confirm Password
-                      </FieldLabel>
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        value="test1234"
-                        required
-                        name="confirm-password"
-                      />
-                    </Field>
-                  </Field>
-                  <FieldDescription>
-                    Must be at least 8 characters long.
-                  </FieldDescription>
+                <FieldForm<SignupInputs>
+                  type="password"
+                  name="password"
+                  label="Password"
+                  register={register}
+                  error={errors.password}
+                  errorClassName="h-4"
+                />
+                <Field className="relative">
+                  {authError.startsWith("Password") && (
+                    <p className="text-sm text-red-400 flex items-center absolute -top-6">
+                      <Info className="h-4" />
+                      {authError}
+                    </p>
+                  )}
                 </Field>
+                <FieldForm<SignupInputs>
+                  type="password"
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  register={register}
+                  error={errors.confirmPassword}
+                />
                 <Field>
                   <Button type="submit">Create Account</Button>
                 </Field>
-                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card py-8">
                   Or continue with
                 </FieldSeparator>
-                <Field className="grid grid-cols-1 gap-4">
+                <Field className="grid grid-cols-1  py-6">
                   <Button
                     variant="outline"
                     type="button"
@@ -142,7 +170,7 @@ export function SignupForm({
                     <span className="text-sm">Continue with Google</span>
                   </Button>
                 </Field>
-                <FieldDescription className="text-center">
+                <FieldDescription className="text-center py-4">
                   Already have an account? <Link href="/login">Sign in</Link>
                 </FieldDescription>
               </FieldGroup>

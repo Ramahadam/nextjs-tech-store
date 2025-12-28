@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export const MAX_RATINGS = 5;
+export const MINIMUM_PASSWORD = 8;
+export const MINIMUM_CHAR = 4;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
