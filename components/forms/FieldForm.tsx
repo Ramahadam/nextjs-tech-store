@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn, MINIMUM_CHAR, MINIMUM_PASSWORD } from "@/lib/utils";
 
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ interface FieldFormProps<TFormValues extends FieldValues> {
   error: FieldError | undefined;
   onFocus?: () => void;
   className?: string;
+  errorClassName?: string;
 }
 
 export function FieldForm<TFormValues extends FieldValues>({
@@ -26,6 +27,7 @@ export function FieldForm<TFormValues extends FieldValues>({
   error, //In form of e.g error.email / error.password
   onFocus,
   className,
+  errorClassName,
 }: FieldFormProps<TFormValues>) {
   return (
     <Field className={cn("gap-4", className)}>
@@ -42,11 +44,23 @@ export function FieldForm<TFormValues extends FieldValues>({
           "placeholder:text-sm md:placeholder:text-md text-sm md:text-md"
         )}
         onFocus={onFocus}
-        {...register(name as never, { required: `${label} is required!` })}
+        {...register(name as never, {
+          required: `Required field`,
+          minLength: {
+            value: type === "password" ? MINIMUM_PASSWORD : 4,
+            message:
+              type === "password"
+                ? `Minimum ${MINIMUM_PASSWORD} characters`
+                : `Minimum ${MINIMUM_CHAR} characters`,
+          },
+        })}
       />
-      <p id={`${String(name)}-error`} className=" relative h-6">
+      <p
+        id={`${String(name)}-error`}
+        className={cn(" relative h-6", errorClassName)}
+      >
         {error?.message && (
-          <span className="absolute text-xs text-red-400 font-medium  -mt-2 top-0 z-50 flex ">
+          <span className="absolute text-sm text-red-400 font-medium  -mt-2 top-0 z-50 flex items-center">
             <Info className="h-4" /> {error.message}
           </span>
         )}

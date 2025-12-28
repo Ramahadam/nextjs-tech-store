@@ -1,24 +1,27 @@
 import { RootState } from "@/lib/store";
-import { Product, Products } from "@/types/product";
+import type { Product, Products } from "@/types/product";
+import type { GetCurrentUserResponse } from "@/types/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface GetProductsResponse {
+export interface GetProductsResponse {
   status: string;
   data: {
     products: Products;
   };
 }
 
-type GetProductByIdResponse = {
+export type GetProductByIdResponse = {
   status: string;
   data: {
     product: Product;
   };
 };
 
-interface UserProfile {
-  data: {
-    userId: string;
+export interface SyncSignupInput {
+  token: string;
+  profile: {
+    fullname: string;
+    photo?: string;
   };
 }
 
@@ -36,6 +39,16 @@ export const apiSlice = createApi({
     },
   }),
   endpoints: (builder) => ({
+    syncSignup: builder.mutation<GetCurrentUserResponse, SyncSignupInput>({
+      query: ({ token, profile }) => ({
+        url: "/auth/sync",
+        method: "POST",
+        body: profile,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
     syncUser: builder.mutation({
       query: (token: string) => ({
         url: "/auth/sync",
@@ -58,4 +71,5 @@ export const {
   useGetAllProductsQuery,
   useGetProductByIdQuery,
   useSyncUserMutation,
+  useSyncSignupMutation,
 } = apiSlice;
