@@ -1,36 +1,28 @@
 "use client";
-
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import { registerUser, singupWithGoogle } from "@/lib/firebase/auth";
+import { FirebaseError } from "firebase/app";
+import { store } from "@/lib/store";
+import { setProfile } from "../user/userSlice";
+import { useSyncSignupMutation } from "../api/apiSlice";
 import { cn, firebaseErrorMessages } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import * as z from "zod";
+import { SignupInputs, signupSchema } from "./signup.schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
-  FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { useSyncSignupMutation } from "../api/apiSlice";
-import { FirebaseError } from "firebase/app";
-import { useForm } from "react-hook-form";
 import { FieldForm } from "@/components/forms/FieldForm";
 import { Info } from "lucide-react";
-import { Message } from "@/components/Message";
-import { store } from "@/lib/store";
-import { setProfile } from "../user/userSlice";
-import { UserProfile } from "@/types/user";
-
-export interface SignupInputs {
-  email: string;
-  fullname: string;
-  password: string;
-  confirmPassword: string;
-}
 
 export function SignupForm({
   className,
@@ -42,9 +34,10 @@ export function SignupForm({
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<SignupInputs>();
+  } = useForm<SignupInputs>({
+    resolver: zodResolver(signupSchema),
+  });
 
   async function handleSignup(data: SignupInputs) {
     const { email, password, fullname } = data;
