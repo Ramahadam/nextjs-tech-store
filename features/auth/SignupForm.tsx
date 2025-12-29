@@ -97,7 +97,7 @@ export function SignupForm({
                   name="fullname"
                   label="Full name"
                   register={register}
-                  error={errors.fullname}
+                  errorMessage={errors.fullname?.message}
                   placeholder="e.g John Doe"
                   errorClassName="h-4"
                 />
@@ -105,7 +105,7 @@ export function SignupForm({
                   name="email"
                   label="Email"
                   register={register}
-                  error={errors.email}
+                  errorMessage={errors.email?.message}
                   placeholder="m@example.com"
                   onFocus={() => setAuthError("")}
                   errorClassName="h-4"
@@ -123,7 +123,7 @@ export function SignupForm({
                   name="password"
                   label="Password"
                   register={register}
-                  error={errors.password}
+                  errorMessage={errors.password?.message}
                   errorClassName="h-4"
                 />
                 <Field className="relative">
@@ -139,7 +139,7 @@ export function SignupForm({
                   name="confirmPassword"
                   label="Confirm Password"
                   register={register}
-                  error={errors.confirmPassword}
+                  errorMessage={errors.confirmPassword?.message}
                 />
                 <Field>
                   <Button type="submit">Create Account</Button>
