@@ -6,7 +6,6 @@ import { registerUser, signupWithGoogle } from "@/lib/firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { store } from "@/lib/store";
 import { setProfile } from "../user/userSlice";
-import { useSyncSignupMutation } from "../api/apiSlice";
 import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,12 +21,13 @@ import {
 } from "@/components/ui/field";
 import { FieldForm } from "@/components/forms/FieldForm";
 import { Info } from "lucide-react";
+import { useSyncUserMutation } from "../api/apiSlice";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [syncSignup] = useSyncSignupMutation();
+  const [syncUser] = useSyncUserMutation();
   const [authError, setAuthError] = useState("");
 
   const {
@@ -47,7 +47,7 @@ export function SignupForm({
 
       if (!token) throw Error("Token is not avaible");
       //Create new profile in mongodb
-      const profile = await syncSignup({
+      const profile = await syncUser({
         token,
         profile: { fullname },
       }).unwrap();
@@ -71,7 +71,7 @@ export function SignupForm({
 
     // If the user is created in firebase
     if (res?.token) {
-      const user = await syncSignup(res?.token);
+      const user = await syncUser({ token: res?.token });
 
       console.log(user);
     }

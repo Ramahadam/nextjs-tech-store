@@ -56,7 +56,11 @@ export function LoginForm({
 
         dispatch(setCredntials(token));
 
-        const profile = (await syncUser(token)).data?.user[0];
+        const profile = (await syncUser({ token }))?.data?.user;
+
+        console.log(profile);
+
+        if (!profile) return;
 
         dispatch(setProfile(profile));
 
@@ -75,12 +79,22 @@ export function LoginForm({
   async function handleSignupWithGoogle() {
     const res = await signupWithGoogle();
 
-    // If the user is created in firebase
-    if (res?.token) {
-      const user = await syncUser(res?.token);
+    if (!res.token) return;
 
-      console.log(user);
-    }
+    await fetch("/api/session", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${res.token}`,
+      },
+    });
+
+    // const user = await syncUser(res?.token);
+
+    // const profile = (await syncUser(res.token)).data?.user[0];
+
+    // dispatch(setProfile(profile));
+
+    // console.log(user);
   }
 
   return (

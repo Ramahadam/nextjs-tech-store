@@ -13,12 +13,10 @@ export const signupWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
 
     const result = await signInWithPopup(auth, provider);
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential?.accessToken;
+    const firebaseUser = result.user;
+    const token = await firebaseUser.getIdToken();
 
-    const user = result.user;
-
-    return { token, user };
+    return { token, user: firebaseUser };
   } catch (err: unknown) {
     if (err instanceof FirebaseError) {
       return {
