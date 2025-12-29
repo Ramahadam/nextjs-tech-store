@@ -105,7 +105,7 @@ export function LoginForm({
                   name="email"
                   label="Email"
                   register={register}
-                  error={errors.email}
+                  errorMessage={errors.email?.message}
                   placeholder="m@example.com"
                   onFocus={() => setAuthError("")}
                 />
@@ -114,7 +114,7 @@ export function LoginForm({
                   label="Password"
                   type="password"
                   register={register}
-                  error={errors.password}
+                  errorMessage={errors.password?.message}
                   placeholder="Password must be at least 6 characters"
                   onFocus={() => setAuthError("")}
                   className="even:mt-1"
