@@ -20,7 +20,7 @@ export type GetProductByIdResponse = {
 export interface SyncUserInput {
   token: string;
   profile?: {
-    fullname?: string;
+    fullname?: string | null;
     photo?: string;
   };
 }

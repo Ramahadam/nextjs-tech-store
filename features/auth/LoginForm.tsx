@@ -6,30 +6,25 @@ import { FirebaseError } from "firebase/app";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
 import { loginUser, signupWithGoogle } from "@/lib/firebase/auth";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Message } from "@/components/Message";
 import { XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSyncUserMutation } from "../api/apiSlice";
 import { FieldForm } from "@/components/forms/FieldForm";
 import { LoginInputs, loginSchema } from "./login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDispatch } from "react-redux";
-import { setCredntials } from "./authSlice";
-import { setProfile } from "../user/userSlice";
+import { useAuthFlow } from "./hooks/useAuthFlow";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
   const [authError, setAuthError] = useState("");
-  const [syncUser] = useSyncUserMutation();
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
-  const dispatch = useDispatch();
+  const { updateAuthUIAndRedirect } = useAuthFlow();
 
   const {
     register,
@@ -46,27 +41,9 @@ export function LoginForm({
       const user = await loginUser(email, password);
       const token = await user?.getIdToken();
 
-      if (token) {
-        await fetch("/api/session", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      if (!token) return;
 
-        dispatch(setCredntials(token));
-
-        const profile = (await syncUser({ token }))?.data?.user;
-
-        console.log(profile);
-
-        if (!profile) return;
-
-        dispatch(setProfile(profile));
-
-        if (redirectTo) router.replace(`${redirectTo}`);
-        else router.push("/");
-      }
+      await updateAuthUIAndRedirect({ token, redirectTo });
     } catch (err) {
       if (err instanceof FirebaseError) {
         setAuthError(() => firebaseErrorMessages(err.code));
@@ -78,23 +55,11 @@ export function LoginForm({
 
   async function handleSignupWithGoogle() {
     const res = await signupWithGoogle();
+    const token = res.token;
+    if (!token) return;
 
-    if (!res.token) return;
-
-    await fetch("/api/session", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${res.token}`,
-      },
-    });
-
-    // const user = await syncUser(res?.token);
-
-    // const profile = (await syncUser(res.token)).data?.user[0];
-
-    // dispatch(setProfile(profile));
-
-    // console.log(user);
+    const fullname = res.user.displayName;
+    await updateAuthUIAndRedirect({ token, redirectTo, fullname });
   }
 
   return (

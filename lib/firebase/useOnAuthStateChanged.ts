@@ -2,14 +2,8 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { auth } from "./config";
-import { setCredntials } from "@/features/auth/authSlice";
-import { setProfile } from "@/features/user/userSlice";
-import { store } from "../store";
-import { useSyncUserMutation } from "@/features/api/apiSlice";
 
 export function useOnAuthStateChanged() {
-  // const [syncUser] = useSyncUserMutation();
-
   useEffect(() => {
     const unbscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
