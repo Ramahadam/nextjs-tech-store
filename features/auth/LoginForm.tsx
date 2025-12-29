@@ -16,6 +16,9 @@ import { useSyncUserMutation } from "../api/apiSlice";
 import { FieldForm } from "@/components/forms/FieldForm";
 import { LoginInputs, loginSchema } from "./login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch } from "react-redux";
+import { setCredntials } from "./authSlice";
+import { setProfile } from "../user/userSlice";
 
 export function LoginForm({
   className,
@@ -26,6 +29,7 @@ export function LoginForm({
   const [syncUser] = useSyncUserMutation();
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -50,13 +54,11 @@ export function LoginForm({
           },
         });
 
-        // const token = await user.getIdToken();
+        dispatch(setCredntials(token));
 
-        // store.dispatch(setCredntials(token));
+        const profile = (await syncUser(token)).data?.user[0];
 
-        // const profile = (await syncUser(token)).data?.user[0];
-
-        // store.dispatch(setProfile(profile))
+        dispatch(setProfile(profile));
 
         if (redirectTo) router.replace(`${redirectTo}`);
         else router.push("/");
