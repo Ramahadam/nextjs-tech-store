@@ -3,36 +3,19 @@ import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FirebaseError } from "firebase/app";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
 import { loginUser, singupWithGoogle } from "@/lib/firebase/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Message } from "@/components/Message";
-import { Info, LockKeyholeIcon, Mail, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSyncUserMutation } from "../api/apiSlice";
 import { FieldForm } from "@/components/forms/FieldForm";
-
-export interface LoginInputs {
-  email: string;
-  password: string;
-}
+import { LoginInputs, loginSchema } from "./login.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export function LoginForm({
   className,
@@ -41,13 +24,16 @@ export function LoginForm({
   const router = useRouter();
   const [authError, setAuthError] = useState("");
   const [syncUser] = useSyncUserMutation();
+  const params = useSearchParams();
+  const redirectTo = params.get("redirectTo");
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<LoginInputs>();
+  } = useForm<LoginInputs>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const handelLoginUser: SubmitHandler<LoginInputs> = async (data) => {
     try {
@@ -64,7 +50,16 @@ export function LoginForm({
           },
         });
 
-        router.push("/");
+        // const token = await user.getIdToken();
+
+        // store.dispatch(setCredntials(token));
+
+        // const profile = (await syncUser(token)).data?.user[0];
+
+        // store.dispatch(setProfile(profile))
+
+        if (redirectTo) router.replace(`${redirectTo}`);
+        else router.push("/");
       }
     } catch (err) {
       if (err instanceof FirebaseError) {

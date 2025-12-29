@@ -67,7 +67,7 @@ export function SignupForm({
   }
 
   async function handleSignupWithGoogle() {
-    const res = await singupWithGoogle();
+    const res = await signupWithGoogle();
 
     // If the user is created in firebase
     if (res?.token) {

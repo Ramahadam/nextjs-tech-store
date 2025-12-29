@@ -1,24 +1,29 @@
 "use client";
-import { cn, MINIMUM_CHAR, MINIMUM_PASSWORD } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Info } from "lucide-react";
-import type { FieldError, UseFormRegister, FieldValues } from "react-hook-form";
+import type {
+  FieldError,
+  UseFormRegister,
+  FieldValues,
+  Path,
+} from "react-hook-form";
 
-interface FieldFormProps<TFormValues extends FieldValues> {
-  name: keyof TFormValues;
+interface FieldFormProps<T extends FieldValues> {
+  name: Path<T>;
   label: string;
   type?: string;
   placeholder?: string;
-  register: UseFormRegister<TFormValues>;
+  register: UseFormRegister<T>;
   error: FieldError | undefined;
   onFocus?: () => void;
   className?: string;
   errorClassName?: string;
 }
 
-export function FieldForm<TFormValues extends FieldValues>({
+export function FieldForm<T extends FieldValues>({
   name,
   label,
   placeholder,
@@ -28,7 +33,7 @@ export function FieldForm<TFormValues extends FieldValues>({
   onFocus,
   className,
   errorClassName,
-}: FieldFormProps<TFormValues>) {
+}: FieldFormProps<T>) {
   return (
     <Field className={cn("gap-4", className)}>
       <FieldLabel>{label}</FieldLabel>
@@ -44,16 +49,7 @@ export function FieldForm<TFormValues extends FieldValues>({
           "placeholder:text-sm md:placeholder:text-md text-sm md:text-md"
         )}
         onFocus={onFocus}
-        {...register(name as never, {
-          required: `Required field`,
-          minLength: {
-            value: type === "password" ? MINIMUM_PASSWORD : 4,
-            message:
-              type === "password"
-                ? `Minimum ${MINIMUM_PASSWORD} characters`
-                : `Minimum ${MINIMUM_CHAR} characters`,
-          },
-        })}
+        {...register(name)}
       />
       <p
         id={`${String(name)}-error`}

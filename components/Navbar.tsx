@@ -25,10 +25,10 @@ import { useOnAuthStateChanged } from "@/lib/firebase/useOnAuthStateChanged";
 import { useAppSelector } from "@/app/hooks";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { user } = useAppSelector((state) => state.user);
-  console.log(user);
   useOnAuthStateChanged();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -141,7 +141,7 @@ export default function Navbar() {
 
           {/* Cart Icon with Badge */}
 
-          <Link href={user?.firebaseUid ? "/cart" : "/login?redirectTo=/cart"}>
+          <Link href={isAuthenticated ? "/cart" : "/login?redirectTo=/cart"}>
             <Button variant="ghost" size="icon" className="relative shrink-0">
               <ShoppingCart className="h-5 w-5" />
               <span className="sr-only">Cart</span>

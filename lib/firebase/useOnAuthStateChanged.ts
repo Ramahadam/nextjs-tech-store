@@ -8,7 +8,7 @@ import { store } from "../store";
 import { useSyncUserMutation } from "@/features/api/apiSlice";
 
 export function useOnAuthStateChanged() {
-  const [syncUser] = useSyncUserMutation();
+  // const [syncUser] = useSyncUserMutation();
 
   useEffect(() => {
     const unbscribe = onAuthStateChanged(auth, async (user) => {
@@ -27,5 +27,5 @@ export function useOnAuthStateChanged() {
     });
 
     return () => unbscribe();
-  }, [syncUser]);
+  }, []);
 }
