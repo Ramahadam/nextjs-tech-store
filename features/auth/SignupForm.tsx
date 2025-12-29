@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { registerUser, singupWithGoogle } from "@/lib/firebase/auth";
+import { registerUser, signupWithGoogle } from "@/lib/firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { store } from "@/lib/store";
 import { setProfile } from "../user/userSlice";
@@ -71,7 +71,7 @@ export function SignupForm({
 
     // If the user is created in firebase
     if (res?.token) {
-      const user = await syncUser(res?.token);
+      const user = await syncSignup(res?.token);
 
       console.log(user);
     }

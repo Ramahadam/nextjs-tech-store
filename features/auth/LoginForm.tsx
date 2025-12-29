@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { FirebaseError } from "firebase/app";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
-import { loginUser, singupWithGoogle } from "@/lib/firebase/auth";
+import { loginUser, signupWithGoogle } from "@/lib/firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Message } from "@/components/Message";

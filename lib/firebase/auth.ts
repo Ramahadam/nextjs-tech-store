@@ -8,7 +8,7 @@ import {
   signOut,
 } from "./config";
 
-export const singupWithGoogle = async () => {
+export const signupWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
 
