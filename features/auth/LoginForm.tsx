@@ -3,51 +3,36 @@ import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FirebaseError } from "firebase/app";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { loginUser, singupWithGoogle } from "@/lib/firebase/auth";
-import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
+import { loginUser, signupWithGoogle } from "@/lib/firebase/auth";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Message } from "@/components/Message";
-import { Info, LockKeyholeIcon, Mail, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSyncUserMutation } from "../api/apiSlice";
 import { FieldForm } from "@/components/forms/FieldForm";
-
-export interface LoginInputs {
-  email: string;
-  password: string;
-}
+import { LoginInputs, loginSchema } from "./login.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthFlow } from "./hooks/useAuthFlow";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
   const [authError, setAuthError] = useState("");
-  const [syncUser] = useSyncUserMutation();
+  const params = useSearchParams();
+  const redirectTo = params.get("redirectTo");
+  const { updateAuthUIAndRedirect } = useAuthFlow();
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<LoginInputs>();
+  } = useForm<LoginInputs>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const handelLoginUser: SubmitHandler<LoginInputs> = async (data) => {
     try {
@@ -56,16 +41,9 @@ export function LoginForm({
       const user = await loginUser(email, password);
       const token = await user?.getIdToken();
 
-      if (token) {
-        await fetch("/api/session", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      if (!token) return;
 
-        router.push("/");
-      }
+      await updateAuthUIAndRedirect({ token, redirectTo });
     } catch (err) {
       if (err instanceof FirebaseError) {
         setAuthError(() => firebaseErrorMessages(err.code));
@@ -76,14 +54,12 @@ export function LoginForm({
   };
 
   async function handleSignupWithGoogle() {
-    const res = await singupWithGoogle();
+    const res = await signupWithGoogle();
+    const token = res.token;
+    if (!token) return;
 
-    // If the user is created in firebase
-    if (res?.token) {
-      const user = await syncUser(res?.token);
-
-      console.log(user);
-    }
+    const fullname = res.user.displayName;
+    await updateAuthUIAndRedirect({ token, redirectTo, fullname });
   }
 
   return (
@@ -108,7 +84,7 @@ export function LoginForm({
                   name="email"
                   label="Email"
                   register={register}
-                  error={errors.email}
+                  errorMessage={errors.email?.message}
                   placeholder="m@example.com"
                   onFocus={() => setAuthError("")}
                 />
@@ -117,7 +93,7 @@ export function LoginForm({
                   label="Password"
                   type="password"
                   register={register}
-                  error={errors.password}
+                  errorMessage={errors.password?.message}
                   placeholder="Password must be at least 6 characters"
                   onFocus={() => setAuthError("")}
                   className="even:mt-1"

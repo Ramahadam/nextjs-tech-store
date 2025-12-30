@@ -2,11 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { registerUser, singupWithGoogle } from "@/lib/firebase/auth";
+import { registerUser, signupWithGoogle } from "@/lib/firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { store } from "@/lib/store";
 import { setProfile } from "../user/userSlice";
-import { useSyncSignupMutation } from "../api/apiSlice";
 import { cn, firebaseErrorMessages } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,12 +21,13 @@ import {
 } from "@/components/ui/field";
 import { FieldForm } from "@/components/forms/FieldForm";
 import { Info } from "lucide-react";
+import { useSyncUserMutation } from "../api/apiSlice";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [syncSignup] = useSyncSignupMutation();
+  const [syncUser] = useSyncUserMutation();
   const [authError, setAuthError] = useState("");
 
   const {
@@ -47,7 +47,7 @@ export function SignupForm({
 
       if (!token) throw Error("Token is not avaible");
       //Create new profile in mongodb
-      const profile = await syncSignup({
+      const profile = await syncUser({
         token,
         profile: { fullname },
       }).unwrap();
@@ -67,11 +67,11 @@ export function SignupForm({
   }
 
   async function handleSignupWithGoogle() {
-    const res = await singupWithGoogle();
+    const res = await signupWithGoogle();
 
     // If the user is created in firebase
     if (res?.token) {
-      const user = await syncUser(res?.token);
+      const user = await syncUser({ token: res?.token });
 
       console.log(user);
     }
@@ -97,7 +97,7 @@ export function SignupForm({
                   name="fullname"
                   label="Full name"
                   register={register}
-                  error={errors.fullname}
+                  errorMessage={errors.fullname?.message}
                   placeholder="e.g John Doe"
                   errorClassName="h-4"
                 />
@@ -105,7 +105,7 @@ export function SignupForm({
                   name="email"
                   label="Email"
                   register={register}
-                  error={errors.email}
+                  errorMessage={errors.email?.message}
                   placeholder="m@example.com"
                   onFocus={() => setAuthError("")}
                   errorClassName="h-4"
@@ -123,7 +123,7 @@ export function SignupForm({
                   name="password"
                   label="Password"
                   register={register}
-                  error={errors.password}
+                  errorMessage={errors.password?.message}
                   errorClassName="h-4"
                 />
                 <Field className="relative">
@@ -139,7 +139,7 @@ export function SignupForm({
                   name="confirmPassword"
                   label="Confirm Password"
                   register={register}
-                  error={errors.confirmPassword}
+                  errorMessage={errors.confirmPassword?.message}
                 />
                 <Field>
                   <Button type="submit">Create Account</Button>

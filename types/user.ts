@@ -1,7 +1,7 @@
 export interface User {
   id: string;
   firebaseUid: string;
-  fullname: string;
+  fullname?: string;
   email: string;
   isActive: boolean;
   role: "customer" | "admin";

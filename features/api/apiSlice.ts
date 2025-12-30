@@ -17,10 +17,10 @@ export type GetProductByIdResponse = {
   };
 };
 
-export interface SyncSignupInput {
+export interface SyncUserInput {
   token: string;
-  profile: {
-    fullname: string;
+  profile?: {
+    fullname?: string | null;
     photo?: string;
   };
 }
@@ -39,7 +39,7 @@ export const apiSlice = createApi({
     },
   }),
   endpoints: (builder) => ({
-    syncSignup: builder.mutation<GetCurrentUserResponse, SyncSignupInput>({
+    syncUser: builder.mutation<GetCurrentUserResponse, SyncUserInput>({
       query: ({ token, profile }) => ({
         url: "/auth/sync",
         method: "POST",
@@ -49,15 +49,7 @@ export const apiSlice = createApi({
         },
       }),
     }),
-    syncUser: builder.mutation({
-      query: (token: string) => ({
-        url: "/auth/sync",
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
+
     getAllProducts: builder.query<GetProductsResponse, void>({
       query: () => "products",
     }),
@@ -71,5 +63,4 @@ export const {
   useGetAllProductsQuery,
   useGetProductByIdQuery,
   useSyncUserMutation,
-  useSyncSignupMutation,
 } = apiSlice;
