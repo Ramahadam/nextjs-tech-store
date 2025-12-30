@@ -21,12 +21,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { useOnAuthStateChanged } from "@/lib/firebase/useOnAuthStateChanged";
 import { useAppSelector } from "@/app/hooks";
 
 export default function Navbar() {
-  useOnAuthStateChanged();
-
   const [isOpen, setIsOpen] = useState(false);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
