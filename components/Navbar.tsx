@@ -157,13 +157,14 @@ export default function Navbar() {
               <ShoppingCart className="h-5 w-5" />
               <span className="sr-only">Cart</span>
               <span className="absolute opacity-100  -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                {!showCartBadge ? (
+                {isFetching || isLoading ? (
                   <Spinner className="absolute" />
                 ) : (
                   <Badge
                     variant="destructive"
                     className={cn(
-                      "h-5 w-5 flex items-center justify-center p-0 text-xs"
+                      "h-5 w-5 flex items-center justify-center p-0 text-xs",
+                      !showCartBadge && "h-0 w-0 opacity-0"
                     )}
                   >
                     {itemsCount}
