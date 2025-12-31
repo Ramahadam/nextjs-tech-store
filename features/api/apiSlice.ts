@@ -56,6 +56,10 @@ export const apiSlice = createApi({
     getProductById: builder.query<GetProductByIdResponse, string>({
       query: (id) => `products/${id}`,
     }),
+
+    getCart: builder.query({
+      query: () => "/cart",
+    }),
   }),
 });
 
@@ -63,4 +67,5 @@ export const {
   useGetAllProductsQuery,
   useGetProductByIdQuery,
   useSyncUserMutation,
+  useGetCartQuery,
 } = apiSlice;

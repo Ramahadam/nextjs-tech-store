@@ -21,11 +21,23 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useGetCartQuery } from "@/features/api/apiSlice";
+import { addToCart } from "@/features/cart/cartSlice";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  // Fetch user related cart
+  const { data } = useGetCartQuery(undefined, {
+    skip: !isAuthenticated,
+    refetchOnMountOrArgChange: false,
+  });
+
+  const itemsCount = data?.data?.cart.items.length ?? 0;
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -144,9 +156,12 @@ export default function Navbar() {
               <span className="sr-only">Cart</span>
               <Badge
                 variant="destructive"
-                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                className={cn(
+                  "absolute opacity-100  -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs",
+                  itemsCount === 0 && "opacity-0 hidden"
+                )}
               >
-                10
+                {itemsCount}
               </Badge>
             </Button>
           </Link>
