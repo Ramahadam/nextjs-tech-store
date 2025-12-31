@@ -35,7 +35,6 @@ export default function Navbar() {
   const { data, isFetching, isLoading } = useGetCartQuery(undefined, {
     skip: !isAuthenticated,
   });
-  console.log(data);
 
   const itemsCount = data?.data?.items.length ?? 0;
 

@@ -14,6 +14,7 @@ type QuantityButtonType = {
 
 export default function QuantityButton({ id, quantity }: QuantityButtonType) {
   const dispatch = useAppDispatch();
+  console.log("Id and Quantity", id, quantity);
   return (
     <div className="flex items-center border rounded-md justify-between w-fit h-8">
       <Button
