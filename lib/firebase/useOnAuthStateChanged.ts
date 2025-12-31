@@ -5,7 +5,7 @@ import { auth } from "./config";
 import { useAppDispatch } from "@/app/hooks";
 import { logout, setProfile } from "@/features/user/userSlice";
 import { setCredntials } from "@/features/auth/authSlice";
-import { useSyncUserMutation } from "@/features/api/apiSlice";
+import { apiSlice, useSyncUserMutation } from "@/features/api/apiSlice";
 
 export function useOnAuthStateChanged() {
   const [syncUser] = useSyncUserMutation();
@@ -23,6 +23,9 @@ export function useOnAuthStateChanged() {
       if (!token) return;
 
       disptach(setCredntials(token));
+
+      // Prefetch cart immediately after auth
+      disptach(apiSlice.endpoints.getCart.initiate(undefined));
 
       // 3. Sync user with backend
       const profile = await syncUser({

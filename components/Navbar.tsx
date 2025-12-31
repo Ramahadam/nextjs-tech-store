@@ -25,19 +25,21 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { useGetCartQuery } from "@/features/api/apiSlice";
 import { addToCart } from "@/features/cart/cartSlice";
 import { cn } from "@/lib/utils";
+import { Spinner } from "./ui/spinner";
 
 export default function Navbar() {
-  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   // Fetch user related cart
-  const { data } = useGetCartQuery(undefined, {
+  const { data, isFetching, isLoading } = useGetCartQuery(undefined, {
     skip: !isAuthenticated,
-    refetchOnMountOrArgChange: false,
   });
+  console.log(data);
 
-  const itemsCount = data?.data?.cart.items.length ?? 0;
+  const itemsCount = data?.data?.items.length ?? 0;
+
+  const showCartBadge = isAuthenticated && itemsCount > 0;
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -154,15 +156,20 @@ export default function Navbar() {
             <Button variant="ghost" size="icon" className="relative shrink-0">
               <ShoppingCart className="h-5 w-5" />
               <span className="sr-only">Cart</span>
-              <Badge
-                variant="destructive"
-                className={cn(
-                  "absolute opacity-100  -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs",
-                  itemsCount === 0 && "opacity-0 hidden"
+              <span className="absolute opacity-100  -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                {!showCartBadge ? (
+                  <Spinner className="absolute" />
+                ) : (
+                  <Badge
+                    variant="destructive"
+                    className={cn(
+                      "h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    )}
+                  >
+                    {itemsCount}
+                  </Badge>
                 )}
-              >
-                {itemsCount}
-              </Badge>
+              </span>
             </Button>
           </Link>
         </div>

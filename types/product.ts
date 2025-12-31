@@ -1,38 +1,49 @@
-import { Review } from "./review";
+import { Review, reviewSchema } from "./review";
+import { z } from "zod";
 
-interface LpatopSpecs {
-  cpu: string;
-  ram: string;
-  screen: string;
-  storage: string;
-}
-interface DesktopSpecs {
-  cpu: string;
-  ram: string;
-  storage: string;
-  powerSupply?: string;
-  connectivity?: string[];
-  weight?: string;
-}
-interface CCTVSpecs {
-  connectivity: string;
-  nightVision: boolean;
-  resolution: string;
-}
+const laptopSchema = z.object({
+  cpu: z.string(),
+  ram: z.string(),
+  screen: z.string(),
+  storage: z.string(),
+});
 
-export interface Product {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  reviews?: Array<Review>;
-  stock: number;
-  images: Array<string>;
-  unitPrice: number;
-  quantity: number;
-  subTotal?: number;
-  brand?: string;
-  specs?: LpatopSpecs | DesktopSpecs | CCTVSpecs;
-}
+const desktopSchema = z.object({
+  cpu: z.string(),
+  ram: z.string(),
+  storage: z.string(),
+  powerSupply: z.string(),
+  connectivity: z.array(z.string()),
+  weight: z.string(),
+});
 
-export type Products = Array<Product>;
+const cctvSchema = z.object({
+  connectivity: z.string(),
+  nightVision: z.boolean(),
+  resolution: z.string(),
+});
+
+type LpatopSpecs = z.infer<typeof laptopSchema>;
+
+type DesktopSpecs = z.infer<typeof desktopSchema>;
+
+type CCTVSpecs = z.infer<typeof cctvSchema>;
+
+export const productSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  category: z.string(),
+  reviews: z.array(reviewSchema),
+  stock: z.number(),
+  images: z.array(z.string()),
+  unitPrice: z.number(),
+  quantity: z.number(),
+  subTotal: z.number(),
+  brand: z.string(),
+  specs: z.union([laptopSchema, laptopSchema, laptopSchema]),
+});
+
+export type Product = z.infer<typeof productSchema>;
+
+export type Products = Product[];
