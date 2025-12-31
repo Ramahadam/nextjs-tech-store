@@ -11,19 +11,25 @@ import { useGetCartQuery } from "../api/apiSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Cart, CartItem } from "./cart.schema";
 import { useDispatch } from "react-redux";
+import { Spinner } from "@/components/ui/spinner";
+import { SkeletonCustom } from "@/components/SkeletonCustom";
 
 export default function CartItems() {
   const dispatch = useAppDispatch();
   // Fetch cart from backend
-  const { data, isLoading } = useGetCartQuery(undefined, {});
+  const { data, isLoading, isFetching } = useGetCartQuery(undefined);
   // Render spinner for loading state
   const { items } = data?.data || [];
 
-  if (isLoading) {
-    return <Skeleton />;
+  if (isLoading || isFetching) {
+    return (
+      <div className="flex items-center justify-center md:my-8">
+        <SkeletonCustom />
+      </div>
+    );
   }
 
-  if (!Boolean(items)) {
+  if (!isLoading && items?.length === 0) {
     // Update UI
 
     return (
@@ -37,7 +43,7 @@ export default function CartItems() {
   }
 
   const totalAmount = data?.data.totalPrice;
-  const formattedItems = items.map((item: CartItem) => ({
+  const formattedItems = items?.map((item: CartItem) => ({
     ...item,
     product: { ...item.product, id: item.product._id },
   }));
