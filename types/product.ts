@@ -29,20 +29,25 @@ type DesktopSpecs = z.infer<typeof desktopSchema>;
 
 type CCTVSpecs = z.infer<typeof cctvSchema>;
 
-export const productSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string(),
-  category: z.string(),
-  reviews: z.array(reviewSchema),
-  stock: z.number(),
-  images: z.array(z.string()),
-  unitPrice: z.number(),
-  quantity: z.number(),
-  subTotal: z.number(),
-  brand: z.string(),
-  specs: z.union([laptopSchema, laptopSchema, laptopSchema]),
-});
+export const productSchema = z
+  .object({
+    _id: z.string(),
+    title: z.string(),
+    description: z.string(),
+    category: z.string(),
+    reviews: z.array(reviewSchema),
+    stock: z.number(),
+    images: z.array(z.string()),
+    unitPrice: z.number(),
+    quantity: z.number(),
+    subTotal: z.number(),
+    brand: z.string(),
+    specs: z.union([laptopSchema, laptopSchema, laptopSchema]),
+  })
+  .transform((item) => ({
+    ...item,
+    id: item._id,
+  }));
 
 export type Product = z.infer<typeof productSchema>;
 
