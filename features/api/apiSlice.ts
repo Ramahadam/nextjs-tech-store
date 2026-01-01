@@ -60,6 +60,37 @@ export const apiSlice = createApi({
     getCart: builder.query({
       query: () => "/cart",
     }),
+    getAdd: builder.mutation({
+      query: ({ productId }) => ({
+        url: "/cart",
+        method: "POST",
+        body: { productId },
+      }),
+
+      async onQueryStarted(
+        { productId, product },
+        { dispatch, queryFulfilled }
+      ) {
+        const patch = dispatch(
+          apiSlice.util.updateQueryData("getCart", productId, (draft) => {
+            //check if the cart exists in the cache
+            const items = draft.data.cart.items;
+            // if exists increament quantity by 1
+            const item = items.map((item) => item.product._id === productId);
+
+            if (item) item.product.quantity += 1;
+            // if doesnot exists add the product to cache
+            items.push({ product, quantity: 1 });
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
+    }),
   }),
 });
 
