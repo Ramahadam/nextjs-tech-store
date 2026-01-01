@@ -60,7 +60,7 @@ export const apiSlice = createApi({
     getCart: builder.query({
       query: () => "/cart",
     }),
-    getAdd: builder.mutation({
+    addToCart: builder.mutation({
       query: ({ productId }) => ({
         url: "/cart",
         method: "POST",
@@ -98,5 +98,6 @@ export const {
   useGetAllProductsQuery,
   useGetProductByIdQuery,
   useSyncUserMutation,
+  useAddToCartMutation,
   useGetCartQuery,
 } = apiSlice;

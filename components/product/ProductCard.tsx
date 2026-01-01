@@ -15,11 +15,18 @@ import Link from "next/link";
 import { CartIem } from "@/types/cart";
 import { useAppDispatch } from "@/app/hooks";
 import { addToCart } from "@/features/cart/cartSlice";
+import { Product } from "@/types/product";
+import { useAddToCartMutation } from "@/features/api/apiSlice";
 
 function ProductCard(props: CartIem) {
   const { id, images, title, description, unitPrice } = props;
   const image = images?.length ? images?.at(0) : "";
   const dispatch = useAppDispatch();
+  const [addToCart] = useAddToCartMutation();
+
+  const handleAddToCart = async (productId: string, porduct: Product) => {
+    await addToCart({ productId, porduct });
+  };
 
   return (
     <Card className="w-[18.5rem]   shadow-none border-none">
@@ -55,9 +62,7 @@ function ProductCard(props: CartIem) {
         <Button
           variant="outline"
           className="border-primary rounded-full uppercase "
-          onClick={() =>
-            dispatch(addToCart({ ...props, unitPrice: Number(unitPrice) }))
-          }
+          onClick={() => handleAddToCart(id, { ...props })}
         >
           Add to cart
         </Button>
