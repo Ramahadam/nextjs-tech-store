@@ -1,7 +1,9 @@
 import { RootState } from "@/lib/store";
+import { CartIem } from "@/types/cart";
 import type { Product, Products } from "@/types/product";
 import type { GetCurrentUserResponse } from "@/types/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { CartItem, GetCartQueryResponse } from "../cart/cart.schema";
 
 export interface GetProductsResponse {
   status: string;
@@ -60,7 +62,10 @@ export const apiSlice = createApi({
     getCart: builder.query({
       query: () => "/cart",
     }),
-    addToCart: builder.mutation({
+    addToCart: builder.mutation<
+      GetCartQueryResponse,
+      { productId: string; product: Product }
+    >({
       query: ({ productId }) => ({
         url: "/cart",
         method: "POST",
@@ -72,15 +77,79 @@ export const apiSlice = createApi({
         { dispatch, queryFulfilled }
       ) {
         const patch = dispatch(
-          apiSlice.util.updateQueryData("getCart", productId, (draft) => {
+          apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
             //check if the cart exists in the cache
             const items = draft.data.cart.items;
             // if exists increament quantity by 1
-            const item = items.map((item) => item.product._id === productId);
+            const item = items.find(
+              (item: CartItem) => item.product._id === productId
+            );
 
             if (item) item.product.quantity += 1;
             // if doesnot exists add the product to cache
             items.push({ product, quantity: 1 });
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
+    }),
+    removeFromCart: builder.mutation<CartIem | null, { productId: string }>({
+      query: ({ productId }) => ({
+        url: "/cart",
+        method: "delete",
+        body: productId,
+      }),
+
+      async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
+            draft.data.cart.items = draft.data.cart.items.filter(
+              (item: CartItem) => item.product._id !== productId
+            );
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
+    }),
+
+    updateCartQuantity: builder.mutation<
+      CartIem,
+      { productId: string; quantity: number }
+    >({
+      query: ({ productId, quantity }) => ({
+        url: "/cart",
+        method: "patch",
+        body: { productId, quantity },
+      }),
+      async onQueryStarted(
+        { productId, quantity },
+        { dispatch, queryFulfilled }
+      ) {
+        const patch = dispatch(
+          apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
+            const items = draft.data.cart.items;
+
+            const existingItem = items.find(
+              (item: CartItem) => item.product._id === productId
+            );
+
+            if (existingItem.quantity <= 0) {
+              draft.data.cart.items = items.filter(
+                (item: CartItem) => item.product._id === productId
+              );
+            }
+
+            if (existingItem) existingItem.quantity = quantity;
           })
         );
 
@@ -99,5 +168,7 @@ export const {
   useGetProductByIdQuery,
   useSyncUserMutation,
   useAddToCartMutation,
+  useRemoveFromCartMutation,
+  useUpdateCartQuantityMutation,
   useGetCartQuery,
 } = apiSlice;
