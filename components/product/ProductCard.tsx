@@ -12,20 +12,16 @@ import WishlistButton from "../../features/wishlist/WishilistButton";
 import Image from "next/image";
 import { formatNumbers } from "@/lib/utils";
 import Link from "next/link";
-import { CartIem } from "@/types/cart";
-import { useAppDispatch } from "@/app/hooks";
-import { addToCart } from "@/features/cart/cartSlice";
 import { Product } from "@/types/product";
 import { useAddToCartMutation } from "@/features/api/apiSlice";
 
-function ProductCard(props: CartIem) {
+function ProductCard(props: Product) {
   const { id, images, title, description, unitPrice } = props;
   const image = images?.length ? images?.at(0) : "";
-  const dispatch = useAppDispatch();
   const [addToCart] = useAddToCartMutation();
 
-  const handleAddToCart = async (productId: string, porduct: Product) => {
-    await addToCart({ productId, porduct });
+  const handleAddToCart = async (productId: string, props: Product) => {
+    await addToCart({ productId, product: props });
   };
 
   return (
@@ -62,7 +58,7 @@ function ProductCard(props: CartIem) {
         <Button
           variant="outline"
           className="border-primary rounded-full uppercase "
-          onClick={() => handleAddToCart(id, { ...props })}
+          onClick={() => handleAddToCart(id, props)}
         >
           Add to cart
         </Button>
