@@ -1,10 +1,10 @@
 "use client";
 import { useAppDispatch } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
-import {
-  decreaseItemQuantity,
-  increaseItemQuantity,
-} from "@/features/cart/cartSlice";
+// import {
+//   decreaseItemQuantity,
+//   increaseItemQuantity,
+// } from "@/features/cart/cartSlice";
 import { Minus, Plus } from "lucide-react";
 
 type QuantityButtonType = {
@@ -14,13 +14,12 @@ type QuantityButtonType = {
 
 export default function QuantityButton({ id, quantity }: QuantityButtonType) {
   const dispatch = useAppDispatch();
-  console.log("Id and Quantity", id, quantity);
   return (
     <div className="flex items-center border rounded-md justify-between w-fit h-8">
       <Button
         size="icon"
         variant="ghost"
-        onClick={() => dispatch(decreaseItemQuantity(id))}
+        // onClick={() => dispatch(decreaseItemQuantity(id))}
       >
         <Minus className="size-3" />
       </Button>
@@ -28,7 +27,7 @@ export default function QuantityButton({ id, quantity }: QuantityButtonType) {
       <Button
         size="icon"
         variant="ghost"
-        onClick={() => dispatch(increaseItemQuantity(id))}
+        // onClick={() => dispatch(increaseItemQuantity(id))}
       >
         <Plus className="size-3" />
       </Button>

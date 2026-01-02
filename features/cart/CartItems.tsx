@@ -6,14 +6,12 @@ import Image from "next/image";
 import QuantityButton from "../../components/QuantityButton";
 import { useAppDispatch } from "@/app/hooks";
 import Link from "next/link";
-import { clearCart, removeFromCart } from "./cartSlice";
+// import { clearCart, removeFromCart } from "./cartSlice";
 import { useGetCartQuery } from "../api/apiSlice";
 import { CartItem } from "./cart.schema";
 import { SkeletonCustom } from "@/components/SkeletonCustom";
 
 export default function CartItems() {
-  const dispatch = useAppDispatch();
-
   const { data, isLoading, isFetching } = useGetCartQuery(undefined);
 
   const { items } = data?.data || [];
@@ -72,7 +70,7 @@ export default function CartItems() {
           <Button
             variant="ghost"
             className="opacity-70 gap-0 text-red-400 text-md"
-            onClick={() => dispatch(removeFromCart(item.product.id))}
+            // onClick={() => dispatch(removeFromCart(item.product.id))}
           >
             <Trash className="size-4 opacity" />
             <span className="text-md">Remove</span>
@@ -106,9 +104,7 @@ export default function CartItems() {
             <p className="font-medium text-sm"> {totalAmount} AED</p>
           </div>
           <div className="flex justify-end gap-4">
-            <Button variant="outline" onClick={() => dispatch(clearCart())}>
-              Clear cart
-            </Button>
+            <Button variant="outline">Clear cart</Button>
             <Button className="self-end">Checkout</Button>
           </div>
         </footer>

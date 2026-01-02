@@ -14,11 +14,12 @@ import { formatNumbers } from "@/lib/utils";
 import Link from "next/link";
 import { Product } from "@/types/product";
 import { useAddToCartMutation } from "@/features/api/apiSlice";
+import { Spinner } from "../ui/spinner";
 
 function ProductCard(props: Product) {
   const { id, images, title, description, unitPrice } = props;
   const image = images?.length ? images?.at(0) : "";
-  const [addToCart] = useAddToCartMutation();
+  const [addToCart, isFetching] = useAddToCartMutation();
 
   const handleAddToCart = async (productId: string, props: Product) => {
     await addToCart({ productId, product: props });
@@ -60,6 +61,7 @@ function ProductCard(props: Product) {
           className="border-primary rounded-full uppercase "
           onClick={() => handleAddToCart(id, props)}
         >
+          {/* {isFetching ? <Spinner /> : " Add to cart"} */}
           Add to cart
         </Button>
       </CardFooter>

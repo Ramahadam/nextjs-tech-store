@@ -21,9 +21,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppSelector } from "@/app/hooks";
 import { useGetCartQuery } from "@/features/api/apiSlice";
-import { addToCart } from "@/features/cart/cartSlice";
 import { cn } from "@/lib/utils";
 import { Spinner } from "./ui/spinner";
 
@@ -36,7 +35,9 @@ export default function Navbar() {
     skip: !isAuthenticated,
   });
 
-  const itemsCount = data?.data?.items.length ?? 0;
+  const itemsCount = Array.isArray(data?.data?.items)
+    ? data?.data?.items.length
+    : 0;
 
   const showCartBadge = isAuthenticated && itemsCount > 0;
 

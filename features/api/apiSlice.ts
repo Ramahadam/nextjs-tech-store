@@ -79,15 +79,26 @@ export const apiSlice = createApi({
         const patch = dispatch(
           apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
             //check if the cart exists in the cache
-            const items = draft.data.cart.items;
+            if (!draft.data?.items) {
+              // Since cart is not exist we create the draft to be similar to cache later we push new product and add quanity
+              draft.data = { items: [], totalPrice: 0 };
+            }
             // if exists increament quantity by 1
-            const item = items.find(
+
+            const existingItem = draft.data.items?.find(
               (item: CartItem) => item.product._id === productId
             );
 
-            if (item) item.product.quantity += 1;
+            if (existingItem) {
+              existingItem.quantity += 1;
+              existingItem.unitPrice = product.unitPrice;
+            }
             // if doesnot exists add the product to cache
-            items.push({ product, quantity: 1 });
+            draft.data.items.push({
+              product,
+              quantity: 1,
+              unitPrice: product.unitPrice,
+            });
           })
         );
 
