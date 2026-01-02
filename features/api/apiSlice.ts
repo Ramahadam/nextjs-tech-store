@@ -92,6 +92,8 @@ export const apiSlice = createApi({
             if (existingItem) {
               existingItem.quantity += 1;
               existingItem.unitPrice = product.unitPrice;
+
+              return;
             }
             // if doesnot exists add the product to cache
             draft.data.items.push({
