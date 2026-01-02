@@ -19,7 +19,9 @@ import { Spinner } from "../ui/spinner";
 function ProductCard(props: Product) {
   const { id, images, title, description, unitPrice } = props;
   const image = images?.length ? images?.at(0) : "";
-  const [addToCart, isFetching] = useAddToCartMutation();
+  const [addToCart, { isError, isLoading, isSuccess }] = useAddToCartMutation();
+
+  if (isSuccess) console.log("Success Successfully added to cart");
 
   const handleAddToCart = async (productId: string, props: Product) => {
     await addToCart({ productId, product: props });
@@ -60,8 +62,9 @@ function ProductCard(props: Product) {
           variant="outline"
           className="border-primary rounded-full uppercase "
           onClick={() => handleAddToCart(id, props)}
+          disabled={isLoading}
         >
-          {/* {isFetching ? <Spinner /> : " Add to cart"} */}
+          {isLoading ? <Spinner /> : " Add to cart"}
           Add to cart
         </Button>
       </CardFooter>
