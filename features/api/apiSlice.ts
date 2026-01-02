@@ -111,17 +111,17 @@ export const apiSlice = createApi({
         }
       },
     }),
-    removeFromCart: builder.mutation<CartIem | null, { productId: string }>({
+    removeFromCart: builder.mutation<null, { productId: string }>({
       query: ({ productId }) => ({
         url: "/cart",
-        method: "delete",
-        body: productId,
+        method: "DELETE",
+        body: { productId },
       }),
 
       async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
-            draft.data.cart.items = draft.data.cart.items.filter(
+            draft.data.items = draft.data.items.filter(
               (item: CartItem) => item.product._id !== productId
             );
           })

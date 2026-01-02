@@ -7,14 +7,23 @@ import QuantityButton from "../../components/QuantityButton";
 import { useAppDispatch } from "@/app/hooks";
 import Link from "next/link";
 // import { clearCart, removeFromCart } from "./cartSlice";
-import { useGetCartQuery } from "../api/apiSlice";
+import { useGetCartQuery, useRemoveFromCartMutation } from "../api/apiSlice";
 import { CartItem } from "./cart.schema";
 import { SkeletonCustom } from "@/components/SkeletonCustom";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function CartItems() {
   const { data, isLoading, isFetching } = useGetCartQuery(undefined);
+  const [removeFromCart, { isLoading: isRemoving, isSuccess }] =
+    useRemoveFromCartMutation();
 
   const { items } = data?.data || [];
+
+  // Handle Remove Item
+
+  const handleRemoveItem = async (productId: string) => {
+    await removeFromCart({ productId });
+  };
 
   if (isLoading || isFetching) {
     return (
@@ -70,10 +79,17 @@ export default function CartItems() {
           <Button
             variant="ghost"
             className="opacity-70 gap-0 text-red-400 text-md"
-            // onClick={() => dispatch(removeFromCart(item.product.id))}
+            onClick={() => handleRemoveItem(item?.product?._id)}
+            disabled={isRemoving}
           >
-            <Trash className="size-4 opacity" />
-            <span className="text-md">Remove</span>
+            {isRemoving ? (
+              <Spinner />
+            ) : (
+              <p className="flex items-center gap-1">
+                <Trash className="size-4 opacity" />
+                <span className="text-md">Remove</span>
+              </p>
+            )}
           </Button>
           <p className="font-semibold tracking-wide ">
             {item.product.unitPrice * item.quantity} AED
