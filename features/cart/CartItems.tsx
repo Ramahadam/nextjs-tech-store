@@ -11,11 +11,14 @@ import { useGetCartQuery, useRemoveFromCartMutation } from "../api/apiSlice";
 import { CartItem } from "./cart.schema";
 import { SkeletonCustom } from "@/components/SkeletonCustom";
 import { Spinner } from "@/components/ui/spinner";
+import { Product } from "@/types/product";
 
 export default function CartItems() {
   const { data, isLoading, isFetching } = useGetCartQuery(undefined);
   const [removeFromCart, { isLoading: isRemoving, isSuccess }] =
     useRemoveFromCartMutation();
+
+  console.log(data);
 
   const { items } = data?.data || [];
 
@@ -44,7 +47,14 @@ export default function CartItems() {
     );
   }
 
-  const totalAmount = data?.data.totalPrice;
+  const totalAmount = data?.data.items.reduce(
+    (total: number, item: Product) => {
+      total = total + item.quantity * item.unitPrice;
+      return total;
+    },
+    0
+  );
+
   const formattedItems = items?.map((item: CartItem) => ({
     ...item,
     product: { ...item.product, id: item.product._id },
