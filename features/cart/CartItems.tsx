@@ -63,8 +63,8 @@ export default function CartItems() {
   const renderedItems = formattedItems?.map((item: CartItem) => (
     <div className="cart-item" key={item.product.id}>
       <div className="flex justify-between items-start ">
-        <div className="flex gap-6  md:items-center md:flex-row flex-col">
-          <figure className=" w-40  h-auto">
+        <div className="flex md:gap-6  md:items-center md:flex-row flex-col">
+          <figure className=" max-w-30  max-h-30">
             <Image
               src={item.product.images[0]}
               alt={item.product.title}
@@ -110,7 +110,7 @@ export default function CartItems() {
   ));
 
   return (
-    <article className="border  border-lightGray rounded-md p-4 md:max-w-xl md:mx-auto my-8 md:my-16">
+    <article className="border shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
       <header className="">
         <p className="uppercase text-sm">my bag</p>
         <p className="text-sm uppercase text-gray-400">
@@ -120,7 +120,7 @@ export default function CartItems() {
       </header>
       <hr className="border-lightGray my-4 mb-8" />
 
-      {renderedItems}
+      <div className="flex flex-col gap-16">{renderedItems}</div>
 
       {items?.length > 0 && (
         <footer className="flex flex-col gap-4">
