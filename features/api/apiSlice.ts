@@ -1,5 +1,4 @@
 import { RootState } from "@/lib/store";
-import { CartIem } from "@/types/cart";
 import type { Product, Products } from "@/types/product";
 import type { GetCurrentUserResponse } from "@/types/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -113,9 +112,8 @@ export const apiSlice = createApi({
     }),
     removeFromCart: builder.mutation<null, { productId: string }>({
       query: ({ productId }) => ({
-        url: "/cart",
+        url: `/cart/${productId}`,
         method: "DELETE",
-        body: { productId },
       }),
 
       async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
