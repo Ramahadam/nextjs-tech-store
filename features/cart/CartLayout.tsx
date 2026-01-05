@@ -15,6 +15,7 @@ import { calcCartTotalAmount } from "./cart.utils";
 import { FC } from "react";
 import { CartSummary } from "./CartSummary";
 import { CartItems } from "./CartItems";
+import { CartHeader } from "./CartHeader";
 
 export default function CartLayout() {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -50,22 +51,13 @@ export default function CartLayout() {
 
   return (
     <article className="border min-h-dvh shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
-      <header className="">
-        <p className="uppercase text-sm">my bag</p>
-        <p className="text-sm uppercase text-gray-400">
-          <span> {items?.length} </span>
-          <span>{items?.length > 1 ? "Items" : "Item"}</span>
-        </p>
-      </header>
-      <hr className="border-lightGray my-4 mb-8" />
+      <CartHeader items={items} />
 
-      <div className="flex flex-col gap-8 md:gap-8 pb-8 border-b-2 ">
-        <CartItems
-          items={items}
-          isRemoving={isRemoving}
-          onRemoveItem={handleRemoveItem}
-        />
-      </div>
+      <CartItems
+        items={items}
+        isRemoving={isRemoving}
+        onRemoveItem={handleRemoveItem}
+      />
 
       {items?.length > 0 && <CartSummary items={items} />}
     </article>

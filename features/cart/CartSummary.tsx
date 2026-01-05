@@ -1,14 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { FC } from "react";
 import { calcCartTotalAmount } from "./cart.utils";
-import { CartItem } from "./cart.schema";
+import { CartItemsProps } from "./cart.schema";
 
-type CartSummaryProp = {
-  items: CartItem[];
-};
-
-export const CartSummary: FC<CartSummaryProp> = ({ items }) => {
-  console.log(items);
+export const CartSummary: FC<CartItemsProps> = ({ items }) => {
   const totalAmount = calcCartTotalAmount(items);
   return (
     <footer className="flex flex-col gap-4 mt-4">

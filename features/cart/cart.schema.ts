@@ -17,6 +17,10 @@ export const getCartQueryResponseSchema = z.object({
   data: cartSchema,
 });
 
+export type CartItemsProps = {
+  items: CartItem[];
+};
+
 export type CartItem = z.infer<typeof cartItemSchema>;
 export type Cart = z.infer<typeof cartSchema>;
 export type GetCartQueryResponse = z.infer<typeof getCartQueryResponseSchema>;
