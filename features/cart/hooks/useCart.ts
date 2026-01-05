@@ -11,7 +11,7 @@ export const useCart = () => {
       skip: !isAuthenticated,
     });
 
-  const items = data?.data.items;
+  const items = data?.data.items ?? [];
 
   const [
     removeFromCart,

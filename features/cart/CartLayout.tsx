@@ -1,6 +1,4 @@
 "use client";
-import { useAppSelector } from "@/app/hooks";
-import { useGetCartQuery, useRemoveFromCartMutation } from "../api/apiSlice";
 import { Spinner } from "@/components/ui/spinner";
 import { EmptyCart } from "@/components/cart/EmptyCart";
 import { CartSummary } from "./CartSummary";
