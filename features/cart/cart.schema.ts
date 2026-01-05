@@ -4,6 +4,7 @@ import { z } from "zod";
 const cartItemSchema = z.object({
   product: productSchema,
   quantity: z.number().min(1),
+  unitPrice: z.number().min(1),
 });
 
 const cartSchema = z.object({

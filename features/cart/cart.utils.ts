@@ -1,10 +1,10 @@
 // Calculate total amount from List of products
 
-import { CartIem } from "@/types/cart";
+import { CartItem } from "./cart.schema";
 
-export const calcCartTotalAmount = (items: CartIem[]) => {
+export const calcCartTotalAmount = (items: CartItem[]) => {
   return items.reduce(
-    (total: number, item: CartIem) => total + item.quantity * item.unitPrice,
+    (total, item) => total + item.quantity * item.unitPrice,
     0
   );
 };
