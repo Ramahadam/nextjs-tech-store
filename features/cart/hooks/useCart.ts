@@ -1,5 +1,6 @@
 import { useAppSelector } from "@/app/hooks";
 import {
+  useClearCartMutation,
   useGetCartQuery,
   useRemoveFromCartMutation,
 } from "@/features/api/apiSlice";
@@ -23,6 +24,9 @@ export const useCart = () => {
     },
   ] = useRemoveFromCartMutation();
 
+  const [clearCart, { isError: isErrorClearCart, error: erroClearCart }] =
+    useClearCartMutation();
+
   const isBusy = isLoading || isFetching || isUninitialized;
 
   const handleRemoveItem = async (productId: string) => {
@@ -36,5 +40,6 @@ export const useCart = () => {
     handleRemoveItem,
     isRemoving,
     isSuccess,
+    clearCart,
   };
 };

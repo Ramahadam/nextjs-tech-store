@@ -110,31 +110,9 @@ export const apiSlice = createApi({
         }
       },
     }),
-    removeFromCart: builder.mutation<null, { productId: string }>({
-      query: ({ productId }) => ({
-        url: `/cart/${productId}`,
-        method: "DELETE",
-      }),
-
-      async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
-        const patch = dispatch(
-          apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
-            draft.data.items = draft.data.items.filter(
-              (item: CartItem) => item.product._id !== productId
-            );
-          })
-        );
-
-        try {
-          await queryFulfilled;
-        } catch {
-          patch.undo();
-        }
-      },
-    }),
 
     updateCartQuantity: builder.mutation<
-      CartIem,
+      CartItem,
       { productId: string; quantity: number }
     >({
       query: ({ productId, quantity }) => ({
@@ -171,6 +149,50 @@ export const apiSlice = createApi({
         }
       },
     }),
+    removeFromCart: builder.mutation<null, { productId: string }>({
+      query: ({ productId }) => ({
+        url: `/cart/${productId}`,
+        method: "DELETE",
+      }),
+
+      async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
+            draft.data.items = draft.data.items.filter(
+              (item: CartItem) => item.product._id !== productId
+            );
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
+    }),
+
+    clearCart: builder.mutation<void, void>({
+      query: () => ({
+        url: "/cart",
+        method: "DELETE",
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
+            draft.data.items = [];
+            draft.totalPrice = 0;
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          patch.undo();
+          console.log(error);
+        }
+      },
+    }),
   }),
 });
 
@@ -180,6 +202,7 @@ export const {
   useSyncUserMutation,
   useAddToCartMutation,
   useRemoveFromCartMutation,
+  useClearCartMutation,
   useUpdateCartQuantityMutation,
   useGetCartQuery,
 } = apiSlice;
