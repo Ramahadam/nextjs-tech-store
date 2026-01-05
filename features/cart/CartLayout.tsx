@@ -6,27 +6,13 @@ import { EmptyCart } from "@/components/cart/EmptyCart";
 import { CartSummary } from "./CartSummary";
 import { CartItems } from "./CartItems";
 import { CartHeader } from "./CartHeader";
+import { useCart } from "./hooks/useCart";
 
 export default function CartLayout() {
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const { data, isLoading, isFetching, isUninitialized } = useGetCartQuery(
-    undefined,
-    {
-      skip: !isAuthenticated,
-    }
-  );
-  const [removeFromCart, { isLoading: isRemoving, isSuccess }] =
-    useRemoveFromCartMutation();
+  const { isBusy, items, handleRemoveItem, isRemoving, isSuccess } = useCart();
 
-  const items = data?.data.items;
-
-  // Handle Remove Item
-  const handleRemoveItem = async (productId: string) => {
-    await removeFromCart({ productId });
-  };
-
-  // Rendeer spinner in loading and fetching state
-  if (isLoading || isFetching || isUninitialized) {
+  // Display spinner if busy = isLoading | isFetching | isUninitialized
+  if (isBusy) {
     return (
       <div className="flex items-center justify-center md:my-8">
         <Spinner className="text-2xl" />
@@ -35,7 +21,6 @@ export default function CartLayout() {
     );
   }
 
-  // Empty cart return instruction message
   if (items && items?.length === 0) return <EmptyCart />;
 
   return (
