@@ -11,6 +11,7 @@ import { CartItem } from "./cart.schema";
 import { Spinner } from "@/components/ui/spinner";
 import { Product } from "@/types/product";
 import { EmptyCart } from "@/components/cart/EmptyCart";
+import { calcCartTotalAmount } from "./cart.utils";
 
 export default function CartItems() {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -45,13 +46,7 @@ export default function CartItems() {
   // Empty cart return instruction message
   if (items && items?.length === 0) return <EmptyCart />;
 
-  const totalAmount = data?.data.items.reduce(
-    (total: number, item: Product) => {
-      total = total + item.quantity * item.unitPrice;
-      return total;
-    },
-    0
-  );
+  const totalAmount = calcCartTotalAmount(items);
 
   const formattedItems = items?.map((item: CartItem) => ({
     ...item,
