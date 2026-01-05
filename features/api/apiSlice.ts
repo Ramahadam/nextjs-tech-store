@@ -131,14 +131,8 @@ export const apiSlice = createApi({
             const existingItem = items.find(
               (item: CartItem) => item.product._id === productId
             );
-
-            // if (existingItem.quantity <= 0) {
-            //   draft.data.items = items.filter(
-            //     (item: CartItem) => item.product._id === productId
-            //   );
-            // }
-
-            if (existingItem.quantity <= 0) {
+            //Remove item from cart if quanity <=0
+            if (quantity <= 0) {
               draft.data.items = items.filter(
                 (item: CartItem) => item.product._id !== productId
               );
