@@ -1,5 +1,5 @@
-import CartItems from "@/features/cart/CartItems";
+import CartLayout from "@/features/cart/CartLayout";
 
 export default function Page() {
-  return <CartItems />;
+  return <CartLayout />;
 }

@@ -12,8 +12,10 @@ import { Spinner } from "@/components/ui/spinner";
 import { Product } from "@/types/product";
 import { EmptyCart } from "@/components/cart/EmptyCart";
 import { calcCartTotalAmount } from "./cart.utils";
+import { FC } from "react";
+import { CartSummary } from "./CartSummary";
 
-export default function CartItems() {
+export default function CartLayout() {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const { data, isLoading, isFetching, isUninitialized } = useGetCartQuery(
     undefined,
@@ -34,7 +36,6 @@ export default function CartItems() {
 
   // Rendeer spinner in loading and fetching state
   if (isLoading || isFetching || isUninitialized) {
-    console.log("items", items);
     return (
       <div className="flex items-center justify-center md:my-8">
         <Spinner className="text-2xl" />
@@ -48,15 +49,10 @@ export default function CartItems() {
 
   const totalAmount = calcCartTotalAmount(items);
 
-  const formattedItems = items?.map((item: CartItem) => ({
-    ...item,
-    product: { ...item.product, id: item.product._id },
-  }));
-
-  const renderedItems = formattedItems?.map((item: CartItem) => (
+  const renderedItems = items?.map((item: CartItem) => (
     <div
       className="cart-item not-last:border-b-1 not-last:pb-8 md:not-last:border-none"
-      key={item.product.id}
+      key={item.product._id}
     >
       <div className="flex justify-between items-start  ">
         <div className="flex md:gap-6  md:items-center md:flex-row flex-col">
@@ -120,19 +116,7 @@ export default function CartItems() {
         {renderedItems}
       </div>
 
-      {items?.length > 0 && (
-        <footer className="flex flex-col gap-4 mt-4">
-          <div className="text-md self-end">
-            <p className="mb-2"> Estimated Total </p>
-
-            <p className="font-bold text-sm"> {totalAmount} AED</p>
-          </div>
-          <div className="flex justify-end gap-4 ">
-            <Button variant="outline">Clear cart</Button>
-            <Button className="self-end">Checkout</Button>
-          </div>
-        </footer>
-      )}
+      {items?.length > 0 && <CartSummary totalAmount={totalAmount} />}
     </article>
   );
 }
