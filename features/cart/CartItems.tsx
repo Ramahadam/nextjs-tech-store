@@ -1,17 +1,16 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import Image from "next/image";
 import QuantityButton from "../../components/QuantityButton";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppSelector } from "@/app/hooks";
 import Link from "next/link";
 // import { clearCart, removeFromCart } from "./cartSlice";
 import { useGetCartQuery, useRemoveFromCartMutation } from "../api/apiSlice";
 import { CartItem } from "./cart.schema";
-import { SkeletonCustom } from "@/components/SkeletonCustom";
 import { Spinner } from "@/components/ui/spinner";
 import { Product } from "@/types/product";
+import { EmptyCart } from "@/components/cart/EmptyCart";
 
 export default function CartItems() {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -44,16 +43,7 @@ export default function CartItems() {
   }
 
   // Empty cart return instruction message
-  if (items && items?.length === 0) {
-    return (
-      <div className="space-y-8 text-center">
-        <p>You have not add any item to the cart</p>
-        <Button className="bg-secondary-custom">
-          <Link href="/">Continue shoping </Link>
-        </Button>
-      </div>
-    );
-  }
+  if (items && items?.length === 0) return <EmptyCart />;
 
   const totalAmount = data?.data.items.reduce(
     (total: number, item: Product) => {
