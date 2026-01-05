@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import Image from "next/image";
 import QuantityButton from "../../components/QuantityButton";
-import { useAppDispatch } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Link from "next/link";
 // import { clearCart, removeFromCart } from "./cartSlice";
 import { useGetCartQuery, useRemoveFromCartMutation } from "../api/apiSlice";
@@ -14,13 +14,17 @@ import { Spinner } from "@/components/ui/spinner";
 import { Product } from "@/types/product";
 
 export default function CartItems() {
-  const { data, isLoading, isFetching } = useGetCartQuery(undefined);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { data, isLoading, isFetching, isUninitialized } = useGetCartQuery(
+    undefined,
+    {
+      skip: !isAuthenticated,
+    }
+  );
   const [removeFromCart, { isLoading: isRemoving, isSuccess }] =
     useRemoveFromCartMutation();
 
-  console.log(data);
-
-  const { items } = data?.data || [];
+  const items = data?.data.items;
 
   // Handle Remove Item
 
@@ -28,17 +32,21 @@ export default function CartItems() {
     await removeFromCart({ productId });
   };
 
-  if (isLoading || isFetching) {
+  // Rendeer spinner in loading and fetching state
+  if (isLoading || isFetching || isUninitialized) {
+    console.log("items", items);
     return (
       <div className="flex items-center justify-center md:my-8">
-        <SkeletonCustom />
+        <Spinner className="text-2xl" />
+        Please wait
       </div>
     );
   }
 
-  if (!isLoading && items?.length === 0) {
+  // Empty cart return instruction message
+  if (items && items?.length === 0) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-8 text-center">
         <p>You have not add any item to the cart</p>
         <Button className="bg-secondary-custom">
           <Link href="/">Continue shoping </Link>
@@ -113,7 +121,7 @@ export default function CartItems() {
   ));
 
   return (
-    <article className="border shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
+    <article className="border min-h-dvh shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
       <header className="">
         <p className="uppercase text-sm">my bag</p>
         <p className="text-sm uppercase text-gray-400">
@@ -123,18 +131,18 @@ export default function CartItems() {
       </header>
       <hr className="border-lightGray my-4 mb-8" />
 
-      <div className="flex flex-col gap-8 md:gap-16 pb-8 border-b-2 ">
+      <div className="flex flex-col gap-8 md:gap-8 pb-8 border-b-2 ">
         {renderedItems}
       </div>
 
       {items?.length > 0 && (
         <footer className="flex flex-col gap-4 mt-4">
           <div className="text-md self-end">
-            <p>Estimated Total </p>
+            <p className="mb-2"> Estimated Total </p>
 
-            <p className="font-medium text-sm"> {totalAmount} AED</p>
+            <p className="font-bold text-sm"> {totalAmount} AED</p>
           </div>
-          <div className="flex justify-end gap-4">
+          <div className="flex justify-end gap-4 ">
             <Button variant="outline">Clear cart</Button>
             <Button className="self-end">Checkout</Button>
           </div>
