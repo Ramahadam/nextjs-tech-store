@@ -1,6 +1,6 @@
 "use client";
-import { useAppDispatch } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
+import { useUpdateCartQuantityMutation } from "@/features/api/apiSlice";
 // import {
 //   decreaseItemQuantity,
 //   increaseItemQuantity,
@@ -13,13 +13,18 @@ type QuantityButtonType = {
 };
 
 export default function QuantityButton({ id, quantity }: QuantityButtonType) {
-  const dispatch = useAppDispatch();
+  const [updateCartQuantity] = useUpdateCartQuantityMutation();
+
+  async function handleUpdateCart(productId: string, quantity: number) {
+    await updateCartQuantity({ productId, quantity });
+  }
+
   return (
     <div className="flex items-center border rounded-md justify-between w-fit h-8">
       <Button
         size="icon"
         variant="ghost"
-        // onClick={() => dispatch(decreaseItemQuantity(id))}
+        onClick={() => handleUpdateCart(id, quantity - 1)}
       >
         <Minus className="size-3" />
       </Button>
@@ -27,7 +32,7 @@ export default function QuantityButton({ id, quantity }: QuantityButtonType) {
       <Button
         size="icon"
         variant="ghost"
-        // onClick={() => dispatch(increaseItemQuantity(id))}
+        onClick={() => handleUpdateCart(id, quantity + 1)}
       >
         <Plus className="size-3" />
       </Button>

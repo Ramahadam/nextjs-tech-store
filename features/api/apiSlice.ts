@@ -116,9 +116,9 @@ export const apiSlice = createApi({
       { productId: string; quantity: number }
     >({
       query: ({ productId, quantity }) => ({
-        url: "/cart",
-        method: "patch",
-        body: { productId, quantity },
+        url: `/cart/${productId}`,
+        method: "PATCH",
+        body: { quantity },
       }),
       async onQueryStarted(
         { productId, quantity },
@@ -126,16 +126,24 @@ export const apiSlice = createApi({
       ) {
         const patch = dispatch(
           apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
-            const items = draft.data.cart.items;
+            const items = draft.data.items;
 
             const existingItem = items.find(
               (item: CartItem) => item.product._id === productId
             );
 
+            // if (existingItem.quantity <= 0) {
+            //   draft.data.items = items.filter(
+            //     (item: CartItem) => item.product._id === productId
+            //   );
+            // }
+
             if (existingItem.quantity <= 0) {
-              draft.data.cart.items = items.filter(
-                (item: CartItem) => item.product._id === productId
+              draft.data.items = items.filter(
+                (item: CartItem) => item.product._id !== productId
               );
+
+              return;
             }
 
             if (existingItem) existingItem.quantity = quantity;
