@@ -1,7 +1,7 @@
 "use client";
 import { Badge } from "../ui/badge";
 import { TypographyH2 } from "../ui/TypographyH2";
-import QuantityButton from "../QuantityButton";
+import QuantityButton from "../../features/cart/CartQuantityButton";
 import RatingDisplay from "../RatingDisplay";
 import Gallary from "../Gallary";
 import WishlistButton from "../../features/wishlist/WishilistButton";

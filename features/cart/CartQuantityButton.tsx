@@ -1,25 +1,28 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useUpdateCartQuantityMutation } from "@/features/api/apiSlice";
-
 import { Minus, Plus } from "lucide-react";
+import { CART_MIN_QTY } from "./cart.constants";
 
-type QuantityButtonType = {
+type CarQuantityButtonType = {
   id: string;
   quantity: number;
 };
 
-const MIN_QTY = 1;
-
-export default function QuantityButton({ id, quantity }: QuantityButtonType) {
+export default function CartQuantityButton({
+  id,
+  quantity,
+}: CarQuantityButtonType) {
   const [updateCartQuantity, { isLoading, isError, error, isSuccess }] =
     useUpdateCartQuantityMutation();
 
   const handleDecrease = async (productId: string, quantity: number) => {
-    if (quantity <= MIN_QTY) return;
+    if (quantity <= CART_MIN_QTY) return;
     await updateCartQuantity({ productId, quantity: quantity - 1 });
   };
+
   const handleIncrease = async (productId: string, quantity: number) => {
+    // TODO: CART_MAX_QTY feature prof
     await updateCartQuantity({ productId, quantity: quantity + 1 });
   };
 
@@ -31,7 +34,7 @@ export default function QuantityButton({ id, quantity }: QuantityButtonType) {
         size="icon"
         variant="ghost"
         onClick={() => handleDecrease(id, quantity)}
-        disabled={isLoading || quantity <= MIN_QTY}
+        disabled={isLoading || quantity <= CART_MIN_QTY}
       >
         <Minus className="size-3" />
       </Button>

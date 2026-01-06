@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { CartItem } from "./cart.schema";
 import Image from "next/image";
-import QuantityButton from "@/components/QuantityButton";
+import CartQuantityButton from "@/features/cart/CartQuantityButton";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
@@ -43,7 +43,10 @@ export const CartItems: FC<CartItemProp> = ({
                 <p className=" mb-3 opacity-50 md:max-w-[90%]">
                   {item.product.description}
                 </p>
-                <QuantityButton id={item.product.id} quantity={item.quantity} />
+                <CartQuantityButton
+                  id={item.product.id}
+                  quantity={item.quantity}
+                />
               </figcaption>
             </div>
 
