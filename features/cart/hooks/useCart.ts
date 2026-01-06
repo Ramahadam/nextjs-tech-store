@@ -35,13 +35,28 @@ export const useCart = () => {
 
   const isBusy = isLoading || isFetching || isUninitialized;
 
-  const handleRemoveItem = async (productId: string) => {
-    await removeFromCart({ productId });
+  // const handleRemoveItem = async (productId: string) => {
+  //   await removeFromCart({ productId });
 
-    toast.success("Item successfully removed", {
-      position: "top-center",
-      duration: 2000,
-    });
+  //   toast.success("Item successfully removed", {
+  //     position: "top-center",
+  //     duration: 2000,
+  //   });
+  // };
+
+  const removeItem = async (productId: string) => {
+    try {
+      await removeFromCart({ productId });
+      toast.success("Item successfully removed", {
+        position: "top-center",
+        duration: 2000,
+      });
+    } catch {
+      toast.error("Failed to remove item", {
+        position: "top-center",
+        duration: 2000,
+      });
+    }
   };
 
   const addItem = async (product: Product) => {
@@ -61,7 +76,7 @@ export const useCart = () => {
     data,
     isBusy,
     items,
-    handleRemoveItem,
+    removeItem,
     isRemoving,
     isSuccess,
     isAdding,

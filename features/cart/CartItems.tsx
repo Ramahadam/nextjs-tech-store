@@ -1,25 +1,17 @@
-import { FC } from "react";
 import { CartItem } from "./cart.schema";
 import Image from "next/image";
 import CartQuantityButton from "@/features/cart/CartQuantityButton";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { useCart } from "./hooks/useCart";
 
-type CartItemProp = {
-  items: CartItem[];
-  onRemoveItem: (id: string) => void;
-  isRemoving: boolean;
-};
+export function CartItems() {
+  const { items, removeItem, isRemoving } = useCart();
 
-export const CartItems: FC<CartItemProp> = ({
-  items,
-  onRemoveItem,
-  isRemoving,
-}) => {
   return (
     <div className="flex flex-col gap-8 md:gap-8 pb-8 border-b-2 ">
-      {items?.map((item) => (
+      {items?.map((item: CartItem) => (
         <div
           className="cart-item not-last:border-b-1 not-last:pb-8 md:not-last:border-none"
           key={item.product._id}
@@ -54,7 +46,7 @@ export const CartItems: FC<CartItemProp> = ({
               <Button
                 variant="ghost"
                 className="opacity-70 gap-0 text-red-400 text-md"
-                onClick={() => onRemoveItem(item?.product?._id)}
+                onClick={() => removeItem(item?.product?._id)}
                 disabled={isRemoving}
               >
                 {isRemoving ? (
@@ -75,4 +67,4 @@ export const CartItems: FC<CartItemProp> = ({
       ))}
     </div>
   );
-};
+}
