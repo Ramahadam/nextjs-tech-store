@@ -1,18 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { FC } from "react";
 import { calcCartTotalAmount } from "./cart.utils";
-import { CartItemsProps } from "./cart.schema";
+import { useCart } from "./hooks/useCart";
 
-type CartSummaryType = CartItemsProps & {
-  onClearCart: () => void;
-};
+export function CartSummary() {
+  const { items, clearCart } = useCart();
 
-export const CartSummary: FC<CartSummaryType> = ({ items, onClearCart }) => {
   const totalAmount = calcCartTotalAmount(items);
 
   async function handleClearCart() {
-    onClearCart();
+    clearCart();
   }
 
   return (
@@ -30,4 +27,4 @@ export const CartSummary: FC<CartSummaryType> = ({ items, onClearCart }) => {
       </div>
     </footer>
   );
-};
+}

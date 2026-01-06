@@ -7,7 +7,7 @@ import { CartHeader } from "./CartHeader";
 import { useCart } from "./hooks/useCart";
 
 export default function CartLayout() {
-  const { isBusy, items, removeItem, isRemoving, clearCart } = useCart();
+  const { isBusy, items } = useCart();
 
   // Display spinner if busy = isLoading | isFetching | isUninitialized
   if (isBusy) {
@@ -25,7 +25,7 @@ export default function CartLayout() {
     <article className="border min-h-dvh shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
       <CartHeader />
       <CartItems />
-      <CartSummary items={items} onClearCart={clearCart} />
+      <CartSummary />
     </article>
   );
 }
