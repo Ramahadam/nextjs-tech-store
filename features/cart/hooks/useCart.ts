@@ -4,6 +4,7 @@ import {
   useClearCartMutation,
   useGetCartQuery,
   useRemoveFromCartMutation,
+  useUpdateCartQuantityMutation,
 } from "@/features/api/apiSlice";
 import { Product } from "@/types/product";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ export const useCart = () => {
       skip: !isAuthenticated,
     }
   );
+  const isBusy = isLoading || isFetching || isUninitialized;
 
   const items = data?.data.items ?? [];
 
@@ -26,7 +28,8 @@ export const useCart = () => {
 
   const [clearCart] = useClearCartMutation();
 
-  const isBusy = isLoading || isFetching || isUninitialized;
+  const [updateCartQuantity, { isLoading: isUpdatingItemQty }] =
+    useUpdateCartQuantityMutation();
 
   const removeItem = async (productId: string) => {
     try {
@@ -66,5 +69,7 @@ export const useCart = () => {
     isAdding,
     clearCart,
     addItem,
+    updateCartQuantity,
+    isUpdatingItemQty,
   };
 };

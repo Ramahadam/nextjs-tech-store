@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useUpdateCartQuantityMutation } from "@/features/api/apiSlice";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Trash } from "lucide-react";
 import { CART_MIN_QTY } from "./cart.constants";
+import { useCart } from "./hooks/useCart";
 
 type CarQuantityButtonType = {
   id: string;
@@ -13,11 +13,11 @@ export default function CartQuantityButton({
   id,
   quantity,
 }: CarQuantityButtonType) {
-  const [updateCartQuantity, { isLoading, isError, error, isSuccess }] =
-    useUpdateCartQuantityMutation();
+  const { updateCartQuantity, isUpdatingItemQty, removeItem, isRemoving } =
+    useCart();
 
   const handleDecrease = async (productId: string, quantity: number) => {
-    if (quantity <= CART_MIN_QTY) return;
+    if (quantity <= CART_MIN_QTY) return removeItem(productId);
     await updateCartQuantity({ productId, quantity: quantity - 1 });
   };
 
@@ -26,24 +26,28 @@ export default function CartQuantityButton({
     await updateCartQuantity({ productId, quantity: quantity + 1 });
   };
 
-  // TODO:Later will use sooner to display success and error messages
-
   return (
     <div className="flex items-center border rounded-md justify-between w-fit h-8">
       <Button
         size="icon"
         variant="ghost"
+        className="cursor-pointer"
         onClick={() => handleDecrease(id, quantity)}
-        disabled={isLoading || quantity <= CART_MIN_QTY}
+        disabled={isUpdatingItemQty}
       >
-        <Minus className="size-3" />
+        {quantity <= CART_MIN_QTY ? (
+          <Trash className="size-4 text-red-500" />
+        ) : (
+          <Minus className="size-3" />
+        )}
       </Button>
       {quantity}
       <Button
         size="icon"
         variant="ghost"
         onClick={() => handleIncrease(id, quantity)}
-        disabled={isLoading}
+        disabled={isUpdatingItemQty}
+        className="cursor-pointer"
       >
         <Plus className="size-3" />
       </Button>

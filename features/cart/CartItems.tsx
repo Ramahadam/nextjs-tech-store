@@ -1,13 +1,10 @@
 import { CartItem } from "./cart.schema";
 import Image from "next/image";
 import CartQuantityButton from "@/features/cart/CartQuantityButton";
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
 import { useCart } from "./hooks/useCart";
 
 export function CartItems() {
-  const { items, removeItem, isRemoving } = useCart();
+  const { items } = useCart();
 
   return (
     <div className="flex flex-col gap-8 md:gap-8 pb-8 border-b-2 ">
@@ -43,21 +40,6 @@ export function CartItems() {
             </div>
 
             <div className="flex flex-col items-center  text-sm">
-              <Button
-                variant="ghost"
-                className="opacity-70 gap-0 text-red-400 text-md"
-                onClick={() => removeItem(item?.product?._id)}
-                disabled={isRemoving}
-              >
-                {isRemoving ? (
-                  <Spinner />
-                ) : (
-                  <p className="flex items-center gap-1">
-                    <Trash className="size-4 opacity" />
-                    <span className="text-md">Remove</span>
-                  </p>
-                )}
-              </Button>
               <p className="font-semibold tracking-wide ">
                 {item.product.unitPrice * item.quantity} AED
               </p>
