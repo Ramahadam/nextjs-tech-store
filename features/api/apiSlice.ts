@@ -185,7 +185,7 @@ export const apiSlice = createApi({
         const patch = dispatch(
           apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
             draft.data.items = [];
-            draft.totalPrice = 0;
+            draft.data.totalPrice = 0;
           })
         );
 
