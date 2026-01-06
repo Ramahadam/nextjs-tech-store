@@ -92,8 +92,6 @@ export const apiSlice = createApi({
 
             if (existingItem) {
               existingItem.quantity += 1;
-              existingItem.unitPrice = product.unitPrice;
-
               return;
             }
             // if doesnot exists add the product to cache
@@ -162,6 +160,8 @@ export const apiSlice = createApi({
       async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           apiSlice.util.updateQueryData("getCart", undefined, (draft) => {
+            if (!draft.data?.items) return;
+
             draft.data.items = draft.data.items.filter(
               (item: CartItem) => item.product._id !== productId
             );
