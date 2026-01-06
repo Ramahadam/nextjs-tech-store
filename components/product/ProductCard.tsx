@@ -15,16 +15,16 @@ import Link from "next/link";
 import { Product } from "@/types/product";
 import { useAddToCartMutation } from "@/features/api/apiSlice";
 import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 function ProductCard(props: Product) {
   const { id, images, title, description, unitPrice } = props;
   const image = images?.length ? images?.at(0) : "";
-  const [addToCart, { isError, isLoading, isSuccess }] = useAddToCartMutation();
+  const { addItem, isAdding } = useCart();
 
-  if (isSuccess) console.log("Success Successfully added to cart");
-
-  const handleAddToCart = async (productId: string, props: Product) => {
-    await addToCart({ productId, product: props });
+  const handleAddToCart = async () => {
+    addItem(props);
   };
 
   return (
@@ -61,10 +61,10 @@ function ProductCard(props: Product) {
         <Button
           variant="outline"
           className="border-primary rounded-full uppercase "
-          onClick={() => handleAddToCart(id, props)}
-          disabled={isLoading}
+          onClick={handleAddToCart}
+          disabled={isAdding}
         >
-          {isLoading ? <Spinner /> : " Add to cart"}
+          {isAdding ? <Spinner /> : " Add to cart"}
           Add to cart
         </Button>
       </CardFooter>

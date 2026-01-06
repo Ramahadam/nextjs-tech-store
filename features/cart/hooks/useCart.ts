@@ -1,9 +1,13 @@
 import { useAppSelector } from "@/app/hooks";
 import {
+  useAddToCartMutation,
   useClearCartMutation,
   useGetCartQuery,
   useRemoveFromCartMutation,
 } from "@/features/api/apiSlice";
+import { Product } from "@/types/product";
+import { toast } from "sonner";
+import Link from "next/link";
 
 export const useCart = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -24,6 +28,8 @@ export const useCart = () => {
     },
   ] = useRemoveFromCartMutation();
 
+  const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
+
   const [clearCart, { isError: isErrorClearCart, error: erroClearCart }] =
     useClearCartMutation();
 
@@ -31,6 +37,24 @@ export const useCart = () => {
 
   const handleRemoveItem = async (productId: string) => {
     await removeFromCart({ productId });
+
+    toast.success("Item successfully removed", {
+      position: "top-center",
+      duration: 2000,
+    });
+  };
+
+  const addItem = async (product: Product) => {
+    try {
+      await addToCart({ productId: product._id, product }).unwrap();
+
+      toast.success("Successfully added to cart!", {
+        position: "top-center",
+        duration: 2000,
+      });
+    } catch {
+      toast.error("Failed to add item", { position: "top-center" });
+    }
   };
 
   return {
@@ -40,6 +64,8 @@ export const useCart = () => {
     handleRemoveItem,
     isRemoving,
     isSuccess,
+    isAdding,
     clearCart,
+    addItem,
   };
 };
