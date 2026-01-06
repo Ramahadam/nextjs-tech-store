@@ -1,7 +1,7 @@
-import { FC } from "react";
-import { CartItemsProps } from "./cart.schema";
+import { useCart } from "./hooks/useCart";
 
-export const CartHeader: FC<CartItemsProps> = ({ items }) => {
+export function CartHeader() {
+  const { items } = useCart();
   return (
     <>
       <header>
@@ -14,4 +14,4 @@ export const CartHeader: FC<CartItemsProps> = ({ items }) => {
       <hr className="border-lightGray my-4 mb-8" />
     </>
   );
-};
+}

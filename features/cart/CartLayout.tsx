@@ -23,7 +23,7 @@ export default function CartLayout() {
 
   return (
     <article className="border min-h-dvh shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
-      <CartHeader items={items} />
+      <CartHeader />
       <CartItems />
       <CartSummary items={items} onClearCart={clearCart} />
     </article>
