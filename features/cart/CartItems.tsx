@@ -13,7 +13,7 @@ export function CartItems() {
     <div className="flex flex-col gap-8 md:gap-8 pb-8 border-b-2 ">
       {items?.map((item: CartItem) => (
         <div
-          className="cart-item not-last:border-b-1 not-last:pb-8 md:not-last:border-none"
+          className="cart-item not-last:border-b not-last:pb-8 md:not-last:border-none"
           key={item.product._id}
         >
           <div className="flex justify-between items-start  ">

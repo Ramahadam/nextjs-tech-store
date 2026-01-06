@@ -13,9 +13,7 @@ import Image from "next/image";
 import { formatNumbers } from "@/lib/utils";
 import Link from "next/link";
 import { Product } from "@/types/product";
-import { useAddToCartMutation } from "@/features/api/apiSlice";
 import { Spinner } from "../ui/spinner";
-import { toast } from "sonner";
 import { useCart } from "@/features/cart/hooks/useCart";
 
 function ProductCard(props: Product) {
@@ -28,8 +26,8 @@ function ProductCard(props: Product) {
   };
 
   return (
-    <Card className="w-[18.5rem]   shadow-none border-none">
-      <CardHeader className="bg-accent py-4 rounded-md relative h-[12rem] items-center">
+    <Card className="w-74   shadow-none border-none">
+      <CardHeader className="bg-accent py-4 rounded-md relative h-48 items-center">
         <Link href={`/products/${id}`}>
           <figure className="justify-self-center">
             {image && (
@@ -38,12 +36,12 @@ function ProductCard(props: Product) {
                 src={image}
                 sizes="vw"
                 alt={title}
-                className="object-contain w-[10rem]"
+                className="object-contain w-40"
               />
             )}
           </figure>
         </Link>
-        <CardAction className="absolute top-0 right-3 bg-white p-[0.25rem] rounded-full flex">
+        <CardAction className="absolute top-0 right-3 bg-white p-1 rounded-full flex">
           <WishlistButton {...props} />
         </CardAction>
       </CardHeader>
