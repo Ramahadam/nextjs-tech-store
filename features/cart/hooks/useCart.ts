@@ -8,6 +8,7 @@ import {
 } from "@/features/api/apiSlice";
 import { Product } from "@/types/product";
 import { toast } from "sonner";
+import { CartItem } from "../cart.schema";
 
 export const useCart = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -31,21 +32,6 @@ export const useCart = () => {
   const [updateCartQuantity, { isLoading: isUpdatingItemQty }] =
     useUpdateCartQuantityMutation();
 
-  const removeItem = async (productId: string) => {
-    try {
-      await removeFromCart({ productId });
-      toast.success("Item successfully removed", {
-        position: "top-center",
-        duration: 2000,
-      });
-    } catch {
-      toast.error("Failed to remove item", {
-        position: "top-center",
-        duration: 2000,
-      });
-    }
-  };
-
   const addItem = async (product: Product) => {
     try {
       await addToCart({ productId: product._id, product }).unwrap();
@@ -56,6 +42,31 @@ export const useCart = () => {
       });
     } catch {
       toast.error("Failed to add item", { position: "top-center" });
+    }
+  };
+
+  const removeItem = async (productId: string) => {
+    try {
+      await removeFromCart({ productId });
+
+      toast.success("Item successfully removed", {
+        position: "top-center",
+        duration: 3000,
+        action: {
+          label: "undo",
+          onClick: () => {
+            const undoItem = items.find(
+              (item: CartItem) => item.product._id === productId
+            );
+            addItem(undoItem);
+          },
+        },
+      });
+    } catch {
+      toast.error("Failed to remove item", {
+        position: "top-center",
+        duration: 2000,
+      });
     }
   };
 

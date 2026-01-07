@@ -13,8 +13,7 @@ export default function CartQuantityButton({
   id,
   quantity,
 }: CarQuantityButtonType) {
-  const { updateCartQuantity, isUpdatingItemQty, removeItem, isRemoving } =
-    useCart();
+  const { updateCartQuantity, isUpdatingItemQty, removeItem } = useCart();
 
   const handleDecrease = async (productId: string, quantity: number) => {
     if (quantity <= CART_MIN_QTY) return removeItem(productId);
