@@ -47,28 +47,19 @@ export const useCart = () => {
 
   const removeItem = async (productId: string) => {
     try {
-      const product: CartItem = items.find(
+      const { product }: CartItem = items.find(
         (item: CartItem) => item.product._id === productId
       );
-
-      console.log(product);
 
       await removeFromCart({ productId });
 
       toast.success("Item successfully removed", {
         position: "top-center",
-        duration: 3000,
+        duration: 2000,
         action: {
           label: "undo",
           onClick: () => {
-            const removedItem: CartItem = {
-              product: product.product,
-              quantity: product.quantity,
-              unitPrice: product.unitPrice,
-            };
-            console.log("Removed");
-
-            addItem(removedItem.product);
+            addItem(product);
           },
         },
       });
