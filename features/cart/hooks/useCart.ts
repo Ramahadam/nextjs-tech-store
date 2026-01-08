@@ -9,6 +9,7 @@ import {
 import { Product } from "@/types/product";
 import { toast } from "sonner";
 import { CartItem } from "../cart.schema";
+import { useCallback } from "react";
 
 export const useCart = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -32,44 +33,50 @@ export const useCart = () => {
   const [updateCartQuantity, { isLoading: isUpdatingItemQty }] =
     useUpdateCartQuantityMutation();
 
-  const addItem = async (product: Product) => {
-    try {
-      await addToCart({ productId: product._id, product }).unwrap();
+  const addItem = useCallback(
+    async (product: Product) => {
+      try {
+        await addToCart({ productId: product._id, product }).unwrap();
 
-      toast.success("Successfully added to cart!", {
-        position: "top-center",
-        duration: 2000,
-      });
-    } catch {
-      toast.error("Failed to add item", { position: "top-center" });
-    }
-  };
+        toast.success("Successfully added to cart!", {
+          position: "top-center",
+          duration: 2000,
+        });
+      } catch {
+        toast.error("Failed to add item", { position: "top-center" });
+      }
+    },
+    [addToCart]
+  );
 
-  const removeItem = async (productId: string) => {
-    try {
-      const { product }: CartItem = items.find(
-        (item: CartItem) => item.product._id === productId
-      );
+  const removeItem = useCallback(
+    async (productId: string) => {
+      try {
+        const { product }: CartItem = items.find(
+          (item: CartItem) => item.product._id === productId
+        );
 
-      await removeFromCart({ productId });
+        await removeFromCart({ productId });
 
-      toast.success("Item successfully removed", {
-        position: "top-center",
-        duration: 2000,
-        action: {
-          label: "undo",
-          onClick: () => {
-            addItem(product);
+        toast.success("Item successfully removed", {
+          position: "top-center",
+          duration: 2000,
+          action: {
+            label: "undo",
+            onClick: () => {
+              addItem(product);
+            },
           },
-        },
-      });
-    } catch {
-      toast.error("Failed to remove item", {
-        position: "top-center",
-        duration: 2000,
-      });
-    }
-  };
+        });
+      } catch {
+        toast.error("Failed to remove item", {
+          position: "top-center",
+          duration: 2000,
+        });
+      }
+    },
+    [items, addItem, removeFromCart]
+  );
 
   return {
     data,
