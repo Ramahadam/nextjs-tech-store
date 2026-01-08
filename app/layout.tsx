@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 import ClientWrapper from "./ClientWrapper";
 
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={` ${interFontFamily.variable} antialiased`}>
         <ClientWrapper>{children}</ClientWrapper>
+        <Toaster />
       </body>
     </html>
   );

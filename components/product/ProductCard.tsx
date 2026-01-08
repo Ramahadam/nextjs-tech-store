@@ -12,18 +12,22 @@ import WishlistButton from "../../features/wishlist/WishilistButton";
 import Image from "next/image";
 import { formatNumbers } from "@/lib/utils";
 import Link from "next/link";
-import { CartIem } from "@/types/cart";
-import { useAppDispatch } from "@/app/hooks";
-import { addToCart } from "@/features/cart/cartSlice";
+import { Product } from "@/types/product";
+import { Spinner } from "../ui/spinner";
+import { useCart } from "@/features/cart/hooks/useCart";
 
-function ProductCard(props: CartIem) {
+function ProductCard(props: Product) {
   const { id, images, title, description, unitPrice } = props;
   const image = images?.length ? images?.at(0) : "";
-  const dispatch = useAppDispatch();
+  const { addItem, isAdding } = useCart();
+
+  const handleAddToCart = async () => {
+    addItem(props);
+  };
 
   return (
-    <Card className="w-[18.5rem]   shadow-none border-none">
-      <CardHeader className="bg-accent py-4 rounded-md relative h-[12rem] items-center">
+    <Card className="w-74   shadow-none border-none">
+      <CardHeader className="bg-accent py-4 rounded-md relative h-48 items-center">
         <Link href={`/products/${id}`}>
           <figure className="justify-self-center">
             {image && (
@@ -32,12 +36,12 @@ function ProductCard(props: CartIem) {
                 src={image}
                 sizes="vw"
                 alt={title}
-                className="object-contain w-[10rem]"
+                className="object-contain w-40"
               />
             )}
           </figure>
         </Link>
-        <CardAction className="absolute top-0 right-3 bg-white p-[0.25rem] rounded-full flex">
+        <CardAction className="absolute top-0 right-3 bg-white p-1 rounded-full flex">
           <WishlistButton {...props} />
         </CardAction>
       </CardHeader>
@@ -55,10 +59,10 @@ function ProductCard(props: CartIem) {
         <Button
           variant="outline"
           className="border-primary rounded-full uppercase "
-          onClick={() =>
-            dispatch(addToCart({ ...props, unitPrice: Number(unitPrice) }))
-          }
+          onClick={handleAddToCart}
+          disabled={isAdding}
         >
+          {isAdding ? <Spinner /> : " Add to cart"}
           Add to cart
         </Button>
       </CardFooter>

@@ -1,97 +1,52 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
+import { CartItem } from "./cart.schema";
 import Image from "next/image";
-import QuantityButton from "../../components/QuantityButton";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import Link from "next/link";
-import { clearCart, removeFromCart } from "./cartSlice";
+import CartQuantityButton from "@/features/cart/CartQuantityButton";
+import { useCart } from "./hooks/useCart";
 
-export default function CartItems() {
-  const dispatch = useAppDispatch();
-
-  const items = useAppSelector((state) => state.cart.items);
-
-  if (!items.length) {
-    return (
-      <div className="space-y-8">
-        <p>You have not add any item to the cart</p>
-        <Button className="bg-secondary-custom">
-          <Link href="/">Continue shoping </Link>
-        </Button>
-      </div>
-    );
-  }
-
-  const totalAmount = items.reduce(
-    (acum, curr) => acum + (curr.subTotal ?? 0),
-    0
-  );
-
-  const renderedItems = items?.map((item) => (
-    <div className="cart-item" key={item.id}>
-      <div className="flex justify-between">
-        <div className="flex gap-6 items-center">
-          <figure className="bg-accent w-20 h-auto py-4 rounded-sm">
-            <Image
-              src={item.images[0]}
-              alt={item.title}
-              width={0}
-              height={0}
-              priority
-              sizes="vw"
-              className="w-full"
-            />
-          </figure>
-
-          <figcaption className="text-xs">
-            <p className="font-medium mb-2">{item.title} </p>
-            <p className=" mb-3 opacity-50">{item.description}</p>
-            <QuantityButton {...item} />
-          </figcaption>
-        </div>
-
-        <div className="flex flex-col items-center  text-[0.7rem]">
-          <Button
-            variant="ghost"
-            className="opacity-45 gap-0"
-            onClick={() => dispatch(removeFromCart(item.id))}
-          >
-            <Trash className="size-3 opacity" />
-            <span>Remove</span>
-          </Button>
-          <p className="font-semibold tracking-wide ">{item.subTotal} AED</p>
-        </div>
-      </div>
-    </div>
-  ));
+export function CartItems() {
+  const { items } = useCart();
 
   return (
-    <article className="border  border-lightGray rounded-md p-4 md:max-w-xl md:mx-auto">
-      <header className="">
-        <p className="uppercase text-sm">my bag</p>
-        <p className="text-sm uppercase text-gray-400">{items.length} items</p>
-      </header>
-      <hr className="border-lightGray my-2" />
+    <div className="flex flex-col gap-8 md:gap-8 pb-8 border-b-2 ">
+      {items?.map((item: CartItem) => (
+        <div
+          className="cart-item not-last:border-b not-last:pb-8 md:not-last:border-none"
+          key={item.product._id}
+        >
+          <div className="flex justify-between items-start  ">
+            <div className="flex md:gap-6  md:items-center md:flex-row flex-col">
+              <figure className="max-w-20 min-w-20 md:max-w-30  md:max-h-30">
+                <Image
+                  src={item.product.images[0]}
+                  alt={item.product.title}
+                  width={0}
+                  height={0}
+                  priority
+                  sizes="vw"
+                  className="w-full"
+                />
+              </figure>
 
-      {renderedItems}
+              <figcaption className="text-sm">
+                <p className="font-medium mb-2">{item.product.title} </p>
+                <p className=" mb-3 opacity-50 md:max-w-[90%]">
+                  {item.product.description}
+                </p>
+                <CartQuantityButton
+                  id={item.product.id}
+                  quantity={item.quantity}
+                />
+              </figcaption>
+            </div>
 
-      {items.length > 0 && (
-        <footer className="flex flex-col gap-2">
-          <div className="text-sm self-end">
-            <p>Estimated Total </p>
-
-            <p className="font-medium text-xs"> {totalAmount} AED</p>
+            <div className="flex flex-col items-center  text-sm">
+              <p className="font-semibold tracking-wide ">
+                {item.product.unitPrice * item.quantity} AED
+              </p>
+            </div>
           </div>
-          <div className="flex justify-end gap-4">
-            <Button variant="outline" onClick={() => dispatch(clearCart())}>
-              Clear cart
-            </Button>
-            <Button className="self-end">Checkout</Button>
-          </div>
-        </footer>
-      )}
-    </article>
+        </div>
+      ))}
+    </div>
   );
 }
