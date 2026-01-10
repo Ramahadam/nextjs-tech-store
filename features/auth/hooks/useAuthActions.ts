@@ -6,14 +6,9 @@ import { useSearchParams } from "next/navigation";
 import { loginUser, registerUser, signupWithGoogle } from "@/lib/firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { firebaseErrorMessages } from "@/lib/utils";
-import { LoginInputs, loginSchema } from "../login.schema";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginInputs } from "../login.schema";
 import { SubmitHandler } from "react-hook-form";
-import { useSyncUserMutation } from "@/features/api/apiSlice";
-import { setProfile } from "@/features/user/userSlice";
-import { useAppDispatch } from "@/app/hooks";
-import { SignupInputs, signupSchema } from "../signup.schema";
+import { SignupInputs } from "../signup.schema";
 
 export function useAuthActions() {
   const [authError, setAuthError] = useState("");
@@ -22,12 +17,10 @@ export function useAuthActions() {
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
   const { updateAuthUIAndRedirect } = useAuthFlow();
-  const [syncUser] = useSyncUserMutation();
-  const dispatch = useAppDispatch();
 
   async function handleSignup(data: SignupInputs) {
     try {
-      setIsLoading(false);
+      setIsLoading(true);
       const { email, password, fullname } = data;
 
       const cred = await registerUser(email, password);

@@ -26,13 +26,6 @@ export function useOnAuthStateChanged() {
 
       // Prefetch cart immediately after auth
       disptach(apiSlice.endpoints.getCart.initiate(undefined));
-
-      // 3. Sync user with backend
-      const profile = await syncUser({
-        token,
-      }).unwrap();
-
-      if (profile) disptach(setProfile(profile.user));
     });
 
     return () => unbscribe();
