@@ -25,8 +25,8 @@ import { useSyncUserMutation } from "../api/apiSlice";
 import { AuthSideImage } from "./AuthSideImage";
 import { useSearchParams } from "next/navigation";
 import { useAuthFlow } from "./hooks/useAuthFlow";
-import { useGoogleAuth } from "./hooks/useGoogleAuth";
 import AuthGoogleButton from "./AuthGoogleButton";
+import { useAuthActions } from "./hooks/useAuthActions";
 
 export function SignupForm({
   className,
@@ -36,6 +36,7 @@ export function SignupForm({
   const [authError, setAuthError] = useState("");
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
+  const { isGoogleLoading, handleSignupWithGoogle } = useAuthActions();
 
   const {
     register,
@@ -72,8 +73,6 @@ export function SignupForm({
       console.log("Error message only", authError);
     }
   }
-
-  const { isGoogleLoading, handleSignupWithGoogle } = useGoogleAuth(redirectTo);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

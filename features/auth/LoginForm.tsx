@@ -1,61 +1,31 @@
 "use client";
-import { cn, firebaseErrorMessages } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { FirebaseError } from "firebase/app";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
-import { loginUser, signupWithGoogle } from "@/lib/firebase/auth";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { Message } from "@/components/Message";
 import { XCircle } from "lucide-react";
 import Link from "next/link";
 import { FieldForm } from "@/components/forms/FieldForm";
-import { LoginInputs, loginSchema } from "./login.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuthFlow } from "./hooks/useAuthFlow";
+import { LoginInputs } from "./login.schema";
 import { AuthSideImage } from "./AuthSideImage";
 import AuthGoogleButton from "./AuthGoogleButton";
-import { useGoogleAuth } from "./hooks/useGoogleAuth";
+import { useAuthActions } from "./hooks/useAuthActions";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [authError, setAuthError] = useState("");
-  const params = useSearchParams();
-  const redirectTo = params.get("redirectTo");
-  const { updateAuthUIAndRedirect } = useAuthFlow();
-
   const {
+    isGoogleLoading,
+    handleSignupWithGoogle,
+    handelLoginUser,
+    authError,
+    setAuthError,
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<LoginInputs>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  const handelLoginUser: SubmitHandler<LoginInputs> = async (data) => {
-    try {
-      const { email, password } = data;
-
-      const user = await loginUser(email, password);
-      const token = await user?.getIdToken();
-
-      if (!token) return;
-
-      await updateAuthUIAndRedirect({ token, redirectTo });
-    } catch (err) {
-      if (err instanceof FirebaseError) {
-        setAuthError(() => firebaseErrorMessages(err.code));
-      } else {
-        setAuthError("Unexpected error occurred.");
-      }
-    }
-  };
-
-  const { handleSignupWithGoogle, isGoogleLoading } = useGoogleAuth(redirectTo);
+    errors,
+  } = useAuthActions();
 
   return (
     <div className={cn("flex flex-col", className)} {...props}>
@@ -74,7 +44,7 @@ export function LoginForm({
                   Enter your email below to login to your account
                 </p>
               </div>
-              <div className="p-8 md:max-w-[100%] flex flex-col">
+              <div className="p-8 md:max-w-full flex flex-col">
                 <FieldForm<LoginInputs>
                   name="email"
                   label="Email"
