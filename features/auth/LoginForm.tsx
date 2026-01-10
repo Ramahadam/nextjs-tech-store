@@ -1,30 +1,32 @@
 "use client";
-import { cn, firebaseErrorMessages } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { FirebaseError } from "firebase/app";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
-import { loginUser, signupWithGoogle } from "@/lib/firebase/auth";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { Message } from "@/components/Message";
 import { XCircle } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { FieldForm } from "@/components/forms/FieldForm";
 import { LoginInputs, loginSchema } from "./login.schema";
+import { AuthSideImage } from "./AuthSideImage";
+import AuthGoogleButton from "./AuthGoogleButton";
+import { useAuthActions } from "./hooks/useAuthActions";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuthFlow } from "./hooks/useAuthFlow";
+import { Spinner } from "@/components/ui/spinner";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [authError, setAuthError] = useState("");
-  const params = useSearchParams();
-  const redirectTo = params.get("redirectTo");
-  const { updateAuthUIAndRedirect } = useAuthFlow();
+  const {
+    isLoading,
+    isLoadingGmail,
+    handleSignupWithGoogle,
+    handelLoginUser,
+    authError,
+    setAuthError,
+  } = useAuthActions();
 
   const {
     register,
@@ -34,38 +36,10 @@ export function LoginForm({
     resolver: zodResolver(loginSchema),
   });
 
-  const handelLoginUser: SubmitHandler<LoginInputs> = async (data) => {
-    try {
-      const { email, password } = data;
-
-      const user = await loginUser(email, password);
-      const token = await user?.getIdToken();
-
-      if (!token) return;
-
-      await updateAuthUIAndRedirect({ token, redirectTo });
-    } catch (err) {
-      if (err instanceof FirebaseError) {
-        setAuthError(() => firebaseErrorMessages(err.code));
-      } else {
-        setAuthError("Unexpected error occurred.");
-      }
-    }
-  };
-
-  async function handleSignupWithGoogle() {
-    const res = await signupWithGoogle();
-    const token = res.token;
-    if (!token) return;
-
-    const fullname = res.user.displayName;
-    await updateAuthUIAndRedirect({ token, redirectTo, fullname });
-  }
-
   return (
     <div className={cn("flex flex-col", className)} {...props}>
       <Card className="overflow-hidden md:p-0 pt-6">
-        <CardContent className="grid p-0 md:grid-cols-2 md:min-h-[45rem]">
+        <CardContent className="grid p-0 md:grid-cols-2 md:min-h-180">
           <div className="flex items-center justify-center ">
             <form
               onSubmit={handleSubmit(handelLoginUser)}
@@ -79,7 +53,7 @@ export function LoginForm({
                   Enter your email below to login to your account
                 </p>
               </div>
-              <div className="p-8 md:max-w-[100%] flex flex-col">
+              <div className="p-8 md:max-w-full flex flex-col">
                 <FieldForm<LoginInputs>
                   name="email"
                   label="Email"
@@ -100,27 +74,17 @@ export function LoginForm({
                 />
 
                 <Field className="mt-4">
-                  <Button type="submit">Login</Button>
+                  <Button type="submit">
+                    {isLoading ? <Spinner /> : "Login"}
+                  </Button>
                   <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card my-2">
                     Or continue with
                   </FieldSeparator>
                   <Field className="grid grid-cols-1 gap-4">
-                    <Button
-                      variant="outline"
-                      type="button"
+                    <AuthGoogleButton
+                      isLoading={isLoadingGmail}
                       onClick={() => handleSignupWithGoogle()}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <span className="text-sm">Continue with Google</span>
-                    </Button>
+                    />
                   </Field>
                   <FieldDescription className="text-center flex justify-between">
                     <span>
@@ -160,15 +124,7 @@ export function LoginForm({
               </div>
             </form>
           </div>
-          <div className="relative hidden md:block ">
-            <Image
-              src="/person-using-laptop.jpg"
-              alt="A person using laptop"
-              className=" h-full w-full object-cover  grayscale-75"
-              width={500}
-              height={500}
-            />
-          </div>
+          <AuthSideImage />
         </CardContent>
       </Card>
     </div>
