@@ -28,7 +28,15 @@ export function useAuthFlow() {
 
     // 2. Store token in redux
     dispatch(setCredntials(token));
-
+    console.log(
+      "From updateAuthUi",
+      "Fullname",
+      fullname,
+      "Token",
+      token,
+      "redirectTo",
+      redirectTo
+    );
     // 3. Sync user with backend
     const res = await syncUser({
       token,

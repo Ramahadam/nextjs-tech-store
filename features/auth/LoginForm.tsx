@@ -7,25 +7,34 @@ import { Message } from "@/components/Message";
 import { XCircle } from "lucide-react";
 import Link from "next/link";
 import { FieldForm } from "@/components/forms/FieldForm";
-import { LoginInputs } from "./login.schema";
+import { LoginInputs, loginSchema } from "./login.schema";
 import { AuthSideImage } from "./AuthSideImage";
 import AuthGoogleButton from "./AuthGoogleButton";
 import { useAuthActions } from "./hooks/useAuthActions";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Spinner } from "@/components/ui/spinner";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const {
-    isGoogleLoading,
+    isLoading,
+    isLoadingGmail,
     handleSignupWithGoogle,
     handelLoginUser,
     authError,
     setAuthError,
+  } = useAuthActions();
+
+  const {
     register,
     handleSubmit,
-    errors,
-  } = useAuthActions();
+    formState: { errors },
+  } = useForm<LoginInputs>({
+    resolver: zodResolver(loginSchema),
+  });
 
   return (
     <div className={cn("flex flex-col", className)} {...props}>
@@ -65,13 +74,15 @@ export function LoginForm({
                 />
 
                 <Field className="mt-4">
-                  <Button type="submit">Login</Button>
+                  <Button type="submit">
+                    {isLoading ? <Spinner /> : "Login"}
+                  </Button>
                   <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card my-2">
                     Or continue with
                   </FieldSeparator>
                   <Field className="grid grid-cols-1 gap-4">
                     <AuthGoogleButton
-                      isLoading={isGoogleLoading}
+                      isLoading={isLoadingGmail}
                       onClick={() => handleSignupWithGoogle()}
                     />
                   </Field>

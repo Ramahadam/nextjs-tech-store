@@ -13,41 +13,29 @@ import { SubmitHandler } from "react-hook-form";
 import { useSyncUserMutation } from "@/features/api/apiSlice";
 import { setProfile } from "@/features/user/userSlice";
 import { useAppDispatch } from "@/app/hooks";
-import { SignupInputs } from "../signup.schema";
+import { SignupInputs, signupSchema } from "../signup.schema";
 
 export function useAuthActions() {
   const [authError, setAuthError] = useState("");
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingGmail, setIsLoadingGmail] = useState(false);
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
   const { updateAuthUIAndRedirect } = useAuthFlow();
   const [syncUser] = useSyncUserMutation();
   const dispatch = useAppDispatch();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginInputs>({
-    resolver: zodResolver(loginSchema),
-  });
-
   async function handleSignup(data: SignupInputs) {
-    const { email, password, fullname } = data;
-
     try {
+      setIsLoading(false);
+      const { email, password, fullname } = data;
+
       const cred = await registerUser(email, password);
       const token = await cred?.getIdToken();
 
       if (!token) throw Error("Token is not avaible");
-      //Create new profile in mongodb
-      const profile = await syncUser({
-        token,
-        profile: { fullname },
-      }).unwrap();
 
-      //   if (profile?.user) store.dispatch(setProfile(profile.user));
-      if (profile?.user) dispatch(setProfile(profile.user));
+      await updateAuthUIAndRedirect({ token, fullname, redirectTo });
     } catch (err) {
       if (err instanceof FirebaseError) {
         setAuthError(() => firebaseErrorMessages(err.code));
@@ -58,11 +46,14 @@ export function useAuthActions() {
       }
       console.log("Complete error ", err);
       console.log("Error message only", authError);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   const handelLoginUser: SubmitHandler<LoginInputs> = async (data) => {
     try {
+      setIsLoading(true);
       const { email, password } = data;
 
       const user = await loginUser(email, password);
@@ -75,12 +66,14 @@ export function useAuthActions() {
       } else {
         setAuthError("Unexpected error occurred.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   async function handleSignupWithGoogle() {
     try {
-      setIsGoogleLoading(true);
+      setIsLoadingGmail(true);
       const res = await signupWithGoogle();
       const token = res?.token;
       if (!token) return;
@@ -94,19 +87,17 @@ export function useAuthActions() {
         setAuthError("Unexpected error occurred.");
       }
     } finally {
-      setIsGoogleLoading(false);
+      setIsLoadingGmail(false);
     }
   }
 
   return {
-    isGoogleLoading,
+    isLoading,
+    isLoadingGmail,
     handleSignupWithGoogle,
     handelLoginUser,
     authError,
     setAuthError,
-    errors,
-    register,
-    handleSubmit,
     handleSignup,
   };
 }

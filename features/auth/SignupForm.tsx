@@ -1,15 +1,9 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { registerUser, signupWithGoogle } from "@/lib/firebase/auth";
-import { FirebaseError } from "firebase/app";
-import { store } from "@/lib/store";
-import { setProfile } from "../user/userSlice";
-import { cn, firebaseErrorMessages } from "@/lib/utils";
+
+import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { SignupInputs, signupSchema } from "./signup.schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,22 +15,23 @@ import {
 } from "@/components/ui/field";
 import { FieldForm } from "@/components/forms/FieldForm";
 import { Info } from "lucide-react";
-import { useSyncUserMutation } from "../api/apiSlice";
 import { AuthSideImage } from "./AuthSideImage";
-import { useSearchParams } from "next/navigation";
-import { useAuthFlow } from "./hooks/useAuthFlow";
 import AuthGoogleButton from "./AuthGoogleButton";
 import { useAuthActions } from "./hooks/useAuthActions";
+import { Spinner } from "@/components/ui/spinner";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [syncUser] = useSyncUserMutation();
-  const [authError, setAuthError] = useState("");
-  const params = useSearchParams();
-  const redirectTo = params.get("redirectTo");
-  const { isGoogleLoading, handleSignupWithGoogle } = useAuthActions();
+  const {
+    isLoading,
+    isLoadingGmail,
+    handleSignupWithGoogle,
+    handleSignup,
+    setAuthError,
+    authError,
+  } = useAuthActions();
 
   const {
     register,
@@ -45,34 +40,6 @@ export function SignupForm({
   } = useForm<SignupInputs>({
     resolver: zodResolver(signupSchema),
   });
-
-  async function handleSignup(data: SignupInputs) {
-    const { email, password, fullname } = data;
-
-    try {
-      const cred = await registerUser(email, password);
-      const token = await cred?.getIdToken();
-
-      if (!token) throw Error("Token is not avaible");
-      //Create new profile in mongodb
-      const profile = await syncUser({
-        token,
-        profile: { fullname },
-      }).unwrap();
-
-      if (profile?.user) store.dispatch(setProfile(profile.user));
-    } catch (err) {
-      if (err instanceof FirebaseError) {
-        setAuthError(() => firebaseErrorMessages(err.code));
-      } else {
-        setAuthError(() =>
-          firebaseErrorMessages("Unexpected error occur please try again")
-        );
-      }
-      console.log("Complete error ", err);
-      console.log("Error message only", authError);
-    }
-  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -139,14 +106,16 @@ export function SignupForm({
                   errorMessage={errors.confirmPassword?.message}
                 />
                 <Field>
-                  <Button type="submit">Create Account</Button>
+                  <Button type="submit">
+                    {isLoading ? <Spinner /> : "Create new account"}
+                  </Button>
                 </Field>
                 <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card py-8">
                   Or continue with
                 </FieldSeparator>
                 <Field className="grid grid-cols-1  py-6">
                   <AuthGoogleButton
-                    isLoading={isGoogleLoading}
+                    isLoading={isLoadingGmail}
                     onClick={handleSignupWithGoogle}
                   />
                 </Field>
