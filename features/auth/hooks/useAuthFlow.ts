@@ -25,7 +25,7 @@ export function useAuthFlow() {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(token);
+
     // 2. Store token in redux
     dispatch(setCredntials(token));
 
