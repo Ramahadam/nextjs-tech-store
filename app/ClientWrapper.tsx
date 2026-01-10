@@ -12,11 +12,11 @@ interface LayoutProp {
 
 export default function ClientWrapper({ children }: LayoutProp) {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Provider store={store}>
         <AuthInitializer />
         <Navbar />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </Provider>
     </div>
