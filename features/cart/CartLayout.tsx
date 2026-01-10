@@ -32,7 +32,7 @@ export default function CartLayout() {
 
 function Cart({ children }: { children: ReactNode }) {
   return (
-    <article className="border min-h-dvh shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
+    <article className="border shadow-2xl shadow-accent-300 md:shadow-none  border-lightGray rounded-md p-4 m-4 md:m-0 md:max-w-xl md:mx-auto my-8 md:my-16">
       {children}
     </article>
   );
