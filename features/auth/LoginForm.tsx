@@ -39,7 +39,7 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col", className)} {...props}>
       <Card className="overflow-hidden md:p-0 pt-6">
-        <CardContent className="grid p-0 md:grid-cols-2 md:min-h-[45rem]">
+        <CardContent className="grid p-0 md:grid-cols-2 md:min-h-180">
           <div className="flex items-center justify-center ">
             <form
               onSubmit={handleSubmit(handelLoginUser)}

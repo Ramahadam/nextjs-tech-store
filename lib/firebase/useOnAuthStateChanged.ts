@@ -3,12 +3,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { auth } from "./config";
 import { useAppDispatch } from "@/app/hooks";
-import { logout, setProfile } from "@/features/user/userSlice";
+import { logout } from "@/features/user/userSlice";
 import { setCredntials } from "@/features/auth/authSlice";
-import { apiSlice, useSyncUserMutation } from "@/features/api/apiSlice";
+import { apiSlice } from "@/features/api/apiSlice";
 
 export function useOnAuthStateChanged() {
-  const [syncUser] = useSyncUserMutation();
   const disptach = useAppDispatch();
 
   useEffect(() => {
