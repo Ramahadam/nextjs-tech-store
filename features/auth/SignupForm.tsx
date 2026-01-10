@@ -22,6 +22,7 @@ import {
 import { FieldForm } from "@/components/forms/FieldForm";
 import { Info } from "lucide-react";
 import { useSyncUserMutation } from "../api/apiSlice";
+import { AuthSideImage } from "./AuthSideImage";
 
 export function SignupForm({
   className,
@@ -168,15 +169,7 @@ export function SignupForm({
               </FieldGroup>
             </form>
           </div>
-          <div className="relative hidden md:block ">
-            <Image
-              src="/person-using-laptop.jpg"
-              alt="A person using laptop"
-              className=" h-full w-full object-cover  grayscale-75"
-              width={800}
-              height={800}
-            />
-          </div>
+          <AuthSideImage />
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
