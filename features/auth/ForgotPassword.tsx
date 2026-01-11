@@ -10,6 +10,8 @@ import { useState } from "react";
 import { Field } from "@/components/ui/field";
 
 import { z } from "zod";
+import { resetPasswordLink } from "@/lib/firebase/auth";
+import { toast } from "sonner";
 
 const forgotPasswordSchema = z.object({
   email: z.email(),
@@ -19,6 +21,7 @@ type ForgotPasswodType = z.infer<typeof forgotPasswordSchema>;
 
 export function ForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -27,13 +30,30 @@ export function ForgotPassword() {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
+  const handleForgotPassword = async (data: ForgotPasswodType) => {
+    try {
+      setIsLoading(true);
+      const { email } = data;
+      const result = await resetPasswordLink(email);
+      console.log(result);
+      toast.success("Password reset email sent!", {
+        position: "top-center",
+        duration: 2000,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <Card className="overflow-hidden md:p-0 pt-6">
         <CardContent className="grid p-0 md:grid-cols-2 md:min-h-180">
           <div className="flex items-center justify-center ">
             <form
-              //   onSubmit={handleSubmit(handelLoginUser)}
+              onSubmit={handleSubmit(handleForgotPassword)}
               className="md:w-[80%]"
             >
               <div className="flex flex-col items-center gap-1 text-center">

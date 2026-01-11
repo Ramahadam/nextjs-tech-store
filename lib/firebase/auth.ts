@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   signOut,
 } from "./config";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export const signupWithGoogle = async () => {
   try {
@@ -65,6 +66,15 @@ export const loginUser = async (email: string, password: string) => {
 export const logOutUser = async () => {
   try {
     await signOut(auth);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const resetPasswordLink = async (email: string) => {
+  try {
+    const result = await sendPasswordResetEmail(auth, email);
+    return result;
   } catch (error) {
     throw error;
   }
