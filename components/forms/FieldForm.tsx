@@ -12,7 +12,7 @@ interface FieldFormProps<T extends FieldValues> {
   type?: string;
   placeholder?: string;
   register: UseFormRegister<T>;
-  errorMessage: string | undefined;
+  errorMessage?: string | undefined;
   onFocus?: () => void;
   className?: string;
   errorClassName?: string;
