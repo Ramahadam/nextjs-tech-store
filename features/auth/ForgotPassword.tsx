@@ -12,6 +12,7 @@ import { Field } from "@/components/ui/field";
 import { z } from "zod";
 import { resetPasswordLink } from "@/lib/firebase/auth";
 import { toast } from "sonner";
+import { FirebaseError } from "firebase/app";
 
 const forgotPasswordSchema = z.object({
   email: z.email(),
@@ -29,19 +30,23 @@ export function ForgotPassword() {
   } = useForm<ForgotPasswodType>({
     resolver: zodResolver(forgotPasswordSchema),
   });
-
   const handleForgotPassword = async (data: ForgotPasswodType) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const { email } = data;
-      const result = await resetPasswordLink(email);
-      console.log(result);
-      toast.success("Password reset email sent!", {
+      const res = await resetPasswordLink(email);
+
+      toast.success(res.message, {
         position: "top-center",
-        duration: 2000,
+        duration: 3000,
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError)
+        if (error?.code || error.message)
+          toast.error("Oops Something went worng !", {
+            position: "top-center",
+            duration: 2000,
+          });
     } finally {
       setIsLoading(false);
     }
@@ -67,6 +72,7 @@ export function ForgotPassword() {
                   name="email"
                   label="Email"
                   register={register}
+                  errorMessage={errors.email?.message}
                   placeholder="m@example.com"
                 />
 

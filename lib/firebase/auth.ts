@@ -4,10 +4,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
+  sendPasswordResetEmail,
   signInWithPopup,
   signOut,
 } from "./config";
-import { sendPasswordResetEmail } from "firebase/auth";
 
 export const signupWithGoogle = async () => {
   try {
@@ -73,9 +73,13 @@ export const logOutUser = async () => {
 
 export const resetPasswordLink = async (email: string) => {
   try {
-    const result = await sendPasswordResetEmail(auth, email);
-    return result;
+    await sendPasswordResetEmail(auth, email);
   } catch (error) {
     throw error;
   }
+
+  return {
+    message:
+      "If an account with this email exists, a password reset link has been sent",
+  };
 };

@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail,
   signOut,
 } from "firebase/auth";
 // import { store } from "../store";
@@ -34,4 +35,5 @@ export {
   signInWithEmailAndPassword,
   signOut,
   signInWithPopup,
+  sendPasswordResetEmail,
 };
