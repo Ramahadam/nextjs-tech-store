@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   signOut,
 } from "./config";
+import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 
 export const signupWithGoogle = async () => {
   try {
@@ -82,4 +83,27 @@ export const resetPasswordLink = async (email: string) => {
     message:
       "If an account with this email exists, a password reset link has been sent",
   };
+};
+
+export const resetPassword = async (
+  newPassword: string,
+  actionCode: string | null
+) => {
+  if (actionCode)
+    try {
+      // Verify if the action code is valid
+
+      await verifyPasswordResetCode(auth, actionCode);
+
+      try {
+        // Save the new password
+        await confirmPasswordReset(auth, actionCode, newPassword);
+
+        // Redirect the user to dashboard for now.
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
 };
