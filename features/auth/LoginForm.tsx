@@ -14,11 +14,15 @@ import { useAuthActions } from "./hooks/useAuthActions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Spinner } from "@/components/ui/spinner";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { memo, useEffect, useMemo, useState } from "react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const searchParams = useSearchParams();
   const {
     isLoading,
     isLoadingGmail,
@@ -35,6 +39,17 @@ export function LoginForm({
   } = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
   });
+
+  // Show success message if user redirected from passwordReset
+  const resetSuccess = useMemo(() => searchParams.get("reset"), [searchParams]);
+
+  useEffect(() => {
+    if (resetSuccess)
+      toast.success(
+        "Your password has been reset successfullyPlease log in with your new password",
+        { duration: 3000, position: "top-center" }
+      );
+  }, [resetSuccess]);
 
   return (
     <div className={cn("flex flex-col", className)} {...props}>

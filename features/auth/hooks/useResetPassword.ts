@@ -58,7 +58,6 @@ export function useResetPassword() {
         }
       );
 
-      router.push("/login?reset=success");
       setTimeout(() => {
         router.replace("/login?reset=success");
       }, 3000);

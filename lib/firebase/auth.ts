@@ -94,7 +94,6 @@ export const resetPassword = async (
       // Verify if the action code is valid
 
       await verifyPasswordResetCode(auth, actionCode);
-
       try {
         // Save the new password
         await confirmPasswordReset(auth, actionCode, newPassword);

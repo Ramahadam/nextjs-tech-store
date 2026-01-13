@@ -11,6 +11,7 @@ import { ResetPasswodType, useResetPassword } from "./hooks/useResetPassword";
 export function ResetPasswordForm() {
   const { isLoading, register, handleResetPassword, errors, handleSubmit } =
     useResetPassword();
+
   return (
     <div className="flex flex-col">
       <Card className="overflow-hidden md:p-0 pt-6">
