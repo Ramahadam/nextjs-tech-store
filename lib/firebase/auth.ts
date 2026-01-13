@@ -98,12 +98,10 @@ export const resetPassword = async (
       try {
         // Save the new password
         await confirmPasswordReset(auth, actionCode, newPassword);
-
-        // Redirect the user to dashboard for now.
       } catch (error) {
-        console.log(error);
+        throw error;
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
 };

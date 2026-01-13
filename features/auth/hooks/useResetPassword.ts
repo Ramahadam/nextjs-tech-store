@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { FirebaseError } from "firebase/app";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
+import { firebaseErrorMessages } from "@/lib/utils";
 
 export const resetPasswordSchema = z
   .object({
@@ -57,17 +58,19 @@ export function useResetPassword() {
         }
       );
 
-      // router.push("/login?reset=success");
+      router.push("/login?reset=success");
       setTimeout(() => {
         router.replace("/login?reset=success");
       }, 3000);
     } catch (error: FirebaseError | unknown) {
       if (error instanceof FirebaseError)
-        if (error?.code || error.message)
-          toast.error("Oops Something went worng !", {
+        if (error?.code || error.message) {
+          const errMsg = firebaseErrorMessages(error.code);
+          toast.error(errMsg, {
             position: "top-center",
-            duration: 2000,
+            duration: 3000,
           });
+        }
     } finally {
       setIsLoading(false);
     }

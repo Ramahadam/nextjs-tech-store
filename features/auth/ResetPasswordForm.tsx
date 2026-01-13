@@ -45,7 +45,7 @@ export function ResetPasswordForm() {
                 />
 
                 <Field className="mt-4">
-                  <Button type="submit">
+                  <Button type="submit" disabled={isLoading}>
                     {isLoading ? <Spinner /> : "ResetPassword"}
                   </Button>
                 </Field>
