@@ -11,7 +11,7 @@ export const config = {
   ],
 };
 
-const AUTH_PAGES = ["/login", "/signup", "/forgot-password"];
+const AUTH_PAGES = ["/login", "/signup", "/password-reset", "/forgot-password"];
 
 export function proxy(request: NextRequest) {
   const resource = request.nextUrl.pathname; // full path

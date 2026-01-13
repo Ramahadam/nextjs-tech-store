@@ -7,11 +7,43 @@ import { Spinner } from "@/components/ui/spinner";
 import { Field } from "@/components/ui/field";
 
 import { ResetPasswodType, useResetPassword } from "./hooks/useResetPassword";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonCustom } from "@/components/SkeletonCustom";
 
 export function ResetPasswordForm() {
-  const { isLoading, register, handleResetPassword, errors, handleSubmit } =
-    useResetPassword();
+  const router = useRouter();
+  const {
+    isLoading,
+    register,
+    handleResetPassword,
+    errors,
+    handleSubmit,
+    actionCode,
+  } = useResetPassword();
 
+  useEffect(() => {
+    if (!actionCode) {
+      toast.info("Redirecting to forgot password page", {
+        position: "top-center",
+        duration: 2000,
+      });
+
+      setTimeout(() => {
+        router.replace("/forgot-password");
+      }, 3000);
+    }
+  }, [actionCode, router]);
+
+  if (!actionCode)
+    return (
+      <div className=" flex items-center justify-center">
+        <Skeleton className="w-full  min-h-18 md:min-h-180 bg-white" />
+        <Skeleton className="w-full  min-h-18 md:min-h-180 bg-green-50 " />
+      </div>
+    );
   return (
     <div className="flex flex-col">
       <Card className="overflow-hidden md:p-0 pt-6">

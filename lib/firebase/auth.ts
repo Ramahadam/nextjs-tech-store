@@ -104,3 +104,13 @@ export const resetPassword = async (
       throw error;
     }
 };
+
+export const isItValidCode = async (actionCode: string | null) => {
+  try {
+    if (actionCode) await verifyPasswordResetCode(auth, actionCode);
+
+    throw new Error("Something went worng");
+  } catch (error) {
+    throw error;
+  }
+};
