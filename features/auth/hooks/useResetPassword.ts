@@ -1,13 +1,12 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { resetPassword } from "@/lib/firebase/auth";
 import { toast } from "sonner";
 import { FirebaseError } from "firebase/app";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
+import { useSearchParams, useRouter } from "next/navigation";
 import { firebaseErrorMessages } from "@/lib/utils";
 
 export const resetPasswordSchema = z
@@ -30,8 +29,6 @@ export function useResetPassword() {
   const mode = searchParams.get("mode");
   const actionCode = searchParams.get("oobCode");
   const continueUrl = searchParams.get("continueUrl");
-
-  //Security: Validate the action code and invalid redirect user to forgot password
 
   // RHF - Form integrated with zod
   const {

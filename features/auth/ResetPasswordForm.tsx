@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SkeletonCustom } from "@/components/SkeletonCustom";
 
 export function ResetPasswordForm() {
   const router = useRouter();
