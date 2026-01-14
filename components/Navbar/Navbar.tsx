@@ -17,7 +17,7 @@ import { NavbarDesktop } from "./NavbarDesktop";
 import { NavbarCartIcon } from "./NavbarCartIcon";
 import { NavbarUserIcon } from "./NavbarUserIcon";
 
-export default function Navbar() {
+export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
