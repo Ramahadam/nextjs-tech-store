@@ -4,9 +4,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
+  sendPasswordResetEmail,
   signInWithPopup,
   signOut,
 } from "./config";
+import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 
 export const signupWithGoogle = async () => {
   try {
@@ -65,6 +67,49 @@ export const loginUser = async (email: string, password: string) => {
 export const logOutUser = async () => {
   try {
     await signOut(auth);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const resetPasswordLink = async (email: string) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+  } catch (error) {
+    throw error;
+  }
+
+  return {
+    message:
+      "If an account with this email exists, a password reset link has been sent",
+  };
+};
+
+export const resetPassword = async (
+  newPassword: string,
+  actionCode: string | null
+) => {
+  if (actionCode)
+    try {
+      // Verify if the action code is valid
+
+      await verifyPasswordResetCode(auth, actionCode);
+      try {
+        // Save the new password
+        await confirmPasswordReset(auth, actionCode, newPassword);
+      } catch (error) {
+        throw error;
+      }
+    } catch (error) {
+      throw error;
+    }
+};
+
+export const isItValidCode = async (actionCode: string | null) => {
+  try {
+    if (actionCode) await verifyPasswordResetCode(auth, actionCode);
+
+    throw new Error("Something went worng");
   } catch (error) {
     throw error;
   }

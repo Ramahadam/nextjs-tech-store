@@ -14,11 +14,20 @@ import { useAuthActions } from "./hooks/useAuthActions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { useEffect, useRef } from "react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const searchParams = useSearchParams();
+
+  const router = useRouter();
+
+  const hasSuccessMessageShowed = useRef(false);
+
   const {
     isLoading,
     isLoadingGmail,
@@ -35,6 +44,23 @@ export function LoginForm({
   } = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
   });
+
+  // Show success message if user redirected from passwordReset
+
+  useEffect(() => {
+    const resetSuccess = searchParams.get("reset");
+
+    if (resetSuccess && !hasSuccessMessageShowed.current) {
+      hasSuccessMessageShowed.current = true;
+
+      toast.success(
+        "Your password has been reset successfullyPlease log in with your new password",
+        { duration: 3000, position: "top-center" }
+      );
+
+      router.replace("/login", { scroll: false });
+    }
+  }, [searchParams, router]);
 
   return (
     <div className={cn("flex flex-col", className)} {...props}>
@@ -93,12 +119,12 @@ export function LoginForm({
                       <Link href="/signup">Sign up</Link>
                     </span>
                     <span>
-                      <a
-                        href="#"
+                      <Link
+                        href="/forgot-password"
                         className="ml-auto inline-block text-sm   underline-offset-4 hover:underline"
                       >
                         Forgot your password?
-                      </a>
+                      </Link>
                     </span>
                   </FieldDescription>
                 </Field>
