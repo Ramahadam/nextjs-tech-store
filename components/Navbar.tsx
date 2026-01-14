@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Search, User, Heart, ShoppingCart } from "lucide-react";
+import {
+  Menu,
+  Search,
+  User,
+  Heart,
+  ShoppingCart,
+  LogIn,
+  LogOut,
+} from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import {
