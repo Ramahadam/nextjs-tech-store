@@ -1,11 +1,11 @@
 import { User } from "lucide-react";
-import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function NavbarUserIcon() {
   return (
-    <Button variant="ghost" size="icon" className="shrink-0">
+    <Link href="/me">
       <User className="h-5 w-5" />
       <span className="sr-only">Account</span>
-    </Button>
+    </Link>
   );
 }

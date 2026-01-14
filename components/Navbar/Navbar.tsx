@@ -16,6 +16,7 @@ import { NavbarMobile } from "./NavbarMobile";
 import { NavbarDesktop } from "./NavbarDesktop";
 import { NavbarCartIcon } from "./NavbarCartIcon";
 import { NavbarUserIcon } from "./NavbarUserIcon";
+import { NavbarAuthActions } from "./NavbarAuthActions";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,9 +52,8 @@ export function Navbar() {
             <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
           </SidebarGroupContent>
         </SidebarGroup>
-        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-6">
           <NavbarUserIcon />
-
           <NavbarCartIcon
             isAuthenticated={isAuthenticated}
             showCartBadge={showCartBadge}
@@ -61,6 +61,7 @@ export function Navbar() {
             isLoading={isLoading}
             itemsCount={itemsCount}
           />
+          <NavbarAuthActions isAuthenticated={isAuthenticated} />
         </div>
       </div>
     </header>
