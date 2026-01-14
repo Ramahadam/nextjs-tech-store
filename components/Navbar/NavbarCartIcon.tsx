@@ -9,13 +9,26 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 import { Spinner } from "../ui/spinner";
+
+import { z } from "zod";
+
+const navbarCartIconSchema = z.object({
+  isAuthenticated: z.boolean(),
+  showCartBadge: z.boolean(),
+  itemsCount: z.number(),
+  isFetching: z.boolean(),
+  isLoading: z.boolean(),
+});
+
+type NavbarCartIconType = z.infer<typeof navbarCartIconSchema>;
+
 export function NavbarCartIcon({
   isAuthenticated,
   showCartBadge,
   itemsCount,
   isFetching,
   isLoading,
-}) {
+}: NavbarCartIconType) {
   return (
     <Link href={isAuthenticated ? "/cart" : "/login?redirectTo=/cart"}>
       <Button variant="ghost" size="icon" className="relative shrink-0">

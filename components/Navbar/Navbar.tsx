@@ -33,7 +33,7 @@ export function Navbar() {
   const showCartBadge = isAuthenticated && itemsCount > 0;
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
       <div className="container max-w-7xl mx-auto flex justify-between  md:just h-16 items-center gap-2 sm:gap-4 px-3 sm:px-4 ">
         <NavbarMobile isOpen={isOpen} setIsOpen={setIsOpen} />
         {/* Desktop Navigation */}

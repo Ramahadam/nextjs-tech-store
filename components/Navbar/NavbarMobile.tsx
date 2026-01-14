@@ -7,7 +7,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
 
-export function NavbarMobile({ isOpen, setIsOpen }) {
+type NavbarMobile = {
+  isOpen: boolean;
+  setIsOpen: (val: boolean) => void;
+};
+
+export function NavbarMobile({ isOpen, setIsOpen }: NavbarMobile) {
   return (
     <div className="flex">
       {/* Mobile Hamburger Menu */}
