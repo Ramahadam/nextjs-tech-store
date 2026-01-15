@@ -9,17 +9,8 @@ import { cn } from "@/lib/utils";
 
 import { Spinner } from "../ui/spinner";
 
-import { z } from "zod";
 import { useAppSelector } from "@/app/hooks";
 import { useGetCartQuery } from "@/features/api/apiSlice";
-
-const navbarCartIconSchema = z.object({
-  itemsCount: z.number(),
-  isFetching: z.boolean(),
-  isLoading: z.boolean(),
-});
-
-type NavbarCartIconType = z.infer<typeof navbarCartIconSchema>;
 
 export function NavbarCartIcon() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
