@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
 import { Spinner } from "../ui/spinner";
 
 import { z } from "zod";
+import { useAppSelector } from "@/app/hooks";
+import { useGetCartQuery } from "@/features/api/apiSlice";
 
 const navbarCartIconSchema = z.object({
-  isAuthenticated: z.boolean(),
-  showCartBadge: z.boolean(),
   itemsCount: z.number(),
   isFetching: z.boolean(),
   isLoading: z.boolean(),
@@ -21,13 +21,18 @@ const navbarCartIconSchema = z.object({
 
 type NavbarCartIconType = z.infer<typeof navbarCartIconSchema>;
 
-export function NavbarCartIcon({
-  isAuthenticated,
-  showCartBadge,
-  itemsCount,
-  isFetching,
-  isLoading,
-}: NavbarCartIconType) {
+export function NavbarCartIcon() {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const { data, isFetching, isLoading } = useGetCartQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+
+  const { items } = data?.data ?? [];
+
+  const itemsCount = Array.isArray(items) ? items.length : 0;
+
+  const showCartBadge = isAuthenticated && itemsCount > 0;
   return (
     <Link
       href={isAuthenticated ? "/cart" : "/login?redirectTo=/cart"}

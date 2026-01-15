@@ -1,12 +1,10 @@
+import { useAppSelector } from "@/app/hooks";
 import { LogIn, LogOutIcon } from "lucide-react";
 import Link from "next/link";
 
-export function NavbarAuthActions({
-  isAuthenticated,
-}: {
-  isAuthenticated: boolean;
-}) {
-  console.log(isAuthenticated);
+export function NavbarAuthActions() {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   return (
     <div>
       <Link href={isAuthenticated ? "/logout" : "/login"}>

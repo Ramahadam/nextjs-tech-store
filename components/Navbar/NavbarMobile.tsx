@@ -6,13 +6,10 @@ import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
-type NavbarMobile = {
-  isOpen: boolean;
-  setIsOpen: (val: boolean) => void;
-};
-
-export function NavbarMobile({ isOpen, setIsOpen }: NavbarMobile) {
+export function NavbarMobile() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="flex">
       {/* Mobile Hamburger Menu */}
