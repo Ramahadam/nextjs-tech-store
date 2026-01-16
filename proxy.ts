@@ -18,6 +18,7 @@ export function proxy(request: NextRequest) {
   const isAuthenticated = Boolean(request.cookies.get("session")?.value);
   const { pathname } = request.nextUrl;
 
+  // Protect cart and user page
   if (
     !isAuthenticated &&
     (pathname.startsWith("/cart") || pathname.startsWith("/me"))

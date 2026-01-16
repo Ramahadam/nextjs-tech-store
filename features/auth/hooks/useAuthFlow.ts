@@ -14,10 +14,20 @@ export function useAuthFlow() {
     fullname,
     redirectTo,
   }: {
-    token: string;
+    token: string | null;
     fullname?: string | null;
     redirectTo?: string | null;
   }) => {
+    // If there is no token clear cookie session
+    if (!token) {
+      console.log("token", token);
+      await fetch("/api/session", {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      return;
+    }
     // 1. Create session (httpOnly cookie)
     await fetch("/api/session", {
       method: "POST",

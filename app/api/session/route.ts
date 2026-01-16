@@ -28,3 +28,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: err }, { status: 401 });
   }
 }
+
+export async function DELETE() {
+  const response = NextResponse.json({ success: true });
+
+  response.cookies.set("session", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+
+  return response;
+}

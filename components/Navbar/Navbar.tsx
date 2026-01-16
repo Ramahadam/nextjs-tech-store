@@ -35,7 +35,7 @@ export function Navbar() {
             <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
           </SidebarGroupContent>
         </SidebarGroup>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center justify-between gap-4">
           <NavbarUserIcon />
           <NavbarCartIcon />
           <NavbarAuthActions />
