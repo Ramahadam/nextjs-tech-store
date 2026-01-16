@@ -10,7 +10,6 @@ export function NavbarAuthActions() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { handleSignout } = useAuthActions();
 
-  console.log(isAuthenticated);
   return (
     <>
       {isAuthenticated ? (

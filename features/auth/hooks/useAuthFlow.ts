@@ -20,7 +20,6 @@ export function useAuthFlow() {
   }) => {
     // If there is no token clear cookie session
     if (!token) {
-      console.log("token", token);
       await fetch("/api/session", {
         method: "DELETE",
         credentials: "include",
