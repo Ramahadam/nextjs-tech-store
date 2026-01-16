@@ -2,21 +2,31 @@
 
 import { useState } from "react";
 import { useAuthFlow } from "./useAuthFlow";
-import { useSearchParams } from "next/navigation";
-import { loginUser, registerUser, signupWithGoogle } from "@/lib/firebase/auth";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  loginUser,
+  logOutUser,
+  registerUser,
+  signupWithGoogle,
+} from "@/lib/firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { firebaseErrorMessages } from "@/lib/utils";
 import { LoginInputs } from "../login.schema";
 import { SubmitHandler } from "react-hook-form";
 import { SignupInputs } from "../signup.schema";
+import { toast } from "sonner";
+import { useAppDispatch } from "@/app/hooks";
+import { logout } from "../authSlice";
 
 export function useAuthActions() {
+  const router = useRouter();
   const [authError, setAuthError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingGmail, setIsLoadingGmail] = useState(false);
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
   const { updateAuthUIAndRedirect } = useAuthFlow();
+  const dispatch = useAppDispatch();
 
   async function handleSignup(data: SignupInputs) {
     try {
@@ -64,6 +74,26 @@ export function useAuthActions() {
     }
   };
 
+  const handleSignout = async () => {
+    // Logout the user
+    await logOutUser();
+    dispatch(logout());
+
+    await updateAuthUIAndRedirect({ token: null });
+
+    // Show success message
+    toast.success("Successuflly logged out", {
+      duration: 1000,
+      position: "top-center",
+    });
+    // Redirect the user to home page
+
+    setTimeout(() => {
+      router.replace("/");
+    }, 2000);
+    console.log("Logout user - user clicked loggoed out button");
+  };
+
   async function handleSignupWithGoogle() {
     try {
       setIsLoadingGmail(true);
@@ -92,5 +122,6 @@ export function useAuthActions() {
     authError,
     setAuthError,
     handleSignup,
+    handleSignout,
   };
 }
