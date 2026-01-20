@@ -51,4 +51,21 @@ describe("LoginForm", () => {
       ).not.toBeInTheDocument();
     });
   });
+  describe("when firebase error occur", () => {
+    beforeEach(() => {
+      (useAuthActions as jest.Mock).mockReturnValue({
+        login: jest.fn(),
+        isLoading: true,
+        authError: "Invalid email or password",
+        setAuthError: jest.fn(),
+      });
+    });
+    it("shows error message", () => {
+      render(<LoginForm />);
+
+      expect(
+        screen.getByText(/Invalid email or password/i),
+      ).toBeInTheDocument();
+    });
+  });
 });
