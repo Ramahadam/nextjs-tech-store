@@ -12,20 +12,43 @@ jest.mock("@/features/auth/hooks/useAuthActions", () => ({
 }));
 
 describe("LoginForm", () => {
-  beforeEach(() => {
-    (useAuthActions as jest.Mock).mockReturnValue({
-      login: jest.fn(),
-      isLoading: true,
-      authError: "Invalid email or password",
-      setAuthError: jest.fn(),
+  describe("when not loading", () => {
+    beforeEach(() => {
+      (useAuthActions as jest.Mock).mockReturnValue({
+        login: jest.fn(),
+        isLoading: false,
+        authError: null,
+        setAuthError: jest.fn(),
+      });
+    });
+
+    it("renders login form fields", () => {
+      render(<LoginForm />);
+
+      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /login/i }),
+      ).toBeInTheDocument();
     });
   });
 
-  it("renders login form fields", () => {
-    render(<LoginForm />);
+  describe("when loading", () => {
+    beforeEach(() => {
+      (useAuthActions as jest.Mock).mockReturnValue({
+        login: jest.fn(),
+        isLoading: true,
+        authError: null,
+        setAuthError: jest.fn(),
+      });
+    });
+    it("shows loading spinner", () => {
+      render(<LoginForm />);
 
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
+      expect(screen.getByLabelText("loading")).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /login/i }),
+      ).not.toBeInTheDocument();
+    });
   });
 });
