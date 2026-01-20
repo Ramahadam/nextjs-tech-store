@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { LoginForm } from "./LoginForm";
 import { useAuthActions } from "@/features/auth/hooks/useAuthActions";
 
@@ -15,8 +15,8 @@ describe("LoginForm", () => {
   beforeEach(() => {
     (useAuthActions as jest.Mock).mockReturnValue({
       login: jest.fn(),
-      isLoading: false,
-      authError: null,
+      isLoading: true,
+      authError: "Invalid email or password",
       setAuthError: jest.fn(),
     });
   });

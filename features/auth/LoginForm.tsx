@@ -100,15 +100,21 @@ export function LoginForm({
                 />
 
                 <Field className="mt-4">
-                  <Button type="submit">
-                    {isLoading ? <Spinner /> : "Login"}
+                  <Button
+                    type="submit"
+                    role="button"
+                    disabled={isLoading || isLoadingGmail}
+                  >
+                    {isLoading ? <Spinner aria-label="loading" /> : "Login"}
                   </Button>
                   <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card my-2">
                     Or continue with
                   </FieldSeparator>
                   <Field className="grid grid-cols-1 gap-4">
                     <AuthGoogleButton
+                      role="button"
                       isLoading={isLoadingGmail}
+                      disabled={isLoading || isLoadingGmail}
                       onClick={() => handleSignupWithGoogle()}
                     />
                   </Field>
