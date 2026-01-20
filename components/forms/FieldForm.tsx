@@ -31,7 +31,7 @@ export function FieldForm<T extends FieldValues>({
 }: FieldFormProps<T>) {
   return (
     <Field className={cn("gap-4", className)}>
-      <FieldLabel>{label}</FieldLabel>
+      <FieldLabel htmlFor={name}>{label}</FieldLabel>
       <Input
         id={String(name)}
         type={type}
@@ -41,7 +41,7 @@ export function FieldForm<T extends FieldValues>({
         className={cn(
           errorMessage &&
             "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50 focus-visible:ring-[3px]",
-          "placeholder:text-sm md:placeholder:text-md text-sm md:text-md"
+          "placeholder:text-sm md:placeholder:text-md text-sm md:text-md",
         )}
         onFocus={onFocus}
         {...register(name)}

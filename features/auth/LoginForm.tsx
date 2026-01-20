@@ -55,7 +55,7 @@ export function LoginForm({
 
       toast.success(
         "Your password has been reset successfullyPlease log in with your new password",
-        { duration: 3000, position: "top-center" }
+        { duration: 3000, position: "top-center" },
       );
 
       router.replace("/login", { scroll: false });

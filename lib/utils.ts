@@ -12,7 +12,7 @@ export function cn(...inputs: ClassValue[]) {
 // Format numbers  e.g 100000 => 100,000.00
 export function formatNumbers(num: number) {
   const val = num?.toLocaleString(
-    undefined // leave undefined to use the visitor's browser
+    undefined, // leave undefined to use the visitor's browser
     // locale or a string like 'en-US' to override it.
   );
 
@@ -46,4 +46,8 @@ export const firebaseErrorMessages = (code: string) => {
   };
 
   return errorMsg[code] ?? "Authenitcation failed. Please try again.";
+};
+
+export const add = (a: number, b: number): number => {
+  return a + b;
 };
