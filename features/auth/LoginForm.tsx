@@ -70,6 +70,7 @@ export function LoginForm({
             <form
               onSubmit={handleSubmit(handelLoginUser)}
               className="md:w-[80%]"
+              role="form"
             >
               <div className="flex flex-col items-center gap-1 text-center">
                 <h1 className="md:text-2xl   font-bold">
