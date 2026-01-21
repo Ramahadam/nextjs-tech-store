@@ -75,7 +75,7 @@ export function SignupForm({
                   errorClassName="h-4"
                 />{" "}
                 <Field className="relative">
-                  {authError.startsWith("Email") && (
+                  {authError?.startsWith("Email") && (
                     <p className="text-sm text-red-400 flex items-center absolute -top-6">
                       <Info className="h-4" />
                       {authError}
@@ -91,7 +91,7 @@ export function SignupForm({
                   errorClassName="h-4"
                 />
                 <Field className="relative">
-                  {authError.startsWith("Password") && (
+                  {authError?.startsWith("Password") && (
                     <p className="text-sm text-red-400 flex items-center absolute -top-6">
                       <Info className="h-4" />
                       {authError}
@@ -115,6 +115,8 @@ export function SignupForm({
                 </FieldSeparator>
                 <Field className="grid grid-cols-1  py-6">
                   <AuthGoogleButton
+                    role="button"
+                    disabled={isLoading || isLoadingGmail}
                     isLoading={isLoadingGmail}
                     onClick={handleSignupWithGoogle}
                   />
