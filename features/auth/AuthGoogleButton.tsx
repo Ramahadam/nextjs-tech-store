@@ -24,7 +24,7 @@ export default function AuthGoogleButton({
     >
       {isLoading ? (
         <span>
-          <Spinner />
+          <Spinner aria-label="loading" />
         </span>
       ) : (
         <>
