@@ -180,4 +180,56 @@ describe("SignupForm", () => {
       await waitFor(() => expect(handleSignupMock).not.toHaveBeenCalled());
     });
   });
+
+  describe("when email already exist", () => {
+    it("displays error message", async () => {
+      const user = userEvent.setup();
+
+      let dynamicAuthError: string | null = null;
+
+      (useAuthActions as jest.Mock).mockImplementation(() => ({
+        isLoading: false,
+        isLoadingGmail: false,
+        handleSignupWithGoogle: jest.fn(),
+        handleSignup: () => {
+          dynamicAuthError = "Email is already registered";
+        },
+        setAuthError: jest.fn(),
+        authError: dynamicAuthError,
+      }));
+
+      const { rerender } = render(<SignupForm />);
+
+      // 4. Verify error is NOT there initially
+      expect(
+        screen.queryByText(/Email is already registered/i),
+      ).not.toBeInTheDocument();
+
+      //Act -  Mandatory: await the action
+      const nameInput = screen.getByLabelText(/full name/i);
+      const emailInput = screen.getByLabelText(/email/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
+      const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
+
+      await user.type(nameInput, "Mohamed Adam");
+      await user.type(emailInput, "test@gmail.com");
+      await user.type(passwordInput, "password123");
+      await user.type(confirmPasswordInput, "password123");
+
+      const buttonSubmit = screen.getByRole("button", {
+        name: /create new account/i,
+      });
+
+      await user.click(buttonSubmit);
+
+      // Force the component to look at the hook again
+      rerender(<SignupForm />);
+
+      //Assert
+      // await waitFor(() => expect(handleSignup).toHaveBeenCalled());
+      expect(
+        await screen.findByText(/Email is already registered/i),
+      ).toBeInTheDocument();
+    });
+  });
 });
