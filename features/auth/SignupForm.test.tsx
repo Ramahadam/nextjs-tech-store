@@ -1,5 +1,5 @@
 import { SignupForm } from "./SignupForm";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { useAuthActions } from "@/features/auth/hooks/useAuthActions";
 
 // jest.mock("next/navigation", () => ({
@@ -59,6 +59,36 @@ describe("SignupForm", () => {
       });
       expect(loading).toBeInTheDocument();
       expect(signupButton).not.toBeInTheDocument();
+    });
+  });
+  describe("when empty submit", () => {
+    const handleSignupMock = jest.fn();
+    beforeEach(() => {
+      (useAuthActions as jest.Mock).mockReturnValue({
+        isLoading: false,
+        isLoadingGmail: false,
+        handleSignupWithGoogle: jest.fn(),
+        handleSignup: handleSignupMock,
+        setAuthError: jest.fn(),
+        authError: null,
+      });
+    });
+
+    it("shows error messages", async () => {
+      //Arrange
+      render(<SignupForm />);
+
+      // Act
+      const submitForm = screen.getByRole("form");
+      fireEvent.click(submitForm);
+
+      expect(
+        screen.findByLabelText(/full name must be at least 4 charactersi/i),
+      );
+      expect(screen.findByLabelText(/invalid email/i));
+      expect(screen.findByLabelText(/password must be at least 8 characters/i));
+
+      expect(handleSignupMock).not.toHaveBeenCalled();
     });
   });
 });

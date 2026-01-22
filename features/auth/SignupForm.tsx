@@ -47,6 +47,7 @@ export function SignupForm({
         <CardContent className="grid p-0 md:grid-cols-2">
           <div>
             <form
+              role="form"
               className="p-6 md:p-8 md:max-w-[90%] md:mx-auto"
               onSubmit={handleSubmit(handleSignup)}
             >
