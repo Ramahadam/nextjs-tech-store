@@ -35,4 +35,30 @@ describe("SignupForm", () => {
       expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
     });
   });
+
+  describe("while loading", () => {
+    beforeEach(() => {
+      (useAuthActions as jest.Mock).mockReturnValue({
+        isLoading: true,
+        isLoadingGmail: false,
+        handleSignupWithGoogle: jest.fn(),
+        handleSignup: jest.fn(),
+        setAuthError: jest.fn(),
+        authError: null,
+      });
+    });
+
+    it("show spinner", () => {
+      //Arrange
+      render(<SignupForm />);
+
+      // Act
+      const loading = screen.getByLabelText("loading");
+      const signupButton = screen.queryByRole("button", {
+        name: /create new account/i,
+      });
+      expect(loading).toBeInTheDocument();
+      expect(signupButton).not.toBeInTheDocument();
+    });
+  });
 });

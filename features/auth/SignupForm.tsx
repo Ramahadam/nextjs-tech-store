@@ -106,8 +106,12 @@ export function SignupForm({
                   errorMessage={errors.confirmPassword?.message}
                 />
                 <Field>
-                  <Button type="submit">
-                    {isLoading ? <Spinner /> : "Create new account"}
+                  <Button type="submit" role="button">
+                    {isLoading ? (
+                      <Spinner aria-label="loading" />
+                    ) : (
+                      "Create new account"
+                    )}
                   </Button>
                 </Field>
                 <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card py-8">
