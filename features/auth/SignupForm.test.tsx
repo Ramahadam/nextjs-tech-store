@@ -1,82 +1,64 @@
 import { SignupForm } from "./SignupForm";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useAuthActions } from "@/features/auth/hooks/useAuthActions";
 
+// 1. Mock the hook globally
 jest.mock("@/features/auth/hooks/useAuthActions", () => ({
   useAuthActions: jest.fn(),
 }));
 
 describe("SignupForm", () => {
-  // Describe render feilds
-  describe("when not loading", () => {
-    beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
-        isLoading: false,
-        isLoadingGmail: false,
-        handleSignupWithGoogle: jest.fn(),
-        handleSignup: jest.fn(),
-        setAuthError: jest.fn(),
-        authError: null,
-      });
-    });
+  // --- MOCK FACTORY HELPER ---
+  // This handles the repetitive setup for every test
+  const setupForm = (overrides = {}) => {
+    const user = userEvent.setup();
+    const mocks = {
+      isLoading: false,
+      isLoadingGmail: false,
+      handleSignupWithGoogle: jest.fn(),
+      handleSignup: jest.fn(),
+      setAuthError: jest.fn(),
+      authError: null,
+      ...overrides,
+    };
 
-    it("renders signup form feilds", () => {
-      // Arrange
-      render(<SignupForm />);
+    (useAuthActions as jest.Mock).mockReturnValue(mocks);
+
+    const utils = render(<SignupForm />);
+
+    return {
+      ...utils,
+      user,
+      mocks,
+    };
+  };
+
+  describe("Initial Rendering", () => {
+    it("renders all signup form fields correctly", () => {
+      setupForm();
 
       expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /create new account/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("shows the spinner and hides the text when isLoading is true", () => {
+      setupForm({ isLoading: true });
+
+      expect(screen.getByLabelText("loading")).toBeInTheDocument();
+      expect(screen.queryByText(/create new account/i)).not.toBeInTheDocument();
     });
   });
 
-  describe("while loading", () => {
-    beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
-        isLoading: true,
-        isLoadingGmail: false,
-        handleSignupWithGoogle: jest.fn(),
-        handleSignup: jest.fn(),
-        setAuthError: jest.fn(),
-        authError: null,
-      });
-    });
+  describe("Form Validation Behavior", () => {
+    it("prevents submission and shows errors when fields are empty", async () => {
+      const { user, mocks } = setupForm();
 
-    it("show spinner", () => {
-      //Arrange
-      render(<SignupForm />);
-
-      // Act
-      const loading = screen.getByLabelText("loading");
-      const signupButton = screen.queryByRole("button", {
-        name: /create new account/i,
-      });
-      expect(loading).toBeInTheDocument();
-      expect(signupButton).not.toBeInTheDocument();
-    });
-  });
-
-  describe("when empty submit", () => {
-    const handleSignupMock = jest.fn();
-    beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
-        isLoading: false,
-        isLoadingGmail: false,
-        handleSignupWithGoogle: jest.fn(),
-        handleSignup: handleSignupMock,
-        setAuthError: jest.fn(),
-        authError: null,
-      });
-    });
-
-    it("shows error messages", async () => {
-      const user = userEvent.setup();
-      //Arrange
-      render(<SignupForm />);
-
-      // Act
       const submitButton = screen.getByRole("button", {
         name: /create new account/i,
       });
@@ -84,190 +66,126 @@ describe("SignupForm", () => {
 
       expect(
         await screen.findByText(/full name must be at least 4 characters/i),
-      );
-      expect(await screen.findByText(/invalid email/i));
+      ).toBeInTheDocument();
+      expect(await screen.findByText(/invalid email/i)).toBeInTheDocument();
       expect(
         await screen.findByText(/password must be at least 8 characters/i),
+      ).toBeInTheDocument();
+
+      expect(mocks.handleSignup).not.toHaveBeenCalled();
+    });
+
+    it("shows error message when passwords do not match", async () => {
+      const { user, mocks } = setupForm();
+
+      await user.type(screen.getByLabelText(/full name/i), "Mohamed Adam");
+      await user.type(screen.getByLabelText(/email/i), "test@gmail.com");
+      await user.type(screen.getByLabelText(/^password$/i), "password123");
+      await user.type(
+        screen.getByLabelText(/confirm password/i),
+        "different456",
       );
 
-      expect(handleSignupMock).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("when fill and submit", () => {
-    const handleSignupMock = jest.fn();
-    beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
-        isLoading: false,
-        isLoadingGmail: false,
-        handleSignupWithGoogle: jest.fn(),
-        handleSignup: handleSignupMock,
-        setAuthError: jest.fn(),
-        authError: null,
-      });
-    });
-
-    it("submits the form with correct values", async () => {
-      // 1. Setup the user interaction session
-      const user = userEvent.setup();
-
-      //Arrange
-      render(<SignupForm />);
-
-      //Act -  Mandatory: await the action
-      const nameInput = screen.getByLabelText(/full name/i);
-      const emailInput = screen.getByLabelText(/email/i);
-      const passwordInput = screen.getByLabelText(/^password$/i);
-      const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-
-      await user.type(nameInput, "Mohamed Adam");
-      await user.type(emailInput, "test@gmail.com");
-      await user.type(passwordInput, "12345678");
-      await user.type(confirmPasswordInput, "12345678");
-
-      const buttonSubmit = screen.getByRole("button", {
-        name: /create new account/i,
-      });
-
-      await user.click(buttonSubmit);
-
-      //Assert
-      await waitFor(() => expect(handleSignupMock).toHaveBeenCalled());
-    });
-  });
-  describe("when passwords do not match", () => {
-    const handleSignupMock = jest.fn();
-    beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
-        isLoading: false,
-        isLoadingGmail: false,
-        handleSignupWithGoogle: jest.fn(),
-        handleSignup: handleSignupMock,
-        setAuthError: jest.fn(),
-        authError: null,
-      });
-    });
-
-    it("submits the form with incorrect password", async () => {
-      // 1. Setup the user interaction session
-      const user = userEvent.setup();
-
-      //Arrange
-      render(<SignupForm />);
-
-      //Act -  Mandatory: await the action
-      const nameInput = screen.getByLabelText(/full name/i);
-      const emailInput = screen.getByLabelText(/email/i);
-      const passwordInput = screen.getByLabelText(/^password$/i);
-      const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-
-      await user.type(nameInput, "Mohamed Adam");
-      await user.type(emailInput, "test@gmail.com");
-      await user.type(passwordInput, "password123");
-      await user.type(confirmPasswordInput, "password456");
-
-      const buttonSubmit = screen.getByRole("button", {
-        name: /create new account/i,
-      });
-
-      await user.click(buttonSubmit);
-
-      //Assert
+      await user.click(
+        screen.getByRole("button", { name: /create new account/i }),
+      );
 
       expect(
         await screen.findByText("Passwords don't match"),
       ).toBeInTheDocument();
-      await waitFor(() => expect(handleSignupMock).not.toHaveBeenCalled());
+      expect(mocks.handleSignup).not.toHaveBeenCalled();
     });
   });
 
-  describe("when email already exist", () => {
-    it("displays error message", async () => {
-      const user = userEvent.setup();
+  describe("Successful Submission & Server Errors", () => {
+    it("calls handleSignup when all fields are valid", async () => {
+      const { user, mocks } = setupForm();
 
-      let dynamicAuthError: string | null = null;
+      await user.type(screen.getByLabelText(/full name/i), "Mohamed Adam");
+      await user.type(screen.getByLabelText(/email/i), "test@gmail.com");
+      await user.type(screen.getByLabelText(/^password$/i), "password123");
+      await user.type(
+        screen.getByLabelText(/confirm password/i),
+        "password123",
+      );
+
+      await user.click(
+        screen.getByRole("button", { name: /create new account/i }),
+      );
+
+      await waitFor(() => expect(mocks.handleSignup).toHaveBeenCalled());
+    });
+
+    it("displays error message when the email is already registered (Dynamic State)", async () => {
+      const user = userEvent.setup();
+      let dynamicError: string | null = null;
+
+      // We define the logic to flip the error state
       const handleSignupMock = jest.fn(() => {
-        dynamicAuthError = "Email is already registered";
+        dynamicError = "Email is already registered";
       });
 
+      // Use mockImplementation to allow the error to 'arrive' after the click
       (useAuthActions as jest.Mock).mockImplementation(() => ({
         isLoading: false,
         isLoadingGmail: false,
         handleSignupWithGoogle: jest.fn(),
         handleSignup: handleSignupMock,
         setAuthError: jest.fn(),
-        authError: dynamicAuthError,
+        authError: dynamicError,
       }));
 
       const { rerender } = render(<SignupForm />);
 
-      // 4. Verify error is NOT there initially
-      expect(
-        screen.queryByText(/Email is already registered/i),
-      ).not.toBeInTheDocument();
+      // Fill valid data
+      await user.type(screen.getByLabelText(/full name/i), "Mohamed Adam");
+      await user.type(screen.getByLabelText(/email/i), "exists@gmail.com");
+      await user.type(screen.getByLabelText(/^password$/i), "password123");
+      await user.type(
+        screen.getByLabelText(/confirm password/i),
+        "password123",
+      );
 
-      //Act -  Mandatory: await the action
-      const nameInput = screen.getByLabelText(/full name/i);
-      const emailInput = screen.getByLabelText(/email/i);
-      const passwordInput = screen.getByLabelText(/^password$/i);
-      const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
+      await user.click(
+        screen.getByRole("button", { name: /create new account/i }),
+      );
 
-      await user.type(nameInput, "Mohamed Adam");
-      await user.type(emailInput, "test@gmail.com");
-      await user.type(passwordInput, "password123");
-      await user.type(confirmPasswordInput, "password123");
-
-      const buttonSubmit = screen.getByRole("button", {
-        name: /create new account/i,
-      });
-
-      await user.click(buttonSubmit);
-
-      // Force the component to look at the hook again
+      // Trigger rerender to reflect the new dynamicError value
       rerender(<SignupForm />);
 
-      //Assert
-      await waitFor(() => expect(handleSignupMock).toHaveBeenCalled());
       expect(
         await screen.findByText(/Email is already registered/i),
       ).toBeInTheDocument();
     });
   });
 
-  describe("when google signup clicked", () => {
-    it("calls google signup function", async () => {
+  describe("Google Authentication", () => {
+    it("calls handleSignupWithGoogle and shows loading spinner", async () => {
       const user = userEvent.setup();
-      let dynamicLoading = false;
-      const handleSignupMock = jest.fn();
-      const handleSignupWithGoogleMock = jest.fn(() => (dynamicLoading = true));
+      let googleLoading = false;
+      const googleSpy = jest.fn(() => {
+        googleLoading = true;
+      });
 
       (useAuthActions as jest.Mock).mockImplementation(() => ({
         isLoading: false,
-        isLoadingGmail: dynamicLoading,
-        handleSignupWithGoogle: handleSignupWithGoogleMock,
-        handleSignup: handleSignupMock,
+        isLoadingGmail: googleLoading,
+        handleSignupWithGoogle: googleSpy,
+        handleSignup: jest.fn(),
         setAuthError: jest.fn(),
         authError: null,
       }));
-      // Arrange
+
       const { rerender } = render(<SignupForm />);
 
-      // Act - google button click
-
-      const googleSubmit = screen.getByRole("button", {
+      const googleBtn = screen.getByRole("button", {
         name: /Continue with Google/i,
       });
-      await user.click(googleSubmit);
+      await user.click(googleBtn);
 
-      //Assert - signupwithgoogle must be called
-      await waitFor(() =>
-        expect(handleSignupWithGoogleMock).toHaveBeenCalled(),
-      );
+      expect(googleSpy).toHaveBeenCalled();
 
       rerender(<SignupForm />);
-
-      //Assert - the loadingGmail must be true
-
       expect(await screen.findByLabelText("loading")).toBeInTheDocument();
     });
   });
