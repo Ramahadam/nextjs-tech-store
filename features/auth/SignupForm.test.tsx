@@ -186,14 +186,15 @@ describe("SignupForm", () => {
       const user = userEvent.setup();
 
       let dynamicAuthError: string | null = null;
+      const handleSignupMock = jest.fn(() => {
+        dynamicAuthError = "Email is already registered";
+      });
 
       (useAuthActions as jest.Mock).mockImplementation(() => ({
         isLoading: false,
         isLoadingGmail: false,
         handleSignupWithGoogle: jest.fn(),
-        handleSignup: () => {
-          dynamicAuthError = "Email is already registered";
-        },
+        handleSignup: handleSignupMock,
         setAuthError: jest.fn(),
         authError: dynamicAuthError,
       }));
@@ -226,10 +227,48 @@ describe("SignupForm", () => {
       rerender(<SignupForm />);
 
       //Assert
-      // await waitFor(() => expect(handleSignup).toHaveBeenCalled());
+      await waitFor(() => expect(handleSignupMock).toHaveBeenCalled());
       expect(
         await screen.findByText(/Email is already registered/i),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("when google signup clicked", () => {
+    it("calls google signup function", async () => {
+      const user = userEvent.setup();
+      let dynamicLoading = false;
+      const handleSignupMock = jest.fn();
+      const handleSignupWithGoogleMock = jest.fn(() => (dynamicLoading = true));
+
+      (useAuthActions as jest.Mock).mockImplementation(() => ({
+        isLoading: false,
+        isLoadingGmail: dynamicLoading,
+        handleSignupWithGoogle: handleSignupWithGoogleMock,
+        handleSignup: handleSignupMock,
+        setAuthError: jest.fn(),
+        authError: null,
+      }));
+      // Arrange
+      const { rerender } = render(<SignupForm />);
+
+      // Act - google button click
+
+      const googleSubmit = screen.getByRole("button", {
+        name: /Continue with Google/i,
+      });
+      await user.click(googleSubmit);
+
+      //Assert - signupwithgoogle must be called
+      await waitFor(() =>
+        expect(handleSignupWithGoogleMock).toHaveBeenCalled(),
+      );
+
+      rerender(<SignupForm />);
+
+      //Assert - the loadingGmail must be true
+
+      expect(await screen.findByLabelText("loading")).toBeInTheDocument();
     });
   });
 });
