@@ -47,6 +47,7 @@ export function SignupForm({
         <CardContent className="grid p-0 md:grid-cols-2">
           <div>
             <form
+              role="form"
               className="p-6 md:p-8 md:max-w-[90%] md:mx-auto"
               onSubmit={handleSubmit(handleSignup)}
             >
@@ -75,7 +76,7 @@ export function SignupForm({
                   errorClassName="h-4"
                 />{" "}
                 <Field className="relative">
-                  {authError.startsWith("Email") && (
+                  {authError?.startsWith("Email") && (
                     <p className="text-sm text-red-400 flex items-center absolute -top-6">
                       <Info className="h-4" />
                       {authError}
@@ -91,7 +92,7 @@ export function SignupForm({
                   errorClassName="h-4"
                 />
                 <Field className="relative">
-                  {authError.startsWith("Password") && (
+                  {authError?.startsWith("Password") && (
                     <p className="text-sm text-red-400 flex items-center absolute -top-6">
                       <Info className="h-4" />
                       {authError}
@@ -106,8 +107,16 @@ export function SignupForm({
                   errorMessage={errors.confirmPassword?.message}
                 />
                 <Field>
-                  <Button type="submit">
-                    {isLoading ? <Spinner /> : "Create new account"}
+                  <Button
+                    type="submit"
+                    role="button"
+                    disabled={isLoading || isLoadingGmail}
+                  >
+                    {isLoading ? (
+                      <Spinner aria-label="loading" />
+                    ) : (
+                      "Create new account"
+                    )}
                   </Button>
                 </Field>
                 <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card py-8">
@@ -115,6 +124,8 @@ export function SignupForm({
                 </FieldSeparator>
                 <Field className="grid grid-cols-1  py-6">
                   <AuthGoogleButton
+                    role="button"
+                    disabled={isLoading || isLoadingGmail}
                     isLoading={isLoadingGmail}
                     onClick={handleSignupWithGoogle}
                   />

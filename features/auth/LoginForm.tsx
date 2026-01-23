@@ -54,8 +54,8 @@ export function LoginForm({
       hasSuccessMessageShowed.current = true;
 
       toast.success(
-        "Your password has been reset successfullyPlease log in with your new password",
-        { duration: 3000, position: "top-center" }
+        "Your password has been reset successfully. Please log in with your new password",
+        { duration: 3000, position: "top-center" },
       );
 
       router.replace("/login", { scroll: false });
@@ -70,6 +70,7 @@ export function LoginForm({
             <form
               onSubmit={handleSubmit(handelLoginUser)}
               className="md:w-[80%]"
+              role="form"
             >
               <div className="flex flex-col items-center gap-1 text-center">
                 <h1 className="md:text-2xl   font-bold">
@@ -100,15 +101,21 @@ export function LoginForm({
                 />
 
                 <Field className="mt-4">
-                  <Button type="submit">
-                    {isLoading ? <Spinner /> : "Login"}
+                  <Button
+                    type="submit"
+                    role="button"
+                    disabled={isLoading || isLoadingGmail}
+                  >
+                    {isLoading ? <Spinner aria-label="loading" /> : "Login"}
                   </Button>
                   <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card my-2">
                     Or continue with
                   </FieldSeparator>
                   <Field className="grid grid-cols-1 gap-4">
                     <AuthGoogleButton
+                      role="button"
                       isLoading={isLoadingGmail}
+                      disabled={isLoading || isLoadingGmail}
                       onClick={() => handleSignupWithGoogle()}
                     />
                   </Field>

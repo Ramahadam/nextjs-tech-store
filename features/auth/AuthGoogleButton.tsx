@@ -4,17 +4,27 @@ import { Spinner } from "@/components/ui/spinner";
 type AuthGoogleButtonType = {
   isLoading: boolean;
   onClick: () => void;
+  role?: string;
+  disabled?: boolean;
 };
 
 export default function AuthGoogleButton({
   onClick,
   isLoading,
+  role,
+  disabled,
 }: AuthGoogleButtonType) {
   return (
-    <Button variant="outline" type="button" onClick={onClick}>
+    <Button
+      variant="outline"
+      type="button"
+      onClick={onClick}
+      role={role}
+      disabled={disabled}
+    >
       {isLoading ? (
         <span>
-          <Spinner />
+          <Spinner aria-label="loading" />
         </span>
       ) : (
         <>
