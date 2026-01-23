@@ -107,7 +107,11 @@ export function SignupForm({
                   errorMessage={errors.confirmPassword?.message}
                 />
                 <Field>
-                  <Button type="submit" role="button">
+                  <Button
+                    type="submit"
+                    role="button"
+                    disabled={isLoading || isLoadingGmail}
+                  >
                     {isLoading ? (
                       <Spinner aria-label="loading" />
                     ) : (

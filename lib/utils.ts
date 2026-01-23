@@ -47,7 +47,3 @@ export const firebaseErrorMessages = (code: string) => {
 
   return errorMsg[code] ?? "Authenitcation failed. Please try again.";
 };
-
-export const add = (a: number, b: number): number => {
-  return a + b;
-};
