@@ -7,7 +7,7 @@ import { useAuthActions } from "@/features/auth/hooks/useAuthActions";
 jest.mock("@/features/auth/hooks/useAuthActions", () => ({
   useAuthActions: jest.fn(),
 }));
-
+ 
 describe("SignupForm", () => {
   // --- MOCK FACTORY HELPER ---
   // This handles the repetitive setup for every test

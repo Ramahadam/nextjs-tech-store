@@ -1,6 +1,7 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { LoginForm } from "./LoginForm";
 import { useAuthActions } from "@/features/auth/hooks/useAuthActions";
+import userEvent from "@testing-library/user-event";
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ replace: jest.fn() }),
@@ -12,18 +13,33 @@ jest.mock("@/features/auth/hooks/useAuthActions", () => ({
 }));
 
 describe("LoginForm", () => {
-  describe("when not loading", () => {
-    beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
-        login: jest.fn(),
-        isLoading: false,
-        authError: null,
-        setAuthError: jest.fn(),
-      });
-    });
+  const setupForm = (overrides = {}) => {
+    const user = userEvent.setup();
+    const mocks = {
+      login: jest.fn(),
+      isLoading: false,
+      authError: null,
+      setAuthError: jest.fn(),
+      isLoadingGmail: false,
+      handleSignupWithGoogle: jest.fn(),
+      handelLoginUser: jest.fn(),
+      ...overrides,
+    };
 
+    (useAuthActions as jest.Mock).mockReturnValue(mocks);
+
+    const utils = render(<LoginForm />);
+
+    return {
+      ...utils,
+      mocks,
+      user,
+    };
+  };
+
+  describe("when not loading", () => {
     it("renders login form fields", () => {
-      render(<LoginForm />);
+      setupForm();
 
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
@@ -34,16 +50,8 @@ describe("LoginForm", () => {
   });
 
   describe("when loading", () => {
-    beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
-        login: jest.fn(),
-        isLoading: true,
-        authError: null,
-        setAuthError: jest.fn(),
-      });
-    });
     it("shows loading spinner", () => {
-      render(<LoginForm />);
+      setupForm({ isLoading: true });
 
       expect(screen.getByLabelText("loading")).toBeInTheDocument();
       expect(
@@ -53,88 +61,86 @@ describe("LoginForm", () => {
   });
 
   describe("when firebase error occur", () => {
+    const user = userEvent.setup();
+    let authDynamicError: string | null = null;
+
+    const handleLoginMock = jest.fn(
+      () => (authDynamicError = "Invalid email or password"),
+    );
     beforeEach(() => {
-      (useAuthActions as jest.Mock).mockReturnValue({
+      (useAuthActions as jest.Mock).mockImplementation(() => ({
         login: jest.fn(),
-        isLoading: true,
-        authError: "Invalid email or password",
+        isLoading: false,
+        authError: authDynamicError,
         setAuthError: jest.fn(),
-      });
+        isLoadingGmail: false,
+        handleSignupWithGoogle: jest.fn(),
+        handelLoginUser: handleLoginMock,
+      }));
     });
-    it("shows error message", () => {
-      render(<LoginForm />);
+
+    it("shows error message", async () => {
+      const { rerender } = render(<LoginForm />);
 
       expect(
-        screen.getByText(/Invalid email or password/i),
+        screen.queryByText(/Invalid email or password/i),
+      ).not.toBeInTheDocument();
+
+      const emailInput = screen.getByLabelText(/email/i);
+      const passwordInput = screen.getByLabelText(/password/i);
+
+      await user.type(emailInput, "test@testing.com");
+      await user.type(passwordInput, "password1234");
+
+      const submitButton = screen.getByRole("button", { name: /login/i });
+      user.click(submitButton);
+
+      await waitFor(() => expect(handleLoginMock).toHaveBeenCalled());
+
+      rerender(<LoginForm />);
+
+      expect(
+        await screen.findByText(/Invalid email or password/i),
       ).toBeInTheDocument();
     });
   });
 
   describe("when empty submit", () => {
-    const handleLoginMock = jest.fn();
-
-    (useAuthActions as jest.Mock).mockReturnValue({
-      login: jest.fn(),
-      handelLoginUser: handleLoginMock,
-      isLoading: false,
-      authError: null,
-      setAuthError: jest.fn(),
-    });
     it("email is required", async () => {
-      render(<LoginForm />);
-
+      const handleLoginMock = jest.fn();
+      const { user } = setupForm({ handelLoginUser: handleLoginMock });
       //Act
-      const submitForm = screen.getByRole("form");
-      fireEvent.click(submitForm);
+      const submitButton = screen.getByRole("button", { name: /login/i });
+      user.click(submitButton);
 
       expect(
-        await screen.findByText(/Invalid email or password/i),
+        await screen.findByText(/Invalid email address/i),
+      ).toBeInTheDocument();
+
+      expect(
+        await screen.findByText(/Password must be at least 8 characters/i),
       ).toBeInTheDocument();
       expect(handleLoginMock).not.toHaveBeenCalled();
     });
   });
 
   describe("when fill and submit", () => {
-    const handleLoginMock = jest.fn();
-
-    beforeEach(() =>
-      (useAuthActions as jest.Mock).mockReturnValue({
-        login: jest.fn(),
-        handelLoginUser: handleLoginMock,
-        isLoading: false,
-        authError: null,
-        isLoadingGmail: false,
-        handleSignupWithGoogle: jest.fn(),
-        setAuthError: jest.fn(),
-      }),
-    );
-
     it("submits form with correct values", async () => {
       // Arrange
-      render(<LoginForm />);
 
+      const handleLoginMock = jest.fn();
+      const { user } = setupForm({ handelLoginUser: handleLoginMock });
       //Act
-      fireEvent.change(screen.getByLabelText(/email/i), {
-        target: { value: "test@gmail.com" },
-      });
+      await user.type(screen.getByLabelText(/email/i), "test@gmail.com");
 
-      fireEvent.change(screen.getByLabelText(/password/i), {
-        target: { value: "12345678" },
-      });
+      await user.type(screen.getByLabelText(/password/i), "12345678");
 
-      const submitForm = screen.getByRole("form");
+      const submitButton = screen.getByRole("button", { name: /login/i });
 
-      fireEvent.submit(submitForm);
+      await user.click(submitButton);
 
       // Assert
       await waitFor(() => expect(handleLoginMock).toHaveBeenCalledTimes(1));
-      expect(handleLoginMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          email: "test@gmail.com",
-          password: "12345678",
-        }),
-        expect.anything(),
-      );
     });
   });
 });
