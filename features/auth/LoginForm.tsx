@@ -54,7 +54,7 @@ export function LoginForm({
       hasSuccessMessageShowed.current = true;
 
       toast.success(
-        "Your password has been reset successfullyPlease log in with your new password",
+        "Your password has been reset successfully. Please log in with your new password",
         { duration: 3000, position: "top-center" },
       );
 
